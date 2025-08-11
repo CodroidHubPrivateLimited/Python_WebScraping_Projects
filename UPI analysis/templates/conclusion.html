@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+
+{% block title %}Conclusion{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <header class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-bold">My Conclusion</h1>
+        <p class="mt-4 max-w-2xl mx-auto text-lg text-zinc-600">Based on the data, here are my key takeaways.</p>
+    </header>
+
+    <div class="prose prose-lg max-w-3xl mx-auto space-y-8">
+        <div>
+            <h2>1. A Tool for Everyone</h2>
+            <p>My analysis of the data suggests that UPI has played a big part in helping small, local businesses join the formal economy. When street vendors and local shops started using UPI, it created a digital record of their sales for the first time. This is important because this digital history could make it easier for them to get loans from banks in the future.</p>
+        </div>
+        <div>
+            <h2>2. Changing the Cost of Money</h2>
+             <p>One of the most interesting findings is how UPI seems to have made digital payments more affordable. Since it's mostly free for users and small merchants, it has pushed banks and other payment companies to compete by offering better services instead of just charging fees for basic transfers. This is a huge benefit for regular users and business owners.</p>
+        </div>
+        <div>
+            <h2>3. An Indian Model for the World</h2>
+            <p>Looking at the trends, it seems like UPI's story isn't just about India anymore. The incredible growth shown in the data has led other countries to start adopting India's model. This is a huge step, as it could mean that a technology built in India becomes a new standard for sending money around the world.</p>
+        </div>
+    </div>
+
+    <!-- Thank You Section -->
+    <div class="text-center mt-20 py-10 border-t border-zinc-200">
+        <h2 class="text-3xl font-bold">Thank You</h2>
+        <p class="mt-4 text-zinc-600">Thank you for exploring my analysis of the UPI revolution.</p>
+        <div class="mt-8">
+            <a href="/" class="inline-block bg-zinc-900 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-zinc-700 transition-colors duration-300">
+                Back to Home
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

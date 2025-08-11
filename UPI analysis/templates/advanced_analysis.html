@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+
+{% block title %}Advanced Analysis{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <header class="text-center mb-16">
+        <h1 class="text-4xl md:text-5xl font-bold">Advanced Analysis</h1>
+        <p class="mt-4 max-w-2xl mx-auto text-lg text-zinc-600">Diving deeper into the growth patterns and seasonality of UPI.</p>
+    </header>
+
+    <div class="space-y-16">
+        <!-- Chart 3: YoY Growth -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div class="prose prose-lg max-w-none">
+                <h2>The Hyper-Growth Years</h2>
+                <p>This bar chart shows the Year-over-Year (YoY) growth in the total value of transactions. It's a powerful way to see just how fast UPI was growing. The extremely tall bars between 2018 and 2022 show a period of "hyper-growth," where the value of transactions was often doubling or more each year. This is a key finding because it shows the incredible speed of adoption.</p>
+                <p><strong>Conclusion:</strong> The data confirms that UPI's expansion was not just steady growth; it was an explosive, exponential event, especially in its early-to-mid stages.</p>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-lg">
+                <div id="yoyChart"></div>
+            </div>
+        </div>
+
+        <!-- Chart 4: MoM Change -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+             <div class="prose prose-lg max-w-none lg:order-2">
+                <h2>Monthly Momentum</h2>
+                <p>This chart looks at the Month-over-Month (MoM) percentage change in transaction volume. It helps us understand the consistency of UPI's growth. Most of the time, the line is above zero, which means the number of transactions was increasing every single month. We can also see small dips, which sometimes happen after festive seasons, showing a natural seasonality in spending habits.</p>
+                <p><strong>Conclusion:</strong> The analysis shows that UPI's growth has been remarkably consistent. Even with minor seasonal dips, the overall trend shows a strong and steady increase in user activity month after month.</p>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-lg lg:order-1">
+                <div id="momChart"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Next Page Button -->
+    <div class="text-center mt-16">
+        <a href="/conclusion" class="inline-block bg-zinc-900 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-zinc-700 transition-colors duration-300">
+            Next: Read the Conclusion &rarr;
+        </a>
+    </div>
+</div>
+
+<script>
+    const yoyChartData = {{ yoy_chart | safe }};
+    const momChartData = {{ mom_chart | safe }};
+    const layoutOptions = {
+        font: { family: 'Inter, sans-serif', color: '#18181b' },
+        paper_bgcolor: 'rgba(255,255,255,1)',
+        plot_bgcolor: 'rgba(255,255,255,1)',
+        xaxis: { gridcolor: '#e4e4e7' },
+        yaxis: { gridcolor: '#e4e4e7' }
+    };
+    Plotly.newPlot('yoyChart', yoyChartData.data, {...yoyChartData.layout, ...layoutOptions}, {responsive: true});
+    Plotly.newPlot('momChart', momChartData.data, {...momChartData.layout, ...layoutOptions}, {responsive: true});
+</script>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+
+{% block title %}The Story of UPI{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <header class="text-center mb-16">
+        <h1 class="text-4xl md:text-5xl font-bold">The Story of a Revolution</h1>
+        <p class="mt-4 max-w-2xl mx-auto text-lg text-zinc-600">How a simple idea transformed the way a nation transacts.</p>
+    </header>
+
+    <div class="prose prose-lg max-w-3xl mx-auto space-y-8">
+        <div>
+            <h2>The World Before UPI</h2>
+            <p>Before 2016, India's digital payment landscape was fragmented. For most people, cash was king. Sending money to another person often meant a trip to the bank or dealing with complex systems like NEFT or IMPS, which weren't designed for quick, small, everyday payments. Small shopkeepers, street vendors, and local businesses had little choice but to rely on physical cash, which was inefficient and often insecure.</p>
+        </div>
+        <div>
+            <h2>A Revolutionary Idea</h2>
+             <p>The National Payments Corporation of India (NPCI) introduced a radical new concept: a single, interoperable platform that could connect every bank account in the country. The Unified Payments Interface (UPI) was born. The idea was simple but powerful: what if you could send money as easily as sending a text message? By using a simple virtual address (like `name@bank`), UPI removed the need to remember complex account numbers and IFSC codes.</p>
+        </div>
+        <div>
+            <h2>The Tipping Point</h2>
+            <p>While adoption was steady at first, several factors created a perfect storm for UPI's growth. The government's push for digital payments, the explosion of affordable smartphones and cheap data, and finally, the COVID-19 pandemic, which made contactless payments a necessity. Suddenly, UPI wasn't just a convenience; it was an essential service. This is the moment the data shows a dramatic, near-vertical spike in adoption, as seen in the analysis.</p>
+        </div>
+    </div>
+
+    <!-- Next Page Button -->
+    <div class="text-center mt-16">
+        <a href="/data" class="inline-block bg-zinc-900 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-zinc-700 transition-colors duration-300">
+            Next: Explore the Data &rarr;
+        </a>
+    </div>
+</div>
+{% endblock %}

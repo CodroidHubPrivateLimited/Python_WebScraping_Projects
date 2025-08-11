@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ project_title }} - Data Showcase</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts for the new handwritten scrapbook style -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Patrick+Hand&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Patrick Hand', cursive;
+            background-color: #FBFBF8;
+            background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="4" height="4" viewBox="0 0 4 4"%3E%3Cpath fill="%239C92AC" fill-opacity="0.05" d="M1 3h1v1H1V3zm2-2h1v1H3V1z"%3E%3C/path%3E%3C/svg%3E');
+        }
+        .heading-font { font-family: 'Caveat', cursive; }
+        .card {
+            background-color: #ffffff;
+            border: 1px solid #EAEAEA;
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease-in-out;
+            position: relative;
+        }
+        .tape::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-4deg);
+            width: 120px;
+            height: 35px;
+            background-color: rgba(165, 210, 255, 0.4);
+            border-left: 2px dashed rgba(255, 255, 255, 0.6);
+            border-right: 2px dashed rgba(255, 255, 255, 0.6);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body class="text-gray-700 text-xl">
+
+    <!-- Header Section -->
+    <header class="text-center py-12 px-4">
+        <h1 class="heading-font text-7xl md:text-8xl text-{{ color }}-700">{{ project_title }}</h1>
+        <p class="text-2xl text-gray-500 mt-4 max-w-3xl mx-auto">{{ description }}</p>
+        <div class="mt-6">
+            <a href="{{ source_url }}" target="_blank" rel="noopener noreferrer" class="text-lg text-gray-400 hover:text-{{ color }}-600 transition-colors duration-300 inline-flex items-center space-x-2">
+                <span class="heading-font text-2xl">Source</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" /><path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" /></svg>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="container mx-auto px-4 lg:px-8 mb-16">
+        <!-- Visualization Section -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-y-20 gap-x-12 mb-16">
+            {% for chart in charts_data %}
+            <section class="tape {% if charts_data|length == 1 %}md:col-span-2 max-w-4xl mx-auto w-full{% endif %}">
+                <div class="card p-6 rounded-lg transform {% if loop.index is odd %}-rotate-2{% else %}rotate-2{% endif %} hover:rotate-0 hover:scale-105 h-full">
+                    <div class="relative h-[28rem] mt-2">
+                        <canvas id="chart-{{ loop.index }}"></canvas>
+                    </div>
+                </div>
+            </section>
+            {% endfor %}
+        </div>
+
+        <!-- Data Table Section -->
+        <section class="tape max-w-6xl mx-auto">
+            <div class="card p-6 rounded-lg transform hover:scale-105">
+                <h2 class="heading-font text-4xl mb-4 text-{{ color }}-800">The Raw Data</h2>
+                <!-- FIX: Removed the max-height style that was causing the scrollbar -->
+                <div class="overflow-x-auto mt-6 border rounded-md">
+                    <table class="w-full text-left">
+                        <thead class="sticky top-0 bg-white shadow-sm">
+                            <tr>
+                                {% for header in headers %}
+                                <th class="p-3 heading-font text-2xl text-{{ color }}-900 border-b-2 border-{{ color }}-100">{{ header }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody class="text-gray-600">
+                            {% for row in data %}
+                            <tr class="border-b border-gray-100">
+                                {% for cell in row %}
+                                <td class="p-3">{{ cell }}</td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Back Button -->
+    <footer class="text-center pb-16 pt-8">
+        <a href="/projects" class="inline-block px-8 py-3 bg-{{ color }}-700 text-white text-2xl rounded-md shadow-lg hover:shadow-xl hover:bg-{{ color }}-800 transition-all duration-300 ease-in-out transform hover:scale-105 heading-font">
+            &larr; Back to Projects
+        </a>
+    </footer>
+
+    <script>
+        // --- Dynamic Chart.js Initialization ---
+        const chartsData = {{ charts_data | tojson }};
+        const chartColorRgb = "{{ color_rgb }}";
+
+        // Set default font for Chart.js
+        Chart.defaults.font.family = "'Patrick Hand', cursive";
+        Chart.defaults.font.size = 16;
+        Chart.defaults.color = '#4b5563'; // gray-600
+
+        chartsData.forEach((chartConfig, index) => {
+            const ctx = document.getElementById(`chart-${index + 1}`).getContext('2d');
+            
+            let chartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: chartConfig.title,
+                        font: {
+                            family: "'Caveat', cursive",
+                            size: 30
+                        },
+                        padding: {
+                            top: 5,
+                            bottom: 15
+                        },
+                        color: '#334155' // slate-700
+                    },
+                    legend: {
+                        display: chartConfig.type === 'pie',
+                        position: 'top',
+                    },
+                    tooltip: {
+                        enabled: true,
+                        backgroundColor: '#1f2937',
+                        titleFont: { family: "'Caveat', cursive", size: 20, weight: 'bold' },
+                        bodyFont: { size: 16 },
+                        padding: 12,
+                        cornerRadius: 4,
+                        displayColors: chartConfig.type === 'pie',
+                    }
+                }
+            };
+
+            // Specific options for different chart types
+            if (chartConfig.type === 'bar') {
+                chartOptions.scales = {
+                    y: { ticks: { padding: 10 }, grid: { color: '#f3f4f6' } },
+                    x: { ticks: { padding: 10 }, grid: { display: false } }
+                };
+            } else if (chartConfig.type === 'scatter') {
+                 chartOptions.scales = {
+                    y: { title: { display: true, text: 'Rating' }, grid: { color: '#f3f4f6' } },
+                    x: { title: { display: true, text: 'Price (₹)' }, grid: { display: false } }
+                };
+            }
+
+            let backgroundColors = `rgba(${chartColorRgb}, 0.6)`;
+            if (chartConfig.type === 'pie') {
+                backgroundColors = chartConfig.data.map((_, i) => `rgba(${chartColorRgb}, ${1 - (i * 0.15)})`);
+            }
+
+            new Chart(ctx, {
+                type: chartConfig.type,
+                data: {
+                    labels: chartConfig.labels,
+                    datasets: [{
+                        label: chartConfig.label,
+                        data: chartConfig.data,
+                        backgroundColor: backgroundColors,
+                        borderColor: `rgba(${chartColorRgb}, 1)`,
+                        borderWidth: 2,
+                        borderRadius: chartConfig.type === 'bar' ? 6 : undefined,
+                    }]
+                },
+                options: chartOptions
+            });
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block title %}Data Explorer{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <header class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-bold">Data Explorer</h1>
+        <p class="mt-4 max-w-2xl mx-auto text-lg text-zinc-600">The underlying monthly data from the NPCI.</p>
+    </header>
+
+    <div class="bg-white p-4 rounded-lg shadow-lg overflow-x-auto">
+        <table class="min-w-full text-sm">
+            <thead class="bg-zinc-100">
+                <tr>
+                    <th class="p-4 text-left font-semibold">Month</th>
+                    <th class="p-4 text-left font-semibold">Volume (Millions)</th>
+                    <th class="p-4 text-left font-semibold">Value (₹ Crores)</th>
+                    <th class="p-4 text-left font-semibold">Avg. Txn. Size (₹)</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-zinc-200">
+                {% for row in records %}
+                <tr class="hover:bg-zinc-50">
+                    <td class="p-4 whitespace-nowrap font-medium">{{ row.Month }}</td>
+                    <td class="p-4 whitespace-nowrap">{{ row['Volume (Millions)'] }}</td>
+                    <td class="p-4 whitespace-nowrap">{{ row['Value (₹ Crores)'] }}</td>
+                    <td class="p-4 whitespace-nowrap">{{ row['Avg. Txn. Size (₹)'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Next Page Button -->
+    <div class="text-center mt-16">
+        <a href="/analysis" class="inline-block bg-zinc-900 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:bg-zinc-700 transition-colors duration-300">
+            Next: View the Analysis &rarr;
+        </a>
+    </div>
+</div>
+{% endblock %}

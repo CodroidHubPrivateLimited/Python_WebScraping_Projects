@@ -60,6 +60,6 @@ git clone https://github.com/yourusername/your-repo-name.git
 pip install pandas beautifulsoup4 requests
 
 5. Usage
-  1. Navigate to the folder of the project you want to run.
-  2. Open the Python script (e.g., amazon_scraper.py) and run it:
+   1. Navigate to the folder of the project you want to run.
+   2. Open the Python script (e.g., amazon_scraper.py) and run it:
        python amazon_scraper.py

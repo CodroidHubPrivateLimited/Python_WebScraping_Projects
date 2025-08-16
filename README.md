@@ -51,10 +51,10 @@ This repository uses the following Python libraries:
 git clone https://github.com/yourusername/your-repo-name.git
 
 3. Create a virtual environment (recommended):
-cd your-repo-name
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-venv\Scripts\activate     # Windows
+   1. cd your-repo-name
+   2. python -m venv venv
+   3. source venv/bin/activate  # Linux/Mac
+   4. venv\Scripts\activate     # Windows
 
 4. Install the required libraries:
 pip install pandas beautifulsoup4 requests

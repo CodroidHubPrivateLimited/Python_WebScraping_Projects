@@ -58,3 +58,5 @@ git clone https://github.com/yourusername/your-repo-name.git
 
 4. Install the required libraries:
 pip install pandas beautifulsoup4 requests
+
+5. You are good to go!

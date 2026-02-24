@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>{{ filename }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='view.css') }}">
+</head>
+
+<body>
+
+    <h1>{{ filename }}</h1>
+
+    <!-- Buttons Container -->
+    <div class="table-box">
+        {% if table %}
+        {{ table|safe }}
+        {% else %}
+        <p>No data available.</p>
+        {% endif %}
+    </div>
+    <div class="button-group">
+        <a href="{{ url_for('download_file', data_type=data_type, filename=filename) }}" class="export-btn">
+            Export CSV
+        </a>
+    
+        <a href="{{ url_for('home_static') if data_type == 'static' else url_for('home_api') }}" class="back-btn">
+            ⬅ Back
+        </a>
+    </div>
+
+</body>
+
+</html>

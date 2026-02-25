@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Flask World</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='landing.css') }}">
+</head>
+
+<body>
+
+    <!-- Navigation Buttons -->
+    <div class="nav-buttons">
+        <a href="{{ url_for('home') }}" class="nav-btn">Home</a>
+        <a href="{{ url_for('about') }}" class="nav-btn">About Me</a>
+        <a href="{{ url_for('journey') }}" class="nav-btn">My Journey</a>
+        <a href="{{ url_for('home') }}" class="nav-btn">Project</a>
+    </div>
+
+    <!-- 3D Animated Background -->
+    <div class="scene">
+        <!-- Main 3D Flask -->
+        <div class="flask-container">
+            <div class="flask">
+                <div class="flask-neck"></div>
+                <div class="flask-body">
+                    <div class="liquid">
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+                    </div>
+                    <div class="bubbles-outer">
+                        <span></span><span></span><span></span><span></span><span></span>
+                    </div>
+                </div>
+            </div>
+            <div class="glow"></div>
+        </div>
+
+        <!-- Floating Elements -->
+        <div class="floating-elements">
+            <div class="molecule"></div>
+            <div class="molecule"></div>
+            <div class="molecule"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+        </div>
+
+        <!-- Welcome Text -->
+        <div class="content">
+            <h1 class="title">
+                <span class="word1">Welcome</span>
+                <span class="word2">to</span>
+                <span class="word3">Flask</span>
+                <span class="word4">World</span>
+            </h1>
+            <p class="subtitle">✨ Where Magic Meets Code ✨</p>
+            
+            <!-- Enter Button -->
+            <div class="enter-btn">
+                <span>Enter</span>
+                <div class="btn-glow"></div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

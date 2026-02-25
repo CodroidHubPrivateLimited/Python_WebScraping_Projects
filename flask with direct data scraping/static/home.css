@@ -1,0 +1,668 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    color: white;
+    background: #0f2027;
+    overflow-x: hidden;
+}
+
+/* ===== Animated Gradient Background ===== */
+.animated-bg {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(-45deg, #0f2027, #203a43, #2c5364, #1c1c1c);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    z-index: -2;
+}
+
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* ===== Floating Orbs ===== */
+.orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.6;
+    animation: float 20s infinite ease-in-out;
+}
+
+.orb1 {
+    width: 300px;
+    height: 300px;
+    background: #00f2ff;
+    top: 10%;
+    left: 20%;
+}
+
+.orb2 {
+    width: 250px;
+    height: 250px;
+    background: #ff00c8;
+    bottom: 10%;
+    right: 20%;
+}
+
+.orb3 {
+    width: 200px;
+    height: 200px;
+    background: #00ff95;
+    top: 60%;
+    left: 60%;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-80px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+/* ===== Navbar ===== */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+    backdrop-filter: blur(15px);
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.navbar h2 {
+    letter-spacing: 1px;
+}
+
+.nav-buttons button {
+    margin-left: 15px;
+    padding: 8px 18px;
+    border-radius: 20px;
+    border: none;
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.nav-buttons button:hover {
+    transform: scale(1.1);
+    background: #00f2ff;
+    color: black;
+}
+
+.active {
+    background: #00f2ff !important;
+    color: black !important;
+}
+
+/* ===== Content ===== */
+.content {
+    padding: 30px 50px;
+}
+
+.data-section {
+    display: none;
+}
+
+.file-card {
+    margin-bottom: 40px;
+    padding: 20px;
+    border-radius: 20px;
+    backdrop-filter: blur(15px);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
+}
+
+.file-card h3 {
+    margin-bottom: 15px;
+}
+
+/* ===== Table Styling ===== */
+.table-box {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+th {
+    background: #00f2ff;
+    color: black;
+}
+
+tr:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+/* ===== Video Background ===== */
+.video-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+}
+
+/* ===== Animated Gradient Background ===== */
+.animated-bg {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(-45deg, #0f2027, #203a43, #2c5364, #1c1c1c);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    z-index: -1;
+    /* 👈 yaha change */
+    opacity: 0.4;
+    /* 👈 transparent */
+}
+/* Video Background */
+.video-bg {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -3;
+    opacity: 0.4;
+}
+
+/* Section Title */
+.section-title {
+    margin-bottom: 30px;
+    font-size: 26px;
+}
+
+/* Card Grid Layout */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px;
+}
+
+/* Data Card */
+.data-card {
+    padding: 20px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(15px);
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
+    transition: 0.4s ease;
+    animation: fadeIn 0.8s ease;
+}
+
+.data-card:hover {
+    transform: translateY(-10px) scale(1.03);
+    box-shadow: 0 0 35px rgba(0, 242, 255, 0.6);
+}
+
+.api-card {
+    border: 2px solid #00f2ff;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* ===== BODY ===== */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    color: white;
+    overflow-x: hidden;
+    background: #0f2027;
+}
+
+/* ===== VIDEO BACKGROUND ===== */
+.video-bg {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -3;
+    opacity: 0.3;
+}
+
+/* ===== ANIMATED GRADIENT ===== */
+.animated-bg {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(-45deg, #0f2027, #203a43, #2c5364, #1c1c1c);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    z-index: -2;
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* ===== FLOATING ORBS ===== */
+.orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.6;
+    animation: float 20s infinite ease-in-out;
+    z-index: -1;
+}
+
+.orb1 {
+    width: 300px;
+    height: 300px;
+    background: #00f2ff;
+    top: 10%;
+    left: 20%;
+}
+
+.orb2 {
+    width: 250px;
+    height: 250px;
+    background: #ff00c8;
+    bottom: 10%;
+    right: 20%;
+}
+
+.orb3 {
+    width: 200px;
+    height: 200px;
+    background: #00ff95;
+    top: 60%;
+    left: 60%;
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-80px); }
+    100% { transform: translateY(0px); }
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+    backdrop-filter: blur(15px);
+    background: rgba(255,255,255,0.05);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.navbar h2 {
+    letter-spacing: 1px;
+}
+
+.nav-buttons button {
+    margin-left: 15px;
+    padding: 8px 18px;
+    border-radius: 20px;
+    border: none;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.nav-buttons button:hover {
+    transform: scale(1.1);
+    background: #00f2ff;
+    color: black;
+}
+
+.active {
+    background: #00f2ff !important;
+    color: black !important;
+}
+
+/* ===== CONTENT ===== */
+.content {
+    padding: 30px 50px;
+}
+
+.section-title {
+    margin-bottom: 30px;
+}
+
+/* ===== CARD GRID ===== */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px;
+}
+
+/* ===== DATA CARD ===== */
+.data-card {
+    padding: 20px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(15px);
+    box-shadow: 0 0 25px rgba(0,0,0,0.4);
+    transition: 0.4s ease;
+    cursor: pointer;
+}
+
+.data-card:hover {
+    transform: translateY(-10px) scale(1.03);
+    box-shadow: 0 0 35px rgba(0,242,255,0.6);
+}
+
+.api-card {
+    border: 2px solid #00f2ff;
+}
+
+/* ===== HIDE DATA INITIALLY ===== */
+.card-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease, opacity 0.5s ease;
+    opacity: 0;
+}
+
+.card-content.show {
+    max-height: 1000px;
+    opacity: 1;
+    margin-top: 15px;
+}
+
+/* ===== TABLE ===== */
+.table-box {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    color: white;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+th {
+    background: #00f2ff;
+    color: black;
+}
+
+tr:hover {
+    background: rgba(255,255,255,0.1);
+}/* ===== BODY ===== */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    color: white;
+    overflow-x: hidden;
+    background: #0f2027;
+}
+
+/* ===== VIDEO BACKGROUND ===== */
+.video-bg {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -3;
+    opacity: 0.3;
+}
+
+/* ===== ANIMATED GRADIENT ===== */
+.animated-bg {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(-45deg, #0f2027, #203a43, #2c5364, #1c1c1c);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    z-index: -2;
+}
+
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* ===== FLOATING ORBS ===== */
+.orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.6;
+    animation: float 20s infinite ease-in-out;
+    z-index: -1;
+}
+
+.orb1 {
+    width: 300px;
+    height: 300px;
+    background: #00f2ff;
+    top: 10%;
+    left: 20%;
+}
+
+.orb2 {
+    width: 250px;
+    height: 250px;
+    background: #ff00c8;
+    bottom: 10%;
+    right: 20%;
+}
+
+.orb3 {
+    width: 200px;
+    height: 200px;
+    background: #00ff95;
+    top: 60%;
+    left: 60%;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-80px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+    backdrop-filter: blur(15px);
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.navbar h2 {
+    letter-spacing: 1px;
+}
+
+.nav-buttons button {
+    margin-left: 15px;
+    padding: 8px 18px;
+    border-radius: 20px;
+    border: none;
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.nav-buttons button:hover {
+    transform: scale(1.1);
+    background: #00f2ff;
+    color: black;
+}
+
+.active {
+    background: #00f2ff !important;
+    color: black !important;
+}
+
+/* ===== CONTENT ===== */
+.content {
+    padding: 30px 50px;
+}
+
+.section-title {
+    margin-bottom: 30px;
+}
+
+/* ===== CARD GRID ===== */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px;
+}
+
+/* ===== DATA CARD ===== */
+.data-card {
+    padding: 20px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(15px);
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
+    transition: 0.4s ease;
+    cursor: pointer;
+}
+
+.data-card:hover {
+    transform: translateY(-10px) scale(1.03);
+    box-shadow: 0 0 35px rgba(0, 242, 255, 0.6);
+}
+
+.api-card {
+    border: 2px solid #00f2ff;
+}
+
+/* ===== HIDE DATA INITIALLY ===== */
+.card-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease, opacity 0.5s ease;
+    opacity: 0;
+}
+
+.card-content.show {
+    max-height: 1000px;
+    opacity: 1;
+    margin-top: 15px;
+}
+
+/* ===== TABLE ===== */
+.table-box {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    color: white;
+}
+
+th,
+td {
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+th {
+    background: #00f2ff;
+    color: black;
+}
+
+tr:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+.description {
+    font-size: 14px;
+    opacity: 0.8;
+    margin: 10px 0;
+}
+
+.url {
+    font-size: 13px;
+    color: #00f2ff;
+    margin-bottom: 15px;
+}
+
+.view-btn {
+    display: inline-block;
+    padding: 8px 15px;
+    background: #00f2ff;
+    color: black;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.view-btn:hover {
+    background: white;
+    transform: scale(1.1);
+}
+
+.back-btn {
+    display: inline-block;
+    margin-top: 30px;
+    padding: 10px 20px;
+    background: #ff4b2b;
+    color: white;
+    border-radius: 20px;
+    text-decoration: none;
+}

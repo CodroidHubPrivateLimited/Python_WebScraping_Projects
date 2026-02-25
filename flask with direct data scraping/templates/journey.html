@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Journey</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='landing.css') }}">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 3rem;
+            color: #00ff95;
+            margin-bottom: 30px;
+        }
+        .timeline {
+            text-align: left;
+            margin: 30px 0;
+        }
+        .timeline-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #00f2ff;
+        }
+        .timeline-item h3 {
+            color: #00f2ff;
+            margin-bottom: 10px;
+        }
+        .timeline-item p {
+            font-size: 1rem;
+            line-height: 1.6;
+            opacity: 0.9;
+            margin: 0;
+        }
+        .back-btn {
+            display: inline-block;
+            padding: 12px 30px;
+            margin-top: 20px;
+            background: linear-gradient(45deg, #00f2ff, #00ff95);
+            color: #0f0c29;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+        }
+        .back-btn:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>My Journey</h1>
+        <div class="timeline">
+            <div class="timeline-item">
+                <h3>🚀 Started Learning</h3>
+                <p>Began my journey into programming with Python and fell in love with web development.</p>
+            </div>
+            <div class="timeline-item">
+                <h3>💻 Flask Development</h3>
+                <p>Discovered Flask and started building web applications with this amazing framework.</p>
+            </div>
+            <div class="timeline-item">
+                <h3>🌐 Building Projects</h3>
+                <p>Created multiple projects including this Flask application with beautiful animations.</p>
+            </div>
+            <div class="timeline-item">
+                <h3>🎯 Continuous Growth</h3>
+                <p>Always learning and improving, exploring new technologies and best practices.</p>
+            </div>
+        </div>
+        <a href="{{ url_for('home') }}" class="back-btn">Back to Home</a>
+    </div>
+</body>
+</html>

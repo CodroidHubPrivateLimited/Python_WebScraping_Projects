@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Select Data Type</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='select.css') }}">
+</head>
+
+<body>
+
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="circle c1"></div>
+        <div class="circle c2"></div>
+        <div class="circle c3"></div>
+    </div>
+
+    <div class="container">
+
+        <!-- ✅ Back Button Added -->
+        <a href="{{ url_for('login') }}" class="back-btn">⬅ Back</a>
+
+        <h1 class="title">Choose Data Type</h1>
+        <p class="subtitle">Select how you want to explore your datasets</p>
+
+        <div class="card-wrapper">
+
+            <!-- Static Card -->
+            <div class="select-card">
+                <div class="icon">📁</div>
+                <h2>Static Data</h2>
+                <p>Offline stored CSV datasets from scraping projects</p>
+                <a href="{{ url_for('home_static') }}" class="btn">Explore Static</a>
+            </div>
+
+            <!-- Dynamic Card -->
+            <div class="select-card dynamic">
+                <div class="icon">🌐</div>
+                <h2>Dynamic Data</h2>
+                <p>Real-time API based CSV datasets</p>
+                <a href="{{ url_for('home_api') }}" class="btn">Explore Dynamic</a>
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,128 @@
+/* ===== Body ===== */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+    color: white;
+}
+
+/* ===== Animated Background ===== */
+.animated-bg {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #141e30, #243b55);
+    z-index: -1;
+    overflow: hidden;
+}
+
+.animated-bg span {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: rgba(0, 255, 255, 0.15);
+    border-radius: 50%;
+    backdrop-filter: blur(30px);
+    animation: float 20s infinite ease-in-out;
+}
+
+.animated-bg span:nth-child(1) {
+    top: 10%;
+    left: 20%;
+    animation-duration: 25s;
+}
+
+.animated-bg span:nth-child(2) {
+    top: 60%;
+    left: 70%;
+    animation-duration: 18s;
+}
+
+.animated-bg span:nth-child(3) {
+    top: 40%;
+    left: 40%;
+    animation-duration: 22s;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0px) rotate(0deg) scale(1);
+    }
+
+    50% {
+        transform: translateY(-120px) rotate(180deg) scale(1.2);
+    }
+
+    100% {
+        transform: translateY(0px) rotate(360deg) scale(1);
+    }
+}
+
+/* ===== Back Button ===== */
+.back-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    text-decoration: none;
+    padding: 8px 15px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    color: white;
+    transition: 0.3s;
+}
+
+.back-btn:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+/* ===== Login Container ===== */
+.login-container {
+    width: 350px;
+    padding: 40px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+}
+
+.login-container h2 {
+    margin-bottom: 10px;
+}
+
+.login-container p {
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+/* ===== Input Fields ===== */
+.login-container input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+}
+
+/* ===== Button ===== */
+.login-container button {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    background: #00c6ff;
+    color: black;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.login-container button:hover {
+    background: #00f2ff;
+    transform: scale(1.05);
+}

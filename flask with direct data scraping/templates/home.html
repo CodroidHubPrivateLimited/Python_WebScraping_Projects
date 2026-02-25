@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Modern Data Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+</head>
+
+<body>
+
+    <div class="navbar">
+        <h2>🚀 Data Dashboard</h2>
+    </div>
+
+    <div class="content">
+
+        <h2 class="section-title">📁 Static Data</h2>
+        <div class="card-grid">
+            {% for file in static_files %}
+            <div class="data-card">
+                <h3>{{ file }}</h3>
+
+                <p class="description">
+                    This is static dataset used for offline analysis and testing.
+                </p>
+
+                <p class="url">
+                    🌐 Source: https://example.com/static-data
+                </p>
+
+                <a href="{{ url_for('view_file', data_type='static', filename=file) }}" class="view-btn">
+                    📊 View Data
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+
+
+        <h2 class="section-title">🌐 dynamic Data</h2>
+        <div class="card-grid">
+            {% for file in dynamic_files %}
+            <div class="data-card dynamic-card">
+                <h3>{{ file }}</h3>
+
+                <p class="description">
+                    Live API fetched dataset for real-time analysis.
+                </p>
+
+                <p class="url">
+                    🌐 Source: https://dynamic.example.com/data
+                </p>
+
+                <a href="{{ url_for('view_file', data_type='dynamic', filename=file) }}" class="view-btn">
+                    📊 View Data
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+
+</body>
+
+</html>

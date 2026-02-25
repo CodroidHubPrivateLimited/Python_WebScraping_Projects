@@ -1,0 +1,72 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.container {
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 40px;
+}
+
+.card-container {
+    display: flex;
+    gap: 50px;
+    justify-content: center;
+}
+
+.select-card {
+    width: 250px;
+    padding: 40px;
+    border-radius: 20px;
+    text-decoration: none;
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    transition: 0.4s;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
+}
+
+.select-card:hover {
+    transform: translateY(-15px) scale(1.05);
+    background: #00f2ff;
+    color: black;
+}
+
+.dynamic {
+    border: 2px solid #00f2ff;
+}
+
+.card-wrapper{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    gap: 40px;
+}
+.back-btn {
+    position: absolute;
+    top: 20px;
+    left: 30px;
+    text-decoration: none;
+    padding: 8px 18px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    color: white;
+    transition: 0.3s;
+}
+
+.back-btn:hover {
+    background: #00f2ff;
+    color: black;
+    transform: scale(1.1);
+}

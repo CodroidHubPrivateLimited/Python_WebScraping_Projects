@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>{{ data_type.upper() }} Files</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='files.css') }}">
+</head>
+
+<body>
+
+    <!-- Animated Background -->
+    <div class="animated-bg"></div>
+
+    <div class="page-wrapper">
+        <a href="{{ url_for('select_page') }}" class="back-btn">
+            ⬅ Back
+        </a>
+
+        <h1 class="page-title">
+            📂 {{ data_type.upper() }} Files
+        </h1>
+
+        <div class="card-container">
+
+            {% for file in files %}
+            <div class="file-card">
+                <h3>{{ file.replace('-checkpoint', '') }}</h3>
+
+                <p class="desc">
+                    This dataset contains extracted data stored in CSV format.
+                </p>
+
+                <a href="{{ url_for('view_file', data_type=data_type, filename=file) }}" class="view-btn">
+                    View →
+                </a>
+            </div>
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

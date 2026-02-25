@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <title>dynamic_file</title>
+    </head>
+    <body>
+        <div>
+    <h1>Dynamic Files</h1>
+
+{% for file in files %}
+<div class="card">
+    <h3>{{ file }}</h3>
+
+    <a href="{{ url_for('view_file', data_type='dynamic', filename=file) }}">
+        <button>View Data</button>
+    </a>
+    </div>
+{% endfor %}
+
+<a href="/">⬅ Back</a>
+        </div>
+    </body>
+</html>

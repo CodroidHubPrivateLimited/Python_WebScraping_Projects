@@ -4,6 +4,5 @@ mysql-connector-python
 requests
 beautifulsoup4
 logging
-os
 datetime
 sys

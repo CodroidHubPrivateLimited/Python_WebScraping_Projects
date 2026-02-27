@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Training Feedback</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='landing.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            overflow-y: auto;
+            cursor: auto;
+        }
+        
+        .cursor-follower,
+        .cursor-ring {
+            display: none;
+        }
+
+        .feedback-container {
+            position: relative;
+            z-index: 10;
+            max-width: 800px;
+            margin: 120px auto 50px;
+            padding: 40px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .feedback-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .feedback-header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(90deg, #00c8ff, #ff0080, #00ff96);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .feedback-subtitle {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            letter-spacing: 2px;
+        }
+
+        .trainee-info {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0, 200, 255, 0.1);
+            border-radius: 15px;
+            border: 1px solid rgba(0, 200, 255, 0.3);
+        }
+
+        .trainee-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .trainee-role {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            color: #00c8ff;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .mentor-section {
+            margin-top: 30px;
+        }
+
+        .mentor-label {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .mentor-feedback {
+            background: linear-gradient(135deg, rgba(255,0,128,0.1) 0%, rgba(0,200,255,0.1) 100%);
+            padding: 30px;
+            border-radius: 15px;
+            border-left: 4px solid #ff0080;
+        }
+
+        .mentor-quote {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.8;
+            font-style: italic;
+        }
+
+        .mentor-info {
+            margin-top: 25px;
+            text-align: right;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mentor-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #00ff96;
+        }
+
+        .mentor-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 5px;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 25px;
+            left: 25px;
+            z-index: 100;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 25px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(10px);
+        }
+
+        .back-link:hover {
+            color: #fff;
+            border-color: rgba(0, 200, 255, 0.6);
+            box-shadow: 0 0 20px rgba(0, 200, 255, 0.3);
+            transform: translateY(-3px) scale(1.05);
+        }
+
+        .back-link svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .feedback-container {
+                margin: 100px 20px 30px;
+                padding: 25px;
+            }
+
+            .feedback-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .trainee-name {
+                font-size: 1.4rem;
+            }
+
+            .mentor-quote {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Cosmic Starfield Background -->
+    <div class="cosmic-bg">
+        <div class="stars"></div>
+        <div class="stars stars-2"></div>
+        <div class="stars stars-3"></div>
+        <div class="nebula nebula-1"></div>
+        <div class="nebula nebula-2"></div>
+        <div class="nebula nebula-3"></div>
+    </div>
+
+    <!-- Back Button -->
+    <div class="back-btn">
+        <a href="{{ url_for('index') }}" class="back-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            Back
+        </a>
+    </div>
+
+    <div class="feedback-container">
+        <div class="feedback-header">
+            <h1>My Training Experience</h1>
+            <p class="feedback-subtitle">Training Feedback</p>
+        </div>
+
+        <div class="trainee-info">
+            <h2 class="trainee-name">Vishal Sachdeva</h2>
+            <p class="trainee-role">AI/ML Trainee</p>
+        </div>
+
+        <div class="mentor-section">
+            <p class="mentor-label">Mentor's Evaluation</p>
+            <div class="mentor-feedback">
+                <p class="mentor-quote">
+                    "Anant Sir has been an exceptional mentor throughout my learning journey. His clear explanations, practical guidance, and constant encouragement helped me strengthen my understanding of machine learning concepts and real-world implementation. He always motivated me to think critically, explore beyond the syllabus, and improve my problem-solving skills.
+                    <br><br>
+                    I am truly grateful for his support, patience, and valuable feedback during this mentorship. Thank you, Anant Sir, for your guidance and inspiration — it made a significant difference in my AI/ML learning experience."
+                </p>
+                <div class="mentor-info">
+                    <p class="mentor-name">vishal sachdeva</p>
+                    <p class="mentor-title">AI and ML Engineer, CodroidHub</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

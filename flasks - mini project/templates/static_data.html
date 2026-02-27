@@ -1,0 +1,21 @@
+<html>
+<head>
+    <title>static_file</title>
+</head>
+<body>
+    <div>
+<h1>Static Files</h1>
+
+{% for file in files %}
+<div class="card">
+    <h3>{{ file }}</h3>
+
+    <a href="{{ url_for('view_file', data_type='static', filename=file) }}">
+        <button>View Data</button>
+    </a>
+</div>
+{% endfor %}
+<a href="/">⬅ Back</a>
+    </div>
+</body>
+</html>

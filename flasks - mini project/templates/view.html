@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ filename }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='view.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Cosmic Starfield Background (from landing page) -->
+    <div class="cosmic-bg">
+        <div class="stars"></div>
+        <div class="stars stars-2"></div>
+        <div class="stars stars-3"></div>
+        
+        <!-- Nebula Clouds -->
+        <div class="nebula nebula-1"></div>
+        <div class="nebula nebula-2"></div>
+        <div class="nebula nebula-3"></div>
+        
+        <!-- Floating Cosmic Dust -->
+        <div class="dust"></div>
+        <div class="dust"></div>
+        <div class="dust"></div>
+    </div>
+
+    <!-- Particle System -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Mouse Follower -->
+    <div class="cursor-follower"></div>
+    <div class="cursor-ring"></div>
+
+    <div class="view-container">
+        <h1 class="page-title">{{ filename.replace('.csv', '') }}</h1>
+
+        <!-- Table Card -->
+        <div class="table-card">
+            <div class="table-box">
+                {% if table %}
+                {{ table|safe }}
+                {% else %}
+                <p class="no-data">No data available.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Buttons Container -->
+        <div class="button-group">
+            <a href="{{ url_for('download_file', data_type=data_type, filename=filename) }}" class="export-btn">
+                Export CSV
+            </a>
+        
+            <a href="{{ url_for('home_static') if data_type == 'static' else url_for('home_api') }}" class="back-btn">
+                ⬅ Back
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Create dynamic particles
+        const particlesContainer = document.getElementById('particles');
+        const particleCount = 25;
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 5 + 's';
+            particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            particlesContainer.appendChild(particle);
+        }
+
+        // Mouse follower effect
+        const cursorFollower = document.querySelector('.cursor-follower');
+        const cursorRing = document.querySelector('.cursor-ring');
+
+        document.addEventListener('mousemove', (e) => {
+            cursorFollower.style.left = e.clientX + 'px';
+            cursorFollower.style.top = e.clientY + 'px';
+            
+            setTimeout(() => {
+                cursorRing.style.left = e.clientX + 'px';
+                cursorRing.style.top = e.clientY + 'px';
+            }, 100);
+        });
+    </script>
+
+</body>
+
+</html>

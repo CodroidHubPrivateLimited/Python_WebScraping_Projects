@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Data Scraper</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='light-3d.css') }}">
+    <style>
+        /* Override styles for login page */
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .login-container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 420px;
+            padding: 20px;
+        }
+        
+        .login-box {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 45px 35px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.1),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+        }
+        
+        .gradient-text {
+            font-size: 2rem;
+            text-align: center;
+            background: linear-gradient(45deg, #3182ce, #ed64a6, #38a169);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientMove 6s infinite linear;
+            margin-bottom: 10px;
+        }
+        
+        @keyframes gradientMove {
+            0% { background-position: 0% }
+            50% { background-position: 100% }
+            100% { background-position: 0% }
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #4a5568;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+        
+        .error-message {
+            background: rgba(255, 82, 82, 0.2);
+            border: 1px solid rgba(255, 82, 82, 0.5);
+            color: #c53030;
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2d3748;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 1px solid rgba(49, 130, 206, 0.3);
+            background: rgba(255, 255, 255, 0.5);
+            color: #1a202c;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        
+        .input-group input::placeholder {
+            color: #718096;
+        }
+        
+        .input-group input:focus {
+            border-color: #3182ce;
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 20px rgba(49, 130, 206, 0.2);
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(45deg, #3182ce, #ed64a6);
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(49, 130, 206, 0.4);
+        }
+        
+        .footer-links {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(49, 130, 206, 0.2);
+        }
+        
+        .footer-links p {
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+        
+        .footer-links a {
+            color: #3182ce;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: #38a169;
+            text-shadow: 0 0 15px rgba(49, 130, 206, 0.5);
+        }
+        
+        @media (max-width: 480px) {
+            .login-box {
+                padding: 35px 25px;
+            }
+            
+            .gradient-text {
+                font-size: 1.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Light 3D Background -->
+    <div class="light-bg">
+        <div class="gradient-mesh"></div>
+        <div class="orbs">
+            <div class="orb orb-1"></div>
+            <div class="orb orb-2"></div>
+            <div class="orb orb-3"></div>
+            <div class="orb orb-4"></div>
+        </div>
+        <div class="shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+        </div>
+        <div class="bubbles">
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+            <div class="bubble"></div>
+        </div>
+        <div class="particles-light">
+            <div class="particle-light"></div>
+            <div class="particle-light"></div>
+            <div class="particle-light"></div>
+            <div class="particle-light"></div>
+            <div class="particle-light"></div>
+            <div class="particle-light"></div>
+            <div class="particle-light"></div>
+            <div class="particle-light"></div>
+            <div class="particle-light"></div>
+            <div class="particle-light"></div>
+        </div>
+        <div class="grid-pattern"></div>
+        <div class="rays"></div>
+    </div>
+
+    <div class="login-container">
+        <div class="login-box">
+            <h1 class="gradient-text">Welcome Back</h1>
+            <p class="subtitle">Sign in to continue to Data Scraper</p>
+            
+            {% if error %}
+            <div class="error-message">
+                {{ error }}
+            </div>
+            {% endif %}
+            
+            <form method="POST" action="{{ url_for('login') }}">
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+                
+                <button type="submit" class="login-btn">Login</button>
+            </form>
+            
+            <div class="footer-links">
+                <p>Don't have an account? <a href="{{ url_for('signup') }}">Sign up</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

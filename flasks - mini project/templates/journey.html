@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Project Lifecycle</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='journey.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Background -->
+    <div class="bg-container">
+        <div class="bg-gradient"></div>
+        <div class="floating-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+        </div>
+    </div>
+    
+    <!-- Grid Floor -->
+    <div class="grid-floor"></div>
+    
+    <!-- Floating Orbs -->
+    <div class="orb-container">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+    
+    <!-- Particles -->
+    <div class="particles">
+        <div class="particle" style="left: 10%;"></div>
+        <div class="particle" style="left: 20%;"></div>
+        <div class="particle" style="left: 35%;"></div>
+        <div class="particle" style="left: 50%;"></div>
+        <div class="particle" style="left: 65%;"></div>
+        <div class="particle" style="left: 80%;"></div>
+        <div class="particle" style="left: 90%;"></div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-buttons">
+        <a href="{{ url_for('index') }}" class="nav-btn">Home</a>
+        <a href="{{ url_for('about') }}" class="nav-btn">About</a>
+    </div>
+
+    <div class="container">
+        <!-- Title Section -->
+        <div class="title-section">
+            <h1 class="main-title">AI Project Lifecycle</h1>
+            <p class="subtitle">From Idea to Production</p>
+        </div>
+
+        <!-- Timeline -->
+        <div class="timeline">
+            
+            <!-- Stage 1: Problem Scoping -->
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <a href="{{ url_for('problem_scoping') }}" class="timeline-card-link">
+                        <div class="timeline-card" style="--card-color: #00c8ff; --card-glow: rgba(0, 200, 255, 0.3);">
+                            <span class="card-number">01</span>
+                            <span class="card-icon">🎯</span>
+                            <h3>Problem Scoping</h3>
+                            <p>This initial phase is about understanding the 'why'. We define the business objective and establish success metrics to ensure the AI solution aligns perfectly with the end goal.</p>
+                            <span class="click-hint">Click to explore →</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="timeline-dot"></div>
+            </div>
+
+            <!-- Stage 2: Data Acquisition -->
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <a href="{{ url_for('select_page') }}" class="timeline-card-link">
+                        <div class="timeline-card" style="--card-color: #00ff96; --card-glow: rgba(0, 255, 150, 0.3);">
+                            <span class="card-number">02</span>
+                            <span class="card-icon">📊</span>
+                            <h3>Data Acquisition</h3>
+                            <p>Once the problem is defined, we identify and gather the necessary raw data. This can involve querying databases, connecting to APIs, or scraping information from the web.</p>
+                            <span class="click-hint">Click to explore →</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="timeline-dot"></div>
+            </div>
+
+            <!-- Stage 3: Data Exploration & Preprocessing -->
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <a href="{{ url_for('data_exploration') }}" class="timeline-card-link">
+                        <div class="timeline-card" style="--card-color: #ff0080; --card-glow: rgba(255, 0, 128, 0.3);">
+                            <span class="card-number">03</span>
+                            <span class="card-icon">🔧</span>
+                            <h3>Data Exploration & Preprocessing</h3>
+                            <p>The most time-consuming stage, where raw data is transformed into a usable format. It involves EDA, handling missing values, cleaning inconsistencies, and structuring data.</p>
+                            <span class="click-hint">Click to explore →</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="timeline-dot"></div>
+            </div>
+
+            <!-- Stage 4: Modeling & Evaluation -->
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-card" style="--card-color: #ff9500; --card-glow: rgba(255, 149, 0, 0.3);">
+                        <span class="card-number">04</span>
+                        <span class="card-icon">🧠</span>
+                        <h3>Modeling & Evaluation</h3>
+                        <p>Here, we select algorithms, train models, and fine-tune parameters. Each model is rigorously evaluated against metrics to determine which one performs best for the problem.</p>
+                    </div>
+                </div>
+                <div class="timeline-dot"></div>
+            </div>
+
+            <!-- Stage 5: Deployment & Visualization -->
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-card" style="--card-color: #aa00ff; --card-glow: rgba(170, 0, 255, 0.3);">
+                        <span class="card-number">05</span>
+                        <span class="card-icon">🚀</span>
+                        <h3>Deployment & Visualization</h3>
+                        <p>A successful model is one that's put to use. The model is deployed into production, and insights are communicated through interactive dashboards and visualizations.</p>
+                    </div>
+                </div>
+                <div class="timeline-dot"></div>
+            </div>
+
+        </div>
+
+        <!-- Back Button -->
+        <div class="back-container">
+            <a href="{{ url_for('index') }}" class="back-btn">Back to Home</a>
+        </div>
+    </div>
+</body>
+</html>

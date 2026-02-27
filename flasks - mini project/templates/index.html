@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>3D Modern Flask Website</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <!-- Animated Background -->
+    <div class="background">
+        <div class="sphere"></div>
+        <div class="particles">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <!-- Top Right Buttons -->
+    <!-- <div class="top-buttons">
+        <a href="{{ url_for('login') }}" class="btn login-btn">Login</a>
+    </div> -->
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1 class="gradient-text">Welcome to My Flask World 🚀</h1>
+        <p>Creative 3D Animated Modern Website</p>
+        <a href="{{ url_for('login') }}" class="hero-btn">Get Started</a>
+    </div>
+
+</body>
+
+</html>

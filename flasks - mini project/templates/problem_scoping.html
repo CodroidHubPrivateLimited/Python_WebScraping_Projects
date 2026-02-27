@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Problem Scoping - 4Ws Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='journey.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 50%, #0f0f23 100%);
+            min-height: 100vh;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* Background Effects */
+        .bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-gradient {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at 20% 20%, rgba(0, 200, 255, 0.15) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 80%, rgba(0, 255, 150, 0.1) 0%, transparent 50%);
+        }
+
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(0, 200, 255, 0.6);
+            border-radius: 50%;
+            animation: float 15s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
+        }
+
+        /* Navigation */
+        .nav-buttons {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(0, 200, 255, 0.3);
+            border-radius: 25px;
+            color: #00c8ff;
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-btn:hover {
+            background: rgba(0, 200, 255, 0.2);
+            border-color: #00c8ff;
+            box-shadow: 0 0 20px rgba(0, 200, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 100px 20px 50px;
+        }
+
+        /* Title Section */
+        .title-section {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .main-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 48px;
+            font-weight: 700;
+            background: linear-gradient(90deg, #00c8ff, #00ff96, #ff0080);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 10px rgba(0, 200, 255, 0.5)); }
+            to { filter: drop-shadow(0 0 20px rgba(0, 255, 150, 0.5)); }
+        }
+
+        .subtitle {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 24px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 300;
+        }
+
+        /* 4Ws Graph Container */
+        .four-ws-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            height: 500px;
+            margin: 0 auto 60px;
+        }
+
+        /* Center Circle */
+        .center-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, rgba(0, 200, 255, 0.3) 0%, rgba(0, 200, 255, 0.1) 100%);
+            border: 2px solid rgba(0, 200, 255, 0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            color: #00c8ff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 0 30px rgba(0, 200, 255, 0.3),
+                        inset 0 0 30px rgba(0, 200, 255, 0.1);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 30px rgba(0, 200, 255, 0.3), inset 0 0 30px rgba(0, 200, 255, 0.1); }
+            50% { box-shadow: 0 0 50px rgba(0, 200, 255, 0.5), inset 0 0 50px rgba(0, 200, 255, 0.2); }
+        }
+
+        /* W Cards */
+        .w-card {
+            position: absolute;
+            width: 220px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .w-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.05) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .w-card:hover::before {
+            opacity: 1;
+        }
+
+        .w-card:hover {
+            transform: scale(1.05);
+            z-index: 10;
+        }
+
+        /* What - Top */
+        .w-what {
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border-color: #00c8ff;
+            box-shadow: 0 0 20px rgba(0, 200, 255, 0.2);
+        }
+
+        .w-what:hover {
+            box-shadow: 0 0 40px rgba(0, 200, 255, 0.4);
+        }
+
+        /* Why - Right */
+        .w-why {
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%);
+            border-color: #00ff96;
+            box-shadow: 0 0 20px rgba(0, 255, 150, 0.2);
+        }
+
+        .w-why:hover {
+            box-shadow: 0 0 40px rgba(0, 255, 150, 0.4);
+        }
+
+        /* Who - Bottom */
+        .w-who {
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border-color: #ff0080;
+            box-shadow: 0 0 20px rgba(255, 0, 128, 0.2);
+        }
+
+        .w-who:hover {
+            box-shadow: 0 0 40px rgba(255, 0, 128, 0.4);
+        }
+
+        /* Where - Left */
+        .w-where {
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            border-color: #ff9500;
+            box-shadow: 0 0 20px rgba(255, 149, 0, 0.2);
+        }
+
+        .w-where:hover {
+            box-shadow: 0 0 40px rgba(255, 149, 0, 0.4);
+        }
+
+        /* W Card Content */
+        .w-label {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .w-what .w-label { color: #00c8ff; }
+        .w-why .w-label { color: #00ff96; }
+        .w-who .w-label { color: #ff0080; }
+        .w-where .w-label { color: #ff9500; }
+
+        .w-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .w-description {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.5;
+        }
+
+        /* Connection Lines */
+        .connection-line {
+            position: absolute;
+            background: linear-gradient(90deg, transparent, rgba(0, 200, 255, 0.3), transparent);
+            height: 2px;
+            transform-origin: left center;
+        }
+
+        /* Definitions Section */
+        .definitions-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .definition-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .definition-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+        }
+
+        .definition-card.what::before { background: #00c8ff; }
+        .definition-card.why::before { background: #00ff96; }
+        .definition-card.who::before { background: #ff0080; }
+        .definition-card.where::before { background: #ff9500; }
+
+        .definition-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .definition-icon {
+            font-size: 36px;
+            margin-bottom: 15px;
+        }
+
+        .definition-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .definition-card.what .definition-title { color: #00c8ff; }
+        .definition-card.why .definition-title { color: #00ff96; }
+        .definition-card.who .definition-title { color: #ff0080; }
+        .definition-card.where .definition-title { color: #ff9500; }
+
+        .definition-text {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.7;
+        }
+
+        /* Back Button */
+        .back-container {
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, rgba(0, 200, 255, 0.2), rgba(0, 255, 150, 0.2));
+            border: 2px solid #00c8ff;
+            border-radius: 30px;
+            color: #00c8ff;
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: linear-gradient(135deg, rgba(0, 200, 255, 0.4), rgba(0, 255, 150, 0.4));
+            box-shadow: 0 0 30px rgba(0, 200, 255, 0.5);
+            transform: translateY(-3px);
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .four-ws-container {
+                height: auto;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+
+            .center-circle {
+                position: relative;
+                top: auto;
+                left: auto;
+                transform: none;
+                margin: 20px 0;
+            }
+
+            .w-card {
+                position: relative;
+                top: auto !important;
+                left: auto !important;
+                right: auto !important;
+                bottom: auto !important;
+                transform: none !important;
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .main-title {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background -->
+    <div class="bg-container">
+        <div class="bg-gradient"></div>
+        <div class="particles">
+            <div class="particle" style="left: 10%; animation-delay: 0s;"></div>
+            <div class="particle" style="left: 20%; animation-delay: 1s;"></div>
+            <div class="particle" style="left: 30%; animation-delay: 2s;"></div>
+            <div class="particle" style="left: 40%; animation-delay: 3s;"></div>
+            <div class="particle" style="left: 50%; animation-delay: 4s;"></div>
+            <div class="particle" style="left: 60%; animation-delay: 5s;"></div>
+            <div class="particle" style="left: 70%; animation-delay: 6s;"></div>
+            <div class="particle" style="left: 80%; animation-delay: 7s;"></div>
+            <div class="particle" style="left: 90%; animation-delay: 8s;"></div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-buttons">
+        <a href="{{ url_for('index') }}" class="nav-btn">Home</a>
+        <a href="{{ url_for('journey') }}" class="nav-btn">Journey</a>
+    </div>
+
+    <div class="container">
+        <!-- Title Section -->
+        <div class="title-section">
+            <h1 class="main-title">Problem Scoping</h1>
+            <p class="subtitle">Understanding the 4Ws Framework</p>
+        </div>
+
+        <!-- 4Ws Graph -->
+        <div class="four-ws-container">
+            <!-- Center Circle -->
+            <div class="center-circle">AI<br>Project</div>
+
+            <!-- What Card -->
+            <div class="w-card w-what">
+                <div class="w-label">What</div>
+                <div class="w-title">The Problem</div>
+                <div class="w-description">Define the specific problem you want to solve with AI</div>
+            </div>
+
+            <!-- Why Card -->
+            <div class="w-card w-why">
+                <div class="w-label">Why</div>
+                <div class="w-title">The Purpose</div>
+                <div class="w-description">Understand the motivation and business objectives</div>
+            </div>
+
+            <!-- Who Card -->
+            <div class="w-card w-who">
+                <div class="w-label">Who</div>
+                <div class="w-title">The Stakeholders</div>
+                <div class="w-description">Identify who will use and benefit from the solution</div>
+            </div>
+
+            <!-- Where Card -->
+            <div class="w-card w-where">
+                <div class="w-label">Where</div>
+                <div class="w-title">The Context</div>
+                <div class="w-description">Determine the environment and deployment scope</div>
+            </div>
+        </div>
+
+        <!-- Detailed Definitions -->
+        <div class="definitions-section">
+            <!-- What -->
+            <div class="definition-card what">
+                <div class="definition-icon">🎯</div>
+                <div class="definition-title">What</div>
+                <div class="definition-text">
+                    <strong>What is the problem?</strong><br><br>
+                    Clearly define the specific problem or challenge that needs to be solved. This involves understanding:
+                    <ul>
+                        <li>The current pain points in the process</li>
+                        <li>What outcomes are expected</li>
+                        <li>What constraints exist</li>
+                        <li>What success looks like</li>
+                    </ul>
+                    A well-defined problem is half the solution.
+                </div>
+            </div>
+
+            <!-- Why -->
+            <div class="definition-card why">
+                <div class="definition-icon">💡</div>
+                <div class="definition-title">Why</div>
+                <div class="definition-text">
+                    <strong>Why are we solving this?</strong><br><br>
+                    Understand the underlying motivation and business value:
+                    <ul>
+                        <li>What business value will be created</li>
+                        <li>What costs will be reduced</li>
+                        <li>What competitive advantage will be gained</li>
+                        <li>What customer needs will be addressed</li>
+                    </ul>
+                    This helps align the project with strategic goals.
+                </div>
+            </div>
+
+            <!-- Who -->
+            <div class="definition-card who">
+                <div class="definition-icon">👥</div>
+                <div class="definition-title">Who</div>
+                <div class="definition-text">
+                    <strong>Who is involved?</strong><br><br>
+                    Identify all stakeholders and users:
+                    <ul>
+                        <li>End users who will interact with the solution</li>
+                        <li>Business owners and decision makers</li>
+                        <li>Technical teams who will build and maintain</li>
+                        <li>Customers and partners affected by the solution</li>
+                    </ul>
+                    Understanding users is crucial for success.
+                </div>
+            </div>
+
+            <!-- Where -->
+            <div class="definition-card where">
+                <div class="definition-icon">🌍</div>
+                <div class="definition-title">Where</div>
+                <div class="definition-text">
+                    <strong>Where will it be used?</strong><br><br>
+                    Define the context and deployment environment:
+                    <ul>
+                        <li>Physical or digital locations of deployment</li>
+                        <li>Existing systems that need integration</li>
+                        <li>Data sources and availability</li>
+                        <li>Regulatory and compliance requirements</li>
+                    </ul>
+                    Context determines technical requirements.
+                </div>
+            </div>
+        </div>
+
+        <!-- Back Button -->
+        <div class="back-container">
+            <a href="{{ url_for('journey') }}" class="back-btn">← Back to Journey</a>
+        </div>
+    </div>
+</body>
+</html>

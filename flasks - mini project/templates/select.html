@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Data Type</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='select.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Cosmic Starfield Background (from landing page) -->
+    <div class="cosmic-bg">
+        <div class="stars"></div>
+        <div class="stars stars-2"></div>
+        <div class="stars stars-3"></div>
+        
+        <!-- Nebula Clouds -->
+        <div class="nebula nebula-1"></div>
+        <div class="nebula nebula-2"></div>
+        <div class="nebula nebula-3"></div>
+        
+        <!-- Floating Cosmic Dust -->
+        <div class="dust"></div>
+        <div class="dust"></div>
+        <div class="dust"></div>
+    </div>
+
+    <!-- 3D Icosahedron (from landing page) -->
+    <div class="shape-container">
+        <div class="icosahedron">
+            <div class="face"></div>
+            <div class="face"></div>
+            <div class="face"></div>
+            <div class="face"></div>
+            <div class="face"></div>
+            <div class="face"></div>
+            <div class="face"></div>
+            <div class="face"></div>
+            <div class="face"></div>
+            <div class="face"></div>
+            <div class="face"></div>
+            <div class="face"></div>
+            <div class="face"></div>
+            <div class="face"></div>
+            <div class="face"></div>
+            <div class="face"></div>
+            <div class="face"></div>
+            <div class="face"></div>
+            <div class="face"></div>
+            <div class="face"></div>
+        </div>
+        <div class="shape-glow"></div>
+        <div class="shape-ring ring-1"></div>
+        <div class="shape-ring ring-2"></div>
+        <div class="shape-ring ring-3"></div>
+    </div>
+
+    <!-- Particle System -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Mouse Follower -->
+    <div class="cursor-follower"></div>
+    <div class="cursor-ring"></div>
+
+    <div class="container">
+
+        <!-- Back Button -->
+        <a href="{{ url_for('index') }}" class="back-btn">⬅ Back</a>
+
+        <h1 class="title">Choose Data Type</h1>
+        <p class="subtitle">Select how you want to explore your datasets</p>
+
+        <div class="card-wrapper">
+
+            <!-- Static Card -->
+            <div class="select-card">
+                <div class="icon">📁</div>
+                <h2>Static Data</h2>
+                <p>Offline stored CSV datasets from scraping projects</p>
+                <a href="{{ url_for('home_static') }}" class="btn">Explore Static</a>
+            </div>
+
+            <!-- Dynamic Card -->
+            <div class="select-card dynamic">
+                <div class="icon">🌐</div>
+                <h2>Dynamic Data</h2>
+                <p>Real-time API based CSV datasets</p>
+                <a href="{{ url_for('home_api') }}" class="btn">Explore Dynamic</a>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        // Create dynamic particles
+        const particlesContainer = document.getElementById('particles');
+        const particleCount = 30;
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 5 + 's';
+            particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            particlesContainer.appendChild(particle);
+        }
+
+        // Mouse follower effect
+        const cursorFollower = document.querySelector('.cursor-follower');
+        const cursorRing = document.querySelector('.cursor-ring');
+
+        document.addEventListener('mousemove', (e) => {
+            cursorFollower.style.left = e.clientX + 'px';
+            cursorFollower.style.top = e.clientY + 'px';
+            
+            setTimeout(() => {
+                cursorRing.style.left = e.clientX + 'px';
+                cursorRing.style.top = e.clientY + 'px';
+            }, 100);
+        });
+
+        // Parallax effect on mouse move
+        document.addEventListener('mousemove', (e) => {
+            const moveX = (e.clientX - window.innerWidth / 2) * 0.01;
+            const moveY = (e.clientY - window.innerHeight / 2) * 0.01;
+            
+            document.querySelector('.icosahedron').style.transform = 
+                `translate(-50%, -50%) rotateX(${moveY}deg) rotateY(${moveX}deg)`;
+        });
+    </script>
+
+</body>
+
+</html>

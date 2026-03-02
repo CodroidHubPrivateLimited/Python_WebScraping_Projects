@@ -9,7 +9,7 @@ body {
     font-family: 'Rajdhani', sans-serif;
     height: 100vh;
     overflow-x: hidden;
-    background: linear-gradient(135deg, #e8f4f8 0%, #d4e9f7 50%, #e0efff 100%);
+    background: linear-gradient(135deg, #1E1A28 0%, #2b213a 50%, #1E1A28 100%);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -23,7 +23,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #e8f4f8 0%, #d4e9f7 50%, #e0efff 100%);
+    background: linear-gradient(135deg, #1E1A28 0%, #2b213a 50%, #1E1A28 100%);
     z-index: -3;
 }
 
@@ -33,10 +33,10 @@ body {
     width: 100%;
     height: 100%;
     background: 
-        radial-gradient(ellipse at 20% 20%, rgba(120, 200, 255, 0.4) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 20%, rgba(255, 150, 200, 0.3) 0%, transparent 50%),
-        radial-gradient(ellipse at 40% 80%, rgba(150, 255, 200, 0.3) 0%, transparent 50%),
-        radial-gradient(ellipse at 60% 60%, rgba(200, 180, 255, 0.3) 0%, transparent 50%);
+        radial-gradient(ellipse at 20% 20%, rgba(159, 105, 197, 0.35) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(204, 182, 184, 0.25) 0%, transparent 50%),
+        radial-gradient(ellipse at 40% 80%, rgba(130, 126, 156, 0.25) 0%, transparent 50%),
+        radial-gradient(ellipse at 60% 60%, rgba(236, 214, 205, 0.2) 0%, transparent 50%);
     animation: meshMove 15s ease-in-out infinite;
 }
 
@@ -64,7 +64,7 @@ body {
 .orb-1 {
     width: 400px;
     height: 400px;
-    background: radial-gradient(circle, rgba(100, 200, 255, 0.5) 0%, rgba(100, 200, 255, 0.1) 70%);
+    background: radial-gradient(circle, rgba(159, 105, 197, 0.45) 0%, rgba(159, 105, 197, 0.1) 70%);
     top: -100px;
     left: -100px;
     animation-delay: 0s;
@@ -73,7 +73,7 @@ body {
 .orb-2 {
     width: 350px;
     height: 350px;
-    background: radial-gradient(circle, rgba(255, 150, 200, 0.4) 0%, rgba(255, 150, 200, 0.1) 70%);
+    background: radial-gradient(circle, rgba(204, 182, 184, 0.35) 0%, rgba(204, 182, 184, 0.1) 70%);
     top: 50%;
     right: -50px;
     transform: translateY(-50%);
@@ -83,7 +83,7 @@ body {
 .orb-3 {
     width: 300px;
     height: 300px;
-    background: radial-gradient(circle, rgba(150, 255, 200, 0.4) 0%, rgba(150, 255, 200, 0.1) 70%);
+    background: radial-gradient(circle, rgba(130, 126, 156, 0.35) 0%, rgba(130, 126, 156, 0.1) 70%);
     bottom: -50px;
     left: 30%;
     animation-delay: -10s;
@@ -92,7 +92,7 @@ body {
 .orb-4 {
     width: 250px;
     height: 250px;
-    background: radial-gradient(circle, rgba(200, 180, 255, 0.4) 0%, rgba(200, 180, 255, 0.1) 70%);
+    background: radial-gradient(circle, rgba(236, 214, 205, 0.35) 0%, rgba(236, 214, 205, 0.1) 70%);
     top: 30%;
     left: 50%;
     transform: translateX(-50%);
@@ -375,9 +375,9 @@ body {
     padding: 30px;
     border-radius: 20px;
     backdrop-filter: blur(15px);
-    background: rgba(255, 255, 255, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(145deg, rgba(34, 26, 48, 0.88), rgba(26, 20, 38, 0.9));
+    border: 1px solid rgba(201, 146, 255, 0.35);
+    box-shadow: 0 12px 34px rgba(6, 8, 20, 0.45);
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     animation: cardFloat 6s ease-in-out infinite;
 }
@@ -394,11 +394,11 @@ body {
 
 .file-card:hover {
     transform: translateY(-15px) scale(1.05);
-    background: rgba(255, 255, 255, 0.6);
-    border-color: rgba(49, 130, 206, 0.6);
+    background: linear-gradient(145deg, rgba(45, 34, 64, 0.95), rgba(30, 23, 45, 0.95));
+    border-color: rgba(102, 204, 255, 0.65);
     box-shadow: 
-        0 0 30px rgba(49, 130, 206, 0.3),
-        0 0 60px rgba(49, 130, 206, 0.1);
+        0 0 30px rgba(102, 204, 255, 0.25),
+        0 0 65px rgba(201, 146, 255, 0.2);
 }
 
 /* ================= File Name ================= */
@@ -406,14 +406,14 @@ body {
     font-family: 'Orbitron', sans-serif;
     font-size: 1.2rem;
     margin-bottom: 15px;
-    color: #2c5282;
+    color: #f5eaff;
     word-wrap: break-word;
 }
 
 /* ================= Description ================= */
 .desc {
     font-size: 0.95rem;
-    color: #4a5568;
+    color: #d0c6de;
     margin-bottom: 20px;
     line-height: 1.5;
 }
@@ -429,16 +429,16 @@ body {
     text-transform: uppercase;
     letter-spacing: 2px;
     text-decoration: none;
-    background: linear-gradient(135deg, rgba(49, 130, 206, 0.3) 0%, rgba(237, 100, 166, 0.3) 100%);
-    color: #2c5282;
+    background: linear-gradient(135deg, rgba(121, 200, 255, 0.24) 0%, rgba(221, 153, 255, 0.24) 100%);
+    color: #f5eaff;
     transition: all 0.3s ease;
 }
 
 .view-btn:hover {
     transform: scale(1.05);
-    background: linear-gradient(135deg, #3182ce 0%, #ed64a6 100%);
-    color: white;
-    box-shadow: 0 0 20px rgba(49, 130, 206, 0.5);
+    background: linear-gradient(135deg, #57b2ff 0%, #d57bff 100%);
+    color: #ffffff;
+    box-shadow: 0 0 22px rgba(102, 204, 255, 0.45);
 }
 
 /* ================= Back Button ================= */

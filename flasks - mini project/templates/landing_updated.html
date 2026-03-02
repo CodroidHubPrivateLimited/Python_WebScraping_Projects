@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vishal Sachdeva - Premium 3D Experience</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='landing.css') }}">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Design Tokens (CSS Variables) -->
+    <style>
+        :root {
+            /* Color Palette */
+            --color-primary: #1E1A28;
+            --color-accent: #9F69C5;
+            --color-secondary: #CCB6B8;
+            --color-light: #ECD6CD;
+            --color-muted: #827E9C;
+            
+            /* Semantic Colors */
+            --bg-dark: #1E1A28;
+            --bg-card: rgba(159, 105, 197, 0.1);
+            --text-primary: #ECD6CD;
+            --text-secondary: #CCB6B8;
+            --text-muted: #827E9C;
+            --accent-primary: #9F69C5;
+            --accent-glow: rgba(159, 105, 197, 0.5);
+            --accent-glow-strong: rgba(159, 105, 197, 0.8);
+            
+            /* Typography */
+            --font-heading: 'Space Grotesk', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            
+            /* Spacing */
+            --space-xs: 0.5rem;
+            --space-sm: 1rem;
+            --space-md: 2rem;
+            --space-lg: 4rem;
+            --space-xl: 8rem;
+            
+            /* Transitions */
+            --transition-fast: 0.2s ease;
+            --transition-medium: 0.4s ease;
+            --transition-slow: 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            
+            /* Glass Effect */
+            --glass-bg: rgba(159, 105, 197, 0.08);
+            --glass-border: rgba(159, 105, 197, 0.2);
+            --glass-blur: blur(20px);
+        }
+    </style>
+
+    <!-- Background Layer -->
+    <div class="background-layer">
+        <!-- Video Background -->
+        <div class="video-background">
+            <video autoplay muted loop playsinline id="bgVideo">
+                <source src="{{ url_for('static', filename='background.mp4') }}" type="video/mp4">
+            </video>
+            <div class="video-overlay"></div>
+        </div>
+        
+        <!-- 3D Interactive Scene -->
+        <div class="scene-3d" id="scene3d">
+            <!-- Floating Glass Panels -->
+            <div class="glass-panel panel-1" data-speed="0.5"></div>
+            <div class="glass-panel panel-2" data-speed="0.3"></div>
+            <div class="glass-panel panel-3" data-speed="0.7"></div>
+            <div class="glass-panel panel-4" data-speed="0.4"></div>
+            
+            <!-- Glowing Spheres -->
+            <div class="glowing-sphere sphere-1"></div>
+            <div class="glowing-sphere sphere-2"></div>
+            <div class="glowing-sphere sphere-3"></div>
+            
+            <!-- Particle Field -->
+            <div class="particle-field" id="particleField"></div>
+            
+            <!-- Rotating Ring -->
+            <div class="rotating-ring ring-outer">
+                <div class="ring-segment"></div>
+                <div class="ring-segment"></div>
+                <div class="ring-segment"></div>
+                <div class="ring-segment"></div>
+            </div>
+            <div class="rotating-ring ring-inner"></div>
+        </div>
+        
+        <!-- Gradient Orbs -->
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- Audio Element -->
+    <audio id="backgroundAudio" loop>
+        <source src="{{ url_for('static', filename='melodyloops-preview-clean-corporate-2m30s.mp3') }}" type="audio/mpeg">
+    </audio>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="{{ url_for('about') }}" class="brand">
+            <span class="brand-text">VS</span>
+        </a>
+        
+        <div class="nav-links">
+            <a href="{{ url_for('about') }}" class="nav-link">About</a>
+            <a href="{{ url_for('journey') }}" class="nav-link">Journey</a>
+            <a href="{{ url_for('select_page') }}" class="nav-link">Projects</a>
+            <a href="{{ url_for('feedback') }}" class="nav-link">Feedback</a>
+        </div>
+        
+        <div class="nav-actions">
+            <!-- Sound Toggle Button -->
+            <button class="sound-toggle" id="soundToggle" aria-label="Toggle Sound">
+                <span class="sound-icon sound-on">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                    </svg>
+                </span>
+                <span class="sound-icon sound-off">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+                        <line x1="23" y1="9" x2="17" y2="15"/>
+                        <line x1="17" y1="9" x2="23" y2="15"/>
+                    </svg>
+                </span>
+                <span class="sound-wave"></span>
+                <span class="sound-wave"></span>
+                <span class="sound-wave"></span>
+            </button>
+            
+            <a href="https://www.linkedin.com/in/vishalsachdeva9511/" target="_blank" class="social-link">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            </a>
+            <a href="https://github.com/Vishalsachdeva2005" target="_blank" class="social-link">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.199-6.589 8.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="hero-content">
+            <div class="hero-badge animate-fade-in">
+                <span class="badge-dot"></span>
+                Available for projects
+            </div>
+            
+            <h1 class="hero-title">
+                <span class="title-line animate-slide-up" style="animation-delay: 0.1s">Crafting</span>
+                <span class="title-line accent animate-slide-up" style="animation-delay: 0.2s">Digital</span>
+                <span class="title-line animate-slide-up" style="animation-delay: 0.3s">Experiences</span>
+            </h1>
+            
+            <p class="hero-description animate-slide-up" style="animation-delay: 0.4s">
+                Full-stack developer & data enthusiast transforming ideas into 
+                elegant, performant solutions with creative flair.
+            </p>
+            
+            <div class="hero-cta animate-slide-up" style="animation-delay: 0.5s">
+                <a href="{{ url_for('select_page') }}" class="btn-primary">
+                    <span>View Projects</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
+                <a href="{{ url_for('about') }}" class="btn-secondary">
+                    <span>Learn More</span>
+                </a>
+            </div>
+            
+            <div class="hero-stats animate-fade-in" style="animation-delay: 0.8s">
+                <div class="stat-item">
+                    <span class="stat-number" data-target="5">0</span>
+                    <span class="stat-label">Years Experience</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-number" data-target="50">0</span>
+                    <span class="stat-label">Projects Completed</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-number" data-target="20">0</span>
+                    <span class="stat-label">Happy Clients</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Scroll Indicator -->
+        <div class="scroll-indicator animate-fade-in" style="animation-delay: 1s">
+            <span>Scroll to explore</span>
+            <div class="scroll-mouse">
+                <div class="scroll-wheel"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="section-container">
+            <div class="section-header animate-on-scroll">
+                <span class="section-tag">What I Do</span>
+                <h2 class="section-title">Building <span class="accent">Solutions</span> That Matter</h2>
+                <p class="section-description">
+                    Transforming complex challenges into elegant, user-centric applications
+                </p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card animate-on-scroll" style="animation-delay: 0.1s">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Full-Stack Development</h3>
+                    <p class="feature-description">
+                        Building scalable web applications from database design to intuitive user interfaces
+                    </p>
+                    <div class="feature-glow"></div>
+                </div>
+                
+                <div class="feature-card animate-on-scroll" style="animation-delay: 0.2s">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                            <line x1="12" y1="22.08" x2="12" y2="12"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Data Engineering</h3>
+                    <p class="feature-description">
+                        Designing efficient data pipelines and transforming raw data into actionable insights
+                    </p>
+                    <div class="feature-glow"></div>
+                </div>
+                
+                <div class="feature-card animate-on-scroll" style="animation-delay: 0.3s">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">UI/UX Design</h3>
+                    <p class="feature-description">
+                        Creating beautiful, intuitive interfaces that delight users and enhance engagement
+                    </p>
+                    <div class="feature-glow"></div>
+                </div>
+                
+                <div class="feature-card animate-on-scroll" style="animation-delay: 0.4s">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Performance Optimization</h3>
+                    <p class="feature-description">
+                        Fine-tuning applications for lightning-fast load times and smooth interactions
+                    </p>
+                    <div class="feature-glow"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats" id="stats">
+        <div class="stats-bg-glow"></div>
+        <div class="section-container">
+            <div class="stats-grid">
+                <div class="stat-card animate-on-scroll" style="animation-delay: 0s">
+                    <span class="stat-icon">🚀</span>
+                    <span class="stat-value" data-target="50">0</span>
+                    <span class="stat-name">Projects Delivered</span>
+                </div>
+                
+                <div class="stat-card animate-on-scroll" style="animation-delay: 0.1s">
+                    <span class="stat-icon">⭐</span>
+                    <span class="stat-value" data-target="100">0</span>
+                    <span class="stat-name">Client Satisfaction</span>
+                </div>
+                
+                <div class="stat-card animate-on-scroll" style="animation-delay: 0.2s">
+                    <span class="stat-icon">💻</span>
+                    <span class="stat-value" data-target="10000">0</span>
+                    <span class="stat-name">Hours Coded</span>
+                </div>
+                
+                <div class="stat-card animate-on-scroll" style="animation-delay: 0.3s">
+                    <span class="stat-icon">🎯</span>
+                    <span class="stat-value" data-target="15">0</span>
+                    <span class="stat-name">Technologies</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta" id="cta">
+        <div class="section-container">
+            <div class="cta-content animate-on-scroll">
+                <h2 class="cta-title">Let's Build Something <span class="accent">Amazing</span> Together</h2>
+                <p class="cta-description">
+                    Have a project in mind? I'd love to hear about it. Let's discuss how we can bring your vision to life.
+                </p>
+                <div class="cta-buttons">
+                    <a href="{{ url_for('select_page') }}" class="btn-primary btn-large">
+                        <span>Start a Project</span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                    <a href="https://www.linkedin.com/in/vishalsachdeva9511/" target="_blank" class="btn-secondary btn-large">
+                        <span>Get in Touch</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="cta-glow"></div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="section-container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <a href="{{ url_for('about') }}" class="brand">
+                        <span class="brand-text">Vishal Sachdeva</span>
+                    </a>
+                    <p class="footer-tagline">Building digital experiences that matter</p>
+                </div>
+                
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Navigation</h4>
+                        <a href="{{ url_for('about') }}">About</a>
+                        <a href="{{ url_for('journey') }}">Journey</a>
+                        <a href="{{ url_for('select_page') }}">Projects</a>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h4>Connect</h4>
+                        <a href="https://www.linkedin.com/in/vishalsachdeva9511/" target="_blank">LinkedIn</a>
+                        <a href="https://github.com/Vishalsachdeva2005" target="_blank">GitHub</a>
+                        <a href="{{ url_for('feedback') }}">Feedback</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 Vishal Sachdeva. Crafted with passion.</p>
+                <div class="footer-social">
+                    <a href="https://www.linkedin.com/in/vishalsachdeva9511/" target="_blank">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                    </a>
+                    <a href="https://github.com/Vishalsachdeva2005" target="_blank">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.199-6.589 8.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Create particles for 3D scene
+        const particleField = document.getElementById('particleField');
+        const particleCount = 80;
+        
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 5 + 's';
+            particle.style.animationDuration = (Math.random() * 3 + 4) + 's';
+            particleField.appendChild(particle);
+        }
+        
+        // Parallax effect on mouse move
+        const scene3d = document.getElementById('scene3d');
+        const glassPanels = document.querySelectorAll('.glass-panel');
+        
+        document.addEventListener('mousemove', (e) => {
+            const moveX = (e.clientX - window.innerWidth / 2) * 0.02;
+            const moveY = (e.clientY - window.innerHeight / 2) * 0.02;
+            
+            // Move 3D scene
+            scene3d.style.transform = 'perspective(1000px) rotateY(' + moveX + 'deg) rotateX(' + (-moveY) + 'deg)';
+            
+            // Move glass panels with different speeds
+            glassPanels.forEach(panel => {
+                const speed = parseFloat(panel.dataset.speed) || 0.5;
+                panel.style.transform = 'translate(' + (moveX * speed * 20) + 'px, ' + (-moveY * speed * 20) + 'px)';
+            });
+        });
+        
+        // Animated counter function
+        function animateCounter(element, target, duration) {
+            duration = duration || 2000;
+            let start = 0;
+            const increment = target / (duration / 16);
+            
+            const timer = setInterval(function() {
+                start += increment;
+                if (start >= target) {
+                    element.textContent = target + '+';
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(start);
+                }
+            }, 16);
+        }
+        
+        // Intersection Observer for scroll animations and counters
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const scrollObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    
+                    // If it's a counter element, animate it
+                    if (entry.target.classList.contains('stat-number') || entry.target.classList.contains('stat-value')) {
+                        const target = parseInt(entry.target.dataset.target);
+                        if (!entry.target.classList.contains('counted')) {
+                            entry.target.classList.add('counted');
+                            animateCounter(entry.target, target);
+                        }
+                    }
+                    
+                    scrollObserver.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        
+        // Observe elements for scroll animation
+        document.querySelectorAll('.animate-on-scroll').forEach(function(el) {
+            scrollObserver.observe(el);
+        });
+        
+        // Observe counter elements
+        document.querySelectorAll('.stat-number, .stat-value').forEach(function(el) {
+            scrollObserver.observe(el);
+        });
+        
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+        
+        // Sound Toggle Functionality
+        const soundToggle = document.getElementById('soundToggle');
+        const backgroundAudio = document.getElementById('backgroundAudio');
+        
+        // Initialize with sound off (muted class)
+        soundToggle.classList.add('muted');
+        
+        soundToggle.addEventListener('click', function() {
+            if (backgroundAudio.paused) {
+                backgroundAudio.play().catch(function(error) {
+                    console.log('Audio autoplay was prevented:', error);
+                });
+                soundToggle.classList.remove('muted');
+            } else {
+                backgroundAudio.pause();
+                soundToggle.classList.add('muted');
+            }
+        });
+    </script>
+</body>
+
+</html>

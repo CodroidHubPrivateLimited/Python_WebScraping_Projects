@@ -6,26 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Select Data Type</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='select.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
+    {% include '_page_nav.html' %}
 
-    <!-- Cosmic Starfield Background (from landing page) -->
-    <div class="cosmic-bg">
-        <div class="stars"></div>
-        <div class="stars stars-2"></div>
-        <div class="stars stars-3"></div>
-        
-        <!-- Nebula Clouds -->
-        <div class="nebula nebula-1"></div>
-        <div class="nebula nebula-2"></div>
-        <div class="nebula nebula-3"></div>
-        
-        <!-- Floating Cosmic Dust -->
-        <div class="dust"></div>
-        <div class="dust"></div>
-        <div class="dust"></div>
+    <!-- Landing-style Background -->
+    <div class="background-layer">
+        <div class="video-background">
+            <video autoplay muted loop playsinline>
+                <source src="{{ url_for('static', filename='background.mp4') }}" type="video/mp4">
+            </video>
+            <div class="video-overlay"></div>
+        </div>
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
     </div>
 
     <!-- 3D Icosahedron (from landing page) -->
@@ -91,6 +87,14 @@
                 <a href="{{ url_for('home_api') }}" class="btn">Explore Dynamic</a>
             </div>
 
+            <!-- API Card -->
+            <div class="select-card dynamic">
+                <div class="icon">🔌</div>
+                <h2>API Data</h2>
+                <p>Access API-driven datasets and live responses</p>
+                <a href="{{ url_for('api_page') }}" class="btn">Explore API</a>
+            </div>
+
         </div>
 
     </div>
@@ -137,3 +141,4 @@
 </body>
 
 </html>
+

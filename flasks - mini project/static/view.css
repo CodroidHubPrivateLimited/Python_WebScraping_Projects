@@ -9,7 +9,7 @@ body {
     font-family: 'Rajdhani', sans-serif;
     height: 100vh;
     overflow-x: hidden;
-    background: linear-gradient(135deg, #e8f4f8 0%, #d4e9f7 50%, #e0efff 100%);
+    background: linear-gradient(135deg, #1E1A28 0%, #2b213a 50%, #1E1A28 100%);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -23,7 +23,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #e8f4f8 0%, #d4e9f7 50%, #e0efff 100%);
+    background: linear-gradient(135deg, #1E1A28 0%, #2b213a 50%, #1E1A28 100%);
     z-index: -3;
 }
 
@@ -33,10 +33,10 @@ body {
     width: 100%;
     height: 100%;
     background: 
-        radial-gradient(ellipse at 20% 20%, rgba(120, 200, 255, 0.4) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 20%, rgba(255, 150, 200, 0.3) 0%, transparent 50%),
-        radial-gradient(ellipse at 40% 80%, rgba(150, 255, 200, 0.3) 0%, transparent 50%),
-        radial-gradient(ellipse at 60% 60%, rgba(200, 180, 255, 0.3) 0%, transparent 50%);
+        radial-gradient(ellipse at 20% 20%, rgba(159, 105, 197, 0.35) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(204, 182, 184, 0.25) 0%, transparent 50%),
+        radial-gradient(ellipse at 40% 80%, rgba(130, 126, 156, 0.25) 0%, transparent 50%),
+        radial-gradient(ellipse at 60% 60%, rgba(236, 214, 205, 0.2) 0%, transparent 50%);
     animation: meshMove 15s ease-in-out infinite;
 }
 
@@ -64,7 +64,7 @@ body {
 .orb-1 {
     width: 400px;
     height: 400px;
-    background: radial-gradient(circle, rgba(100, 200, 255, 0.5) 0%, rgba(100, 200, 255, 0.1) 70%);
+    background: radial-gradient(circle, rgba(159, 105, 197, 0.45) 0%, rgba(159, 105, 197, 0.1) 70%);
     top: -100px;
     left: -100px;
     animation-delay: 0s;
@@ -73,7 +73,7 @@ body {
 .orb-2 {
     width: 350px;
     height: 350px;
-    background: radial-gradient(circle, rgba(255, 150, 200, 0.4) 0%, rgba(255, 150, 200, 0.1) 70%);
+    background: radial-gradient(circle, rgba(204, 182, 184, 0.35) 0%, rgba(204, 182, 184, 0.1) 70%);
     top: 50%;
     right: -50px;
     transform: translateY(-50%);
@@ -83,7 +83,7 @@ body {
 .orb-3 {
     width: 300px;
     height: 300px;
-    background: radial-gradient(circle, rgba(150, 255, 200, 0.4) 0%, rgba(150, 255, 200, 0.1) 70%);
+    background: radial-gradient(circle, rgba(130, 126, 156, 0.35) 0%, rgba(130, 126, 156, 0.1) 70%);
     bottom: -50px;
     left: 30%;
     animation-delay: -10s;
@@ -92,7 +92,7 @@ body {
 .orb-4 {
     width: 250px;
     height: 250px;
-    background: radial-gradient(circle, rgba(200, 180, 255, 0.4) 0%, rgba(200, 180, 255, 0.1) 70%);
+    background: radial-gradient(circle, rgba(236, 214, 205, 0.35) 0%, rgba(236, 214, 205, 0.1) 70%);
     top: 30%;
     left: 50%;
     transform: translateX(-50%);
@@ -365,15 +365,15 @@ body {
 
 /* ================= Table Card ================= */
 .table-card {
-    background: rgba(255, 255, 255, 0.4);
+    background: linear-gradient(145deg, rgba(31, 24, 45, 0.9), rgba(22, 18, 34, 0.92));
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-radius: 20px;
     padding: 25px;
-    border: 1px solid rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(180, 130, 255, 0.35);
     box-shadow: 
-        0 15px 40px rgba(0, 0, 0, 0.1),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+        0 15px 40px rgba(0, 0, 0, 0.35),
+        inset 0 0 0 1px rgba(200, 170, 255, 0.12);
     transition: all 0.4s ease;
     animation: cardFloat 6s ease-in-out infinite;
 }
@@ -395,6 +395,7 @@ body {
 .table-box {
     overflow-x: auto;
     border-radius: 10px;
+    border: 1px solid rgba(120, 175, 255, 0.25);
 }
 
 /* ===== Table Styling ===== */
@@ -407,7 +408,7 @@ table {
 th,
 td {
     padding: 12px 15px;
-    border: 1px solid rgba(49, 130, 206, 0.2);
+    border: 1px solid rgba(120, 175, 255, 0.2);
     text-align: center;
 }
 
@@ -415,24 +416,29 @@ th {
     font-family: 'Orbitron', sans-serif;
     font-size: 0.9rem;
     font-weight: 600;
-    background: linear-gradient(90deg, rgba(49, 130, 206, 0.3) 0%, rgba(237, 100, 166, 0.3) 100%);
-    color: #2c5282;
+    background: linear-gradient(90deg, rgba(86, 176, 255, 0.35) 0%, rgba(212, 123, 255, 0.35) 100%);
+    color: #f5eaff;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
 
 th:hover {
-    background: linear-gradient(90deg, #3182ce 0%, #ed64a6 100%);
-    color: white;
+    background: linear-gradient(90deg, rgba(86, 176, 255, 0.55) 0%, rgba(212, 123, 255, 0.55) 100%);
+    color: #ffffff;
 }
 
 td {
     font-size: 0.9rem;
-    color: #2d3748;
+    color: #e4dcf5;
+    background: rgba(20, 17, 31, 0.55);
+}
+
+tr:nth-child(even) td {
+    background: rgba(28, 22, 42, 0.62);
 }
 
 tr:hover {
-    background: rgba(49, 130, 206, 0.1);
+    background: rgba(104, 191, 255, 0.14);
     transition: 0.3s;
 }
 

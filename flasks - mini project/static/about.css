@@ -24,10 +24,10 @@ html {
 }
 
 body {
-    background: linear-gradient(135deg, #e8f4f8 0%, #d4e9f7 50%, #e0efff 100%);
+    background: linear-gradient(135deg, #1E1A28 0%, #2b213a 50%, #1E1A28 100%);
     background-size: 400% 400%;
     animation: gradientBG 15s ease infinite;
-    color: #2d3748;
+    color: #ECD6CD;
     overflow-x: hidden;
 }
 
@@ -62,7 +62,7 @@ body {
 .orb-1 {
     width: 400px;
     height: 400px;
-    background: radial-gradient(circle, rgba(49, 130, 206, 0.5), transparent 70%);
+    background: radial-gradient(circle, rgba(159, 105, 197, 0.45), transparent 70%);
     top: -100px;
     left: -100px;
     animation-delay: 0s;
@@ -71,7 +71,7 @@ body {
 .orb-2 {
     width: 300px;
     height: 300px;
-    background: radial-gradient(circle, rgba(237, 100, 166, 0.4), transparent 70%);
+    background: radial-gradient(circle, rgba(204, 182, 184, 0.35), transparent 70%);
     bottom: -50px;
     right: -50px;
     animation-delay: -5s;
@@ -80,7 +80,7 @@ body {
 .orb-3 {
     width: 250px;
     height: 250px;
-    background: radial-gradient(circle, rgba(56, 161, 105, 0.4), transparent 70%);
+    background: radial-gradient(circle, rgba(130, 126, 156, 0.35), transparent 70%);
     top: 50%;
     left: 50%;
     animation-delay: -10s;

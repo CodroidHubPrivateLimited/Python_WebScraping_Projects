@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Files</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='files.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    {% include '_page_nav.html' %}
+
+    <div class="cosmic-bg">
+        <div class="stars"></div>
+        <div class="stars stars-2"></div>
+        <div class="stars stars-3"></div>
+        <div class="nebula nebula-1"></div>
+        <div class="nebula nebula-2"></div>
+        <div class="nebula nebula-3"></div>
+        <div class="dust"></div>
+        <div class="dust"></div>
+        <div class="dust"></div>
+    </div>
+
+    <div class="particles" id="particles"></div>
+    <div class="cursor-follower"></div>
+    <div class="cursor-ring"></div>
+
+    <div class="page-wrapper">
+        <a href="{{ url_for('select_page') }}" class="back-btn">⬅ Back</a>
+
+        <h1 class="page-title">🔌 API Files</h1>
+
+        <div class="card-container">
+            {% for card in cards %}
+            <div class="file-card">
+                <h3>{{ card.source }}</h3>
+                <p class="desc">{{ card.description }}</p>
+                <a href="{{ url_for('view_file', data_type='dynamic', filename=card.name) }}" class="view-btn">View →</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        const particlesContainer = document.getElementById('particles');
+        const particleCount = 30;
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 5 + 's';
+            particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            particlesContainer.appendChild(particle);
+        }
+
+        const cursorFollower = document.querySelector('.cursor-follower');
+        const cursorRing = document.querySelector('.cursor-ring');
+
+        document.addEventListener('mousemove', (e) => {
+            cursorFollower.style.left = e.clientX + 'px';
+            cursorFollower.style.top = e.clientY + 'px';
+
+            setTimeout(() => {
+                cursorRing.style.left = e.clientX + 'px';
+                cursorRing.style.top = e.clientY + 'px';
+            }, 100);
+        });
+    </script>
+
+</body>
+
+</html>
+

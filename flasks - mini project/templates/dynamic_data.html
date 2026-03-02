@@ -1,8 +1,35 @@
 <html>
     <head>
         <title>dynamic_file</title>
+        <style>
+            body {
+                margin: 0;
+                min-height: 100vh;
+                font-family: Arial, sans-serif;
+                color: #ECD6CD;
+                background: linear-gradient(135deg, #1E1A28 0%, #2b213a 50%, #1E1A28 100%);
+            }
+            a { color: #CCB6B8; }
+            button {
+                background: #9F69C5;
+                color: #ECD6CD;
+                border: none;
+                padding: 8px 14px;
+                border-radius: 8px;
+                cursor: pointer;
+            }
+            .card {
+                background: rgba(159, 105, 197, 0.08);
+                border: 1px solid rgba(159, 105, 197, 0.25);
+                border-radius: 12px;
+                padding: 12px;
+                margin-bottom: 12px;
+            }
+            div { padding: 24px; }
+        </style>
     </head>
     <body>
+        {% include "_page_nav.html" %}
         <div>
     <h1>Dynamic Files</h1>
 
@@ -16,7 +43,6 @@
     </div>
 {% endfor %}
 
-<a href="/">⬅ Back</a>
         </div>
     </body>
 </html>

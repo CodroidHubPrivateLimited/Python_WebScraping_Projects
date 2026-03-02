@@ -7,6 +7,7 @@
 </head>
 
 <body>
+    {% include "_page_nav.html" %}
 
     <h1>Available Files</h1>
 
@@ -23,8 +24,6 @@
         {% endfor %}
 
     </div>
-
-    <a href="{{ url_for('select_page') }}">⬅ Back</a>
 
 </body>
 

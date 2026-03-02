@@ -1,13 +1,15 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 import os
 import pandas as pd
 from flask import send_from_directory
 import importlib
 import logging
 import sys
+import subprocess
 import mysql.connector
 from mysql.connector import Error
 import json
+from urllib.parse import urlparse
 
 # Configure logging to show output in terminal
 logging.basicConfig(
@@ -20,6 +22,28 @@ logging.basicConfig(
 logger = logging.getLogger()
 
 app = Flask(__name__)
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "change-this-secret-key")
+
+PUBLIC_ENDPOINTS = {"index", "login", "signup", "static"}
+
+
+def is_safe_next_url(target):
+    if not target:
+        return False
+    parsed = urlparse(target)
+    return parsed.scheme == "" and parsed.netloc == "" and target.startswith("/")
+
+
+@app.before_request
+def require_login():
+    endpoint = request.endpoint
+    if endpoint is None:
+        return None
+    if endpoint in PUBLIC_ENDPOINTS:
+        return None
+    if session.get("logged_in"):
+        return None
+    return redirect(url_for("login", next=request.path))
 
 # MySQL Database Configuration
 DB_CONFIG = {
@@ -114,6 +138,49 @@ API_FOLDER = "data/api_data"
 
 DYNAMIC_SCRAPER_FOLDER = "scrapers/dynamic_data"
 STATIC_SCRAPER_FOLDER = "scrapers/static_data"
+API_SCRAPER_FOLDER = "scrapers/api"
+
+
+def get_source_label(scraper_name):
+    clean_name = scraper_name.lower().replace("-checkpoint", "")
+    source_map = {
+        "booktoscrape": "Books to Scrape",
+        "codroidhub": "CodroidHub",
+        "coingeckoh": "CoinGecko",
+        "flipkart": "Flipkart",
+        "imdb": "IMDb",
+        "pharmeasy": "PharmEasy",
+        "shopsy": "Shopsy",
+        "wikipedia": "Wikipedia",
+        "github": "GitHub",
+        "gyansetu": "Gyansetu",
+        "blinkit": "Blinkit",
+        "dominos": "Dominos",
+        "makemytrip": "MakeMyTrip",
+        "swiggi": "Swiggy",
+        "zamato": "Zomato",
+        "reddit": "Reddit"
+    }
+    return source_map.get(clean_name, scraper_name.replace("-checkpoint", "").title())
+
+
+def build_cards(files, page_type):
+    cards = []
+    for file_name in files:
+        source = get_source_label(file_name)
+        if page_type == "static":
+            description = f"Static snapshot data scraped from {source} website."
+        elif page_type == "dynamic":
+            description = f"Dynamic live-update dataset collected from {source} source."
+        else:
+            description = f"API-driven dataset fetched from {source} source."
+
+        cards.append({
+            "name": file_name,
+            "source": source,
+            "description": description
+        })
+    return cards
 
 def run_dynamic_scrapers():
     if not os.path.exists(DYNAMIC_SCRAPER_FOLDER):
@@ -294,16 +361,24 @@ def signup():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    next_url = request.args.get("next", "")
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
+        next_url = request.form.get("next", "")
 
         if authenticate_user(username, password):
+            session["logged_in"] = True
+            session["username"] = username
+            if is_safe_next_url(next_url):
+                return redirect(next_url)
             return redirect(url_for("select_page"))
         else:
-            return render_template("login.html", error="Invalid Username or Password")
+            return render_template("login.html",
+                                   error="Invalid Username or Password",
+                                   next_url=next_url)
 
-    return render_template("login.html")
+    return render_template("login.html", next_url=next_url)
 
 @app.route("/select")
 def select_page():
@@ -317,23 +392,79 @@ def home_static():
 
     files = [f[:-3] for f in os.listdir(STATIC_SCRAPER_FOLDER) 
              if f.endswith(".py") and not f.startswith("__")]
+    cards = build_cards(files, "static")
 
     return render_template("files.html",
+                           cards=cards,
                            files=files,
                            data_type="static")
 
 @app.route("/dynamic-data")
 def home_api():
-  
+    if not os.path.exists(API_SCRAPER_FOLDER):
+        return "API scraper folder not found"
+
+    files = [f[:-3] for f in os.listdir(API_SCRAPER_FOLDER)
+             if f.endswith(".py") and not f.startswith("__")]
+    cards = build_cards(files, "dynamic")
+
+    return render_template("files.html",
+                           cards=cards,
+                           files=files,
+                           data_type="api",
+                           page_label="DYNAMIC")
+
+@app.route("/api-data")
+def api_page():
     if not os.path.exists(DYNAMIC_SCRAPER_FOLDER):
         return "Dynamic scraper folder not found"
 
-    files = [f[:-3] for f in os.listdir(DYNAMIC_SCRAPER_FOLDER) 
+    files = [f[:-3] for f in os.listdir(DYNAMIC_SCRAPER_FOLDER)
              if f.endswith(".py") and not f.startswith("__")]
+    cards = build_cards(files, "api")
 
-    return render_template("files.html",
-                           files=files,
-                           data_type="api")
+    return render_template("api.html", files=files, cards=cards)
+
+@app.route("/view-api/<filename>")
+def view_api_file(filename):
+    file_path = os.path.join(API_SCRAPER_FOLDER, f"{filename}.py")
+    if not os.path.exists(file_path):
+        return "API file not found"
+
+    try:
+        result = subprocess.run(
+            [sys.executable, file_path],
+            capture_output=True,
+            text=True,
+            timeout=180
+        )
+    except Exception as e:
+        return f"Error running API scraper: {str(e)}"
+
+    if result.returncode != 0:
+        return f"Scraper failed.<br>{result.stderr.replace(chr(10), '<br>')}"
+
+    scraped_lines = [line.strip() for line in result.stdout.splitlines() if line.strip()]
+
+    if not scraped_lines:
+        scraped_lines = ["No output received from scraper."]
+
+    df = pd.DataFrame({"scraped_data": scraped_lines})
+
+    os.makedirs(API_FOLDER, exist_ok=True)
+    csv_filename = f"{filename}_data.csv"
+    csv_path = os.path.join(API_FOLDER, csv_filename)
+    df.to_csv(csv_path, index=False)
+
+    table = df.to_html(classes="table table-bordered", index=False)
+
+    return render_template("view.html",
+                           table=table,
+                           filename=filename,
+                           data_type="api",
+                           files_page="/dynamic-data",
+                           scraper_executed=True,
+                           scraper_error=None)
 
 def find_matching_scraper(data_type, filename):
     """Find the correct scraper module by matching filename with scraper files"""
@@ -341,6 +472,8 @@ def find_matching_scraper(data_type, filename):
     
     if data_type == "static":
         scraper_folder = STATIC_SCRAPER_FOLDER
+    elif data_type == "api":
+        scraper_folder = API_SCRAPER_FOLDER
     else:
         scraper_folder = DYNAMIC_SCRAPER_FOLDER
     
@@ -446,4 +579,4 @@ def download_file(data_type, filename):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)

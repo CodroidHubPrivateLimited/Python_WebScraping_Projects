@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Data Scraper</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='light-3d.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
     <style>
         /* Override styles for login page */
         body {
@@ -14,14 +14,25 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            position: relative;
+        }
+
+        .light-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
         }
         
         .login-container {
-            position: relative;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             z-index: 10;
-            width: 100%;
-            max-width: 420px;
-            padding: 20px;
+            width: min(420px, calc(100% - 40px));
+            margin: 0;
+            padding: 0;
         }
         
         .login-box {
@@ -160,6 +171,7 @@
     </style>
 </head>
 <body>
+    {% include '_page_nav.html' %}
     <!-- Light 3D Background -->
     <div class="light-bg">
         <div class="gradient-mesh"></div>
@@ -211,6 +223,7 @@
             {% endif %}
             
             <form method="POST" action="{{ url_for('login') }}">
+                <input type="hidden" name="next" value="{{ next_url or '' }}">
                 <div class="input-group">
                     <label for="username">Username</label>
                     <input type="text" id="username" name="username" placeholder="Enter your username" required>
@@ -231,3 +244,4 @@
     </div>
 </body>
 </html>
+

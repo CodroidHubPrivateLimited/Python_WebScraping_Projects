@@ -4,12 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ data_type.upper() }} Files</title>
+    <title>{{ (page_label if page_label is defined else data_type.upper()) }} Files</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='files.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
+    {% include '_page_nav.html' %}
 
     <!-- Cosmic Starfield Background (from landing page) -->
     <div class="cosmic-bg">
@@ -71,20 +72,20 @@
         </a>
 
         <h1 class="page-title">
-            📂 {{ data_type.upper() }} Files
+            📂 {{ (page_label if page_label is defined else data_type.upper()) }} Files
         </h1>
 
         <div class="card-container">
 
-            {% for file in files %}
+            {% for card in cards %}
             <div class="file-card">
-                <h3>{{ file.replace('-checkpoint', '') }}</h3>
+                <h3>{{ card.source }}</h3>
 
                 <p class="desc">
-                    This dataset contains extracted data stored in CSV format.
+                    {{ card.description }}
                 </p>
 
-                <a href="{{ url_for('view_file', data_type=data_type, filename=file) }}" class="view-btn">
+                <a href="{% if data_type == 'api' %}{{ url_for('view_api_file', filename=card.name) }}{% else %}{{ url_for('view_file', data_type=data_type, filename=card.name) }}{% endif %}" class="view-btn">
                     View →
                 </a>
             </div>
@@ -136,3 +137,4 @@
 </body>
 
 </html>
+

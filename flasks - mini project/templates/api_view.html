@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ filename }} API File</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Consolas, "Courier New", monospace;
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+        .wrapper {
+            max-width: 980px;
+            margin: 40px auto;
+            padding: 0 16px;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #93c5fd;
+            text-decoration: none;
+            font-family: Arial, sans-serif;
+        }
+        .card {
+            border: 1px solid #334155;
+            border-radius: 12px;
+            background: #111827;
+            overflow: hidden;
+        }
+        .header {
+            padding: 14px 16px;
+            border-bottom: 1px solid #334155;
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        pre {
+            margin: 0;
+            padding: 18px;
+            white-space: pre-wrap;
+            word-break: break-word;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    {% include "_page_nav.html" %}
+    <div class="wrapper">
+        <a href="{{ url_for('home_api') }}" class="back-btn">⬅ Back to API Files</a>
+        <div class="card">
+            <div class="header">{{ filename }}.py</div>
+            <pre>{{ code }}</pre>
+        </div>
+    </div>
+</body>
+</html>

@@ -3,6 +3,3 @@ pandas
 mysql-connector-python
 requests
 beautifulsoup4
-logging
-datetime
-gunicorn

@@ -1,0 +1,94 @@
+{% set endpoint = request.endpoint %}
+{% set back_url = None %}
+
+{% if endpoint == "about" %}
+    {% set back_url = url_for("index") %}
+{% elif endpoint == "journey" %}
+    {% set back_url = url_for("index") %}
+{% elif endpoint == "problem_scoping" %}
+    {% set back_url = url_for("journey") %}
+{% elif endpoint == "select_page" %}
+    {% set back_url = url_for("index") %}
+{% elif endpoint == "home_static" %}
+    {% set back_url = url_for("select_page") %}
+{% elif endpoint == "home_api" %}
+    {% set back_url = url_for("select_page") %}
+{% elif endpoint == "api_page" %}
+    {% set back_url = url_for("select_page") %}
+{% elif endpoint == "view_file" %}
+    {% if request.view_args and request.view_args.get("data_type") == "static" %}
+        {% set back_url = url_for("home_static") %}
+    {% else %}
+        {% set back_url = url_for("home_api") %}
+    {% endif %}
+{% elif endpoint == "view_csv" %}
+    {% set back_url = url_for("csv_data_page") %}
+{% elif endpoint == "csv_data_page" %}
+    {% set back_url = url_for("data_exploration") %}
+{% elif endpoint == "power_bi_page" %}
+    {% set back_url = url_for("data_exploration") %}
+{% elif endpoint == "view_pbix" %}
+    {% set back_url = url_for("power_bi_page") %}
+{% elif endpoint == "data_exploration" %}
+    {% set back_url = url_for("journey") %}
+{% elif endpoint == "feedback" %}
+    {% set back_url = url_for("index") %}
+{% elif endpoint == "project" %}
+    {% set back_url = url_for("home") %}
+{% elif endpoint == "home" %}
+    {% set back_url = url_for("index") %}
+{% elif endpoint == "login" %}
+    {% set back_url = url_for("index") %}
+{% elif endpoint == "signup" %}
+    {% set back_url = url_for("login") %}
+{% endif %}
+
+{% if not back_url %}
+    {% set back_url = url_for("index") %}
+{% endif %}
+
+<style>
+    /* Hide older per-page back buttons so all pages use same left-side nav */
+    .back-btn,
+    .back-container,
+    .button-group .back-btn {
+        display: none !important;
+    }
+
+    .global-page-nav {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 1000;
+    }
+    .global-page-nav a {
+        text-decoration: none;
+        color: #f8fafc;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        background: rgba(15, 23, 42, 0.55);
+        backdrop-filter: blur(8px);
+        border-radius: 999px;
+        padding: 8px 14px;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+    .global-page-nav a:hover {
+        background: rgba(30, 41, 59, 0.85);
+        border-color: rgba(255, 255, 255, 0.55);
+    }
+    @media (max-width: 640px) {
+        .global-page-nav {
+            top: 12px;
+            left: 12px;
+        }
+        .global-page-nav a {
+            font-size: 12px;
+            padding: 7px 12px;
+        }
+    }
+</style>
+
+<div class="global-page-nav">
+    <a class="back-link" href="{{ back_url }}">⬅ Back</a>
+</div>

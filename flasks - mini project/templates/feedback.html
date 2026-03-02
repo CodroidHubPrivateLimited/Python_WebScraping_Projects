@@ -39,7 +39,7 @@
             font-family: 'Orbitron', sans-serif;
             font-size: 2.5rem;
             font-weight: 900;
-            background: linear-gradient(90deg, #00c8ff, #ff0080, #00ff96);
+            background: linear-gradient(90deg, #9F69C5, #CCB6B8, #ECD6CD);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -57,9 +57,9 @@
             text-align: center;
             margin-bottom: 30px;
             padding: 20px;
-            background: rgba(0, 200, 255, 0.1);
+            background: rgba(159, 105, 197, 0.12);
             border-radius: 15px;
-            border: 1px solid rgba(0, 200, 255, 0.3);
+            border: 1px solid rgba(159, 105, 197, 0.35);
         }
 
         .trainee-name {
@@ -73,7 +73,7 @@
         .trainee-role {
             font-family: 'Rajdhani', sans-serif;
             font-size: 1.1rem;
-            color: #00c8ff;
+            color: #CCB6B8;
             text-transform: uppercase;
             letter-spacing: 3px;
         }
@@ -93,10 +93,10 @@
         }
 
         .mentor-feedback {
-            background: linear-gradient(135deg, rgba(255,0,128,0.1) 0%, rgba(0,200,255,0.1) 100%);
+            background: linear-gradient(135deg, rgba(159, 105, 197, 0.12) 0%, rgba(204, 182, 184, 0.12) 100%);
             padding: 30px;
             border-radius: 15px;
-            border-left: 4px solid #ff0080;
+            border-left: 4px solid #9F69C5;
         }
 
         .mentor-quote {
@@ -119,7 +119,7 @@
             font-family: 'Orbitron', sans-serif;
             font-size: 1.3rem;
             font-weight: 700;
-            color: #00ff96;
+            color: #ECD6CD;
         }
 
         .mentor-title {
@@ -157,8 +157,8 @@
 
         .back-link:hover {
             color: #fff;
-            border-color: rgba(0, 200, 255, 0.6);
-            box-shadow: 0 0 20px rgba(0, 200, 255, 0.3);
+            border-color: rgba(159, 105, 197, 0.6);
+            box-shadow: 0 0 20px rgba(159, 105, 197, 0.35);
             transform: translateY(-3px) scale(1.05);
         }
 
@@ -189,15 +189,19 @@
 </head>
 
 <body>
+    {% include '_page_nav.html' %}
 
-    <!-- Cosmic Starfield Background -->
-    <div class="cosmic-bg">
-        <div class="stars"></div>
-        <div class="stars stars-2"></div>
-        <div class="stars stars-3"></div>
-        <div class="nebula nebula-1"></div>
-        <div class="nebula nebula-2"></div>
-        <div class="nebula nebula-3"></div>
+    <!-- Landing-style Background -->
+    <div class="background-layer">
+        <div class="video-background">
+            <video autoplay muted loop playsinline>
+                <source src="{{ url_for('static', filename='background.mp4') }}" type="video/mp4">
+            </video>
+            <div class="video-overlay"></div>
+        </div>
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
     </div>
 
     <!-- Back Button -->
@@ -241,3 +245,4 @@
 </body>
 
 </html>
+

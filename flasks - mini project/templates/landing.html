@@ -13,6 +13,10 @@
 </head>
 
 <body>
+    {% set login_about = url_for('login', next=url_for('about')) %}
+    {% set login_journey = url_for('login', next=url_for('journey')) %}
+    {% set login_projects = url_for('login', next=url_for('select_page')) %}
+    {% set login_feedback = url_for('login', next=url_for('feedback')) %}
     <!-- Design Tokens (CSS Variables) -->
     <style>
         :root {
@@ -105,15 +109,15 @@
 
     <!-- Navigation -->
     <nav class="navbar">
-        <a href="{{ url_for('about') }}" class="brand">
+        <a href="{{ login_about }}" class="brand">
             <span class="brand-text">VS</span>
         </a>
         
         <div class="nav-links">
-            <a href="{{ url_for('about') }}" class="nav-link">About</a>
-            <a href="{{ url_for('journey') }}" class="nav-link">Journey</a>
-            <a href="{{ url_for('select_page') }}" class="nav-link">Projects</a>
-            <a href="{{ url_for('feedback') }}" class="nav-link">Feedback</a>
+            <a href="{{ login_about }}" class="nav-link">About</a>
+            <a href="{{ login_journey }}" class="nav-link">Journey</a>
+            <a href="{{ login_projects }}" class="nav-link">Projects</a>
+            <a href="{{ login_feedback }}" class="nav-link">Feedback</a>
         </div>
         
         <div class="nav-actions">
@@ -166,13 +170,13 @@
             </p>
             
             <div class="hero-cta animate-slide-up" style="animation-delay: 0.5s">
-                <a href="{{ url_for('select_page') }}" class="btn-primary">
+                <a href="{{ login_projects }}" class="btn-primary">
                     <span>View Projects</span>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M5 12h14M12 5l7 7-7 7"/>
                     </svg>
                 </a>
-                <a href="{{ url_for('about') }}" class="btn-secondary">
+                <a href="{{ login_about }}" class="btn-secondary">
                     <span>Learn More</span>
                 </a>
             </div>
@@ -305,7 +309,7 @@
                     Have a project in mind? I'd love to hear about it. Let's discuss how we can bring your vision to life.
                 </p>
                 <div class="cta-buttons">
-                    <a href="{{ url_for('select_page') }}" class="btn-primary btn-large">
+                    <a href="{{ login_projects }}" class="btn-primary btn-large">
                         <span>Start a Project</span>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -325,7 +329,7 @@
         <div class="section-container">
             <div class="footer-content">
                 <div class="footer-brand">
-                    <a href="{{ url_for('about') }}" class="brand">
+                    <a href="{{ login_about }}" class="brand">
                         <span class="brand-text">Vishal Sachdeva</span>
                     </a>
                     <p class="footer-tagline">Building digital experiences that matter</p>
@@ -334,16 +338,16 @@
                 <div class="footer-links">
                     <div class="footer-column">
                         <h4>Navigation</h4>
-                        <a href="{{ url_for('about') }}">About</a>
-                        <a href="{{ url_for('journey') }}">Journey</a>
-                        <a href="{{ url_for('select_page') }}">Projects</a>
+                        <a href="{{ login_about }}">About</a>
+                        <a href="{{ login_journey }}">Journey</a>
+                        <a href="{{ login_projects }}">Projects</a>
                     </div>
                     
                     <div class="footer-column">
                         <h4>Connect</h4>
                         <a href="https://www.linkedin.com/in/vishalsachdeva9511/" target="_blank">LinkedIn</a>
                         <a href="https://github.com/Vishalsachdeva2005" target="_blank">GitHub</a>
-                        <a href="{{ url_for('feedback') }}">Feedback</a>
+                        <a href="{{ login_feedback }}">Feedback</a>
                     </div>
                 </div>
             </div>

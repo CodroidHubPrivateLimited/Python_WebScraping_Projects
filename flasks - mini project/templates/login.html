@@ -171,7 +171,6 @@
     </style>
 </head>
 <body>
-    {% include '_page_nav.html' %}
     <!-- Light 3D Background -->
     <div class="light-bg">
         <div class="gradient-mesh"></div>
@@ -214,19 +213,23 @@
     <div class="login-container">
         <div class="login-box">
             <h1 class="gradient-text">Welcome Back</h1>
-            <p class="subtitle">Sign in to continue to Data Scraper</p>
+            <p class="subtitle">Sign in with username or email</p>
             
             {% if error %}
             <div class="error-message">
                 {{ error }}
             </div>
             {% endif %}
+
+            {% if signup_success %}
+            <div class="error-message" style="background: rgba(56, 161, 105, 0.18); border-color: rgba(56, 161, 105, 0.5); color: #276749;">Account created. Please log in.</div>
+            {% endif %}
             
             <form method="POST" action="{{ url_for('login') }}">
                 <input type="hidden" name="next" value="{{ next_url or '' }}">
                 <div class="input-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                    <label for="username">Username or Email</label>
+                    <input type="text" id="username" name="username" placeholder="Enter your username or email" required>
                 </div>
                 
                 <div class="input-group">

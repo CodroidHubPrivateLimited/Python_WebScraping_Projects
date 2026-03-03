@@ -7,9 +7,13 @@ import logging
 import sys
 import subprocess
 import mysql.connector
-from mysql.connector import Error
+from mysql.connector import Error, IntegrityError
 import json
 from urllib.parse import urlparse
+import smtplib
+import secrets
+from datetime import datetime, timedelta
+from email.message import EmailMessage
 
 # Configure logging to show output in terminal
 logging.basicConfig(
@@ -24,7 +28,7 @@ logger = logging.getLogger()
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "change-this-secret-key")
 
-PUBLIC_ENDPOINTS = {"index", "login", "signup", "static"}
+PUBLIC_ENDPOINTS = {"index", "login", "signup", "verify_email", "static"}
 
 
 def is_safe_next_url(target):
@@ -47,17 +51,21 @@ def require_login():
 
 # MySQL Database Configuration
 DB_CONFIG = {
-    'host': '127.0.0.1',
-    'port': 3306,
-    'user': 'root',
-    'password': 'Vishal92919511',
-    'database': 'ana'
+    'host': os.environ.get('MYSQL_HOST', '127.0.0.1'),
+    'port': int(os.environ.get('MYSQL_PORT', '3306')),
+    'user': os.environ.get('MYSQL_USER', 'root'),
+    'password': os.environ.get('MYSQL_PASSWORD', 'Vishal92919511'),
+    'database': os.environ.get('MYSQL_DATABASE', 'ana')
 }
 
-# Hardcoded fallback credentials (for testing if DB is unavailable)
-USERNAME = "vishal"
-PASSWORD = "12345"
-users = {}
+SMTP_CONFIG = {
+    "host": os.environ.get("SMTP_HOST", ""),
+    "port": int(os.environ.get("SMTP_PORT", "587")),
+    "user": os.environ.get("SMTP_USER", ""),
+    "password": os.environ.get("SMTP_PASSWORD", ""),
+    "use_tls": os.environ.get("SMTP_USE_TLS", "true").lower() == "true",
+    "from_email": os.environ.get("SMTP_FROM_EMAIL", os.environ.get("SMTP_USER", "")),
+}
 
 
 def get_db_connection():
@@ -81,26 +89,69 @@ def init_database():
         if connection.is_connected():
             cursor = connection.cursor()
             # Create database if not exists
-            cursor.execute("CREATE DATABASE IF NOT EXISTS ana")
-            cursor.execute("USE ana")
+            cursor.execute(f"CREATE DATABASE IF NOT EXISTS {DB_CONFIG['database']}")
+            cursor.execute(f"USE {DB_CONFIG['database']}")
             
             # Create users table
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS users (
                     id INT AUTO_INCREMENT PRIMARY KEY,
                     username VARCHAR(255) UNIQUE NOT NULL,
+                    email VARCHAR(255) UNIQUE,
                     password VARCHAR(255) NOT NULL,
+                    is_verified TINYINT(1) NOT NULL DEFAULT 0,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             """)
-            
-            # Check if admin user exists, if not create default
-            cursor.execute("SELECT * FROM users WHERE username = 'admin'")
-            if not cursor.fetchone():
-                cursor.execute(
-                    "INSERT INTO users (username, password) VALUES ('admin', 'admin123')"
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS email_verifications (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    email VARCHAR(255) UNIQUE NOT NULL,
+                    username VARCHAR(255) NOT NULL,
+                    password VARCHAR(255) NOT NULL,
+                    code VARCHAR(6) NOT NULL,
+                    expires_at DATETIME NOT NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
-                logger.info("Default admin user created")
+            """)
+            cursor.execute(
+                """
+                SELECT COUNT(*) FROM information_schema.COLUMNS
+                WHERE TABLE_SCHEMA = %s AND TABLE_NAME = 'users' AND COLUMN_NAME = 'email'
+                """,
+                (DB_CONFIG["database"],)
+            )
+            email_exists = cursor.fetchone()[0] > 0
+            if not email_exists:
+                cursor.execute("ALTER TABLE users ADD COLUMN email VARCHAR(255)")
+                cursor.execute("ALTER TABLE users ADD UNIQUE KEY uq_users_email (email)")
+
+            cursor.execute(
+                """
+                SELECT COUNT(*) FROM information_schema.COLUMNS
+                WHERE TABLE_SCHEMA = %s AND TABLE_NAME = 'users' AND COLUMN_NAME = 'is_verified'
+                """,
+                (DB_CONFIG["database"],)
+            )
+            is_verified_exists = cursor.fetchone()[0] > 0
+            if not is_verified_exists:
+                cursor.execute("ALTER TABLE users ADD COLUMN is_verified TINYINT(1) NOT NULL DEFAULT 0")
+
+            # Legacy users (created before email verification) had no email and should remain usable.
+            cursor.execute(
+                "UPDATE users SET is_verified = 1 WHERE is_verified = 0 AND (email IS NULL OR email = '')"
+            )
+            
+            # Ensure admin account is always present and verified.
+            cursor.execute(
+                """
+                INSERT INTO users (username, email, password, is_verified)
+                VALUES ('admin', 'admin@example.com', 'admin123', 1)
+                ON DUPLICATE KEY UPDATE
+                    password = VALUES(password),
+                    is_verified = 1
+                """
+            )
             
             connection.commit()
             cursor.close()
@@ -110,28 +161,144 @@ def init_database():
         logger.info(f"Database initialization error: {e}")
 
 
+def send_verification_code(email, code):
+    """Send OTP verification code over SMTP."""
+    if not SMTP_CONFIG["host"] or not SMTP_CONFIG["from_email"]:
+        return False, "Email service is not configured. Set SMTP_* environment variables."
+
+    try:
+        msg = EmailMessage()
+        msg["Subject"] = "Verify your account - Data Scraper"
+        msg["From"] = SMTP_CONFIG["from_email"]
+        msg["To"] = email
+        msg.set_content(
+            f"Your verification code is: {code}\nThis code will expire in 10 minutes."
+        )
+
+        with smtplib.SMTP(SMTP_CONFIG["host"], SMTP_CONFIG["port"], timeout=20) as server:
+            if SMTP_CONFIG["use_tls"]:
+                server.starttls()
+            if SMTP_CONFIG["user"]:
+                server.login(SMTP_CONFIG["user"], SMTP_CONFIG["password"])
+            server.send_message(msg)
+        return True, "Verification code sent"
+    except Exception as e:
+        logger.info(f"Email sending error: {e}")
+        return False, "Failed to send verification email. Check SMTP settings."
+
+
+def create_user(username, email, password):
+    """Create a user in MySQL; returns (success, message)."""
+    try:
+        connection = get_db_connection()
+        if not connection or not connection.is_connected():
+            return False, "Unable to connect to database"
+
+        cursor = connection.cursor()
+        cursor.execute(
+            "INSERT INTO users (username, email, password, is_verified) VALUES (%s, %s, %s, 1)",
+            (username, email, password)
+        )
+        connection.commit()
+        cursor.close()
+        connection.close()
+        return True, "Account created successfully"
+    except IntegrityError:
+        return False, "Username already exists"
+    except Error as e:
+        logger.info(f"Signup error: {e}")
+        return False, "Unable to create account right now"
+
+
+def save_pending_signup(email, username, password, code, expires_at):
+    """Store pending signup details in MySQL for OTP verification."""
+    try:
+        connection = get_db_connection()
+        if not connection or not connection.is_connected():
+            return False, "Database not available"
+
+        cursor = connection.cursor()
+        cursor.execute(
+            """
+            INSERT INTO email_verifications (email, username, password, code, expires_at)
+            VALUES (%s, %s, %s, %s, %s)
+            ON DUPLICATE KEY UPDATE
+                username = VALUES(username),
+                password = VALUES(password),
+                code = VALUES(code),
+                expires_at = VALUES(expires_at)
+            """,
+            (email, username, password, code, expires_at)
+        )
+        connection.commit()
+        cursor.close()
+        connection.close()
+        return True, "Pending signup saved"
+    except Error as e:
+        logger.info(f"Pending signup save error: {e}")
+        return False, "Unable to save verification request"
+
+
+def get_pending_signup(email):
+    """Fetch pending signup data from MySQL by email."""
+    try:
+        connection = get_db_connection()
+        if not connection or not connection.is_connected():
+            return None
+
+        cursor = connection.cursor(dictionary=True)
+        cursor.execute(
+            """
+            SELECT email, username, password, code, expires_at
+            FROM email_verifications
+            WHERE email = %s
+            """,
+            (email,)
+        )
+        pending = cursor.fetchone()
+        cursor.close()
+        connection.close()
+        return pending
+    except Error as e:
+        logger.info(f"Pending signup fetch error: {e}")
+        return None
+
+
+def delete_pending_signup(email):
+    """Delete pending signup record after verification/expiry."""
+    try:
+        connection = get_db_connection()
+        if not connection or not connection.is_connected():
+            return
+        cursor = connection.cursor()
+        cursor.execute("DELETE FROM email_verifications WHERE email = %s", (email,))
+        connection.commit()
+        cursor.close()
+        connection.close()
+    except Error as e:
+        logger.info(f"Pending signup delete error: {e}")
+
+
 def authenticate_user(username, password):
     """Authenticate user against MySQL database"""
     try:
         connection = get_db_connection()
-        if connection and connection.is_connected():
-            cursor = connection.cursor(dictionary=True)
-            cursor.execute(
-                "SELECT * FROM users WHERE username = %s AND password = %s",
-                (username, password)
-            )
-            user = cursor.fetchone()
-            cursor.close()
-            connection.close()
-            return user is not None
-        else:
-            # Fallback to hardcoded credentials if database unavailable
-            logger.info("Using fallback authentication")
-            return username == USERNAME and password == PASSWORD
+        if not connection or not connection.is_connected():
+            logger.info("Database unavailable during login")
+            return False
+
+        cursor = connection.cursor(dictionary=True)
+        cursor.execute(
+            "SELECT id FROM users WHERE (username = %s OR email = %s) AND password = %s AND is_verified = 1",
+            (username, username, password)
+        )
+        user = cursor.fetchone()
+        cursor.close()
+        connection.close()
+        return user is not None
     except Error as e:
         logger.info(f"Authentication error: {e}")
-        # Fallback to hardcoded credentials
-        return username == USERNAME and password == PASSWORD
+        return False
 
 STATIC_FOLDER = "data/static_data"
 API_FOLDER = "data/api_data"
@@ -346,25 +513,95 @@ def project():
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
-
     if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
+        email = (request.form.get("email") or "").strip().lower()
+        username = (request.form.get("username") or "").strip()
+        password = request.form.get("password") or ""
 
-        if username in users:
-            return "User already exists!"
+        if not email or not username or not password:
+            return render_template("signup.html", error="Email, username, and password are required")
 
-        users[username] = password
-        return redirect(url_for("login"))
+        try:
+            connection = get_db_connection()
+            if not connection or not connection.is_connected():
+                return render_template("signup.html", error="Database not available")
+
+            cursor = connection.cursor()
+            cursor.execute(
+                "SELECT id FROM users WHERE username = %s OR email = %s",
+                (username, email)
+            )
+            existing = cursor.fetchone()
+            cursor.close()
+            connection.close()
+            if existing:
+                return render_template("signup.html", error="Username or email already exists")
+        except Error as e:
+            logger.info(f"Signup pre-check error: {e}")
+            return render_template("signup.html", error="Unable to validate account details")
+
+        code = f"{secrets.randbelow(900000) + 100000}"
+        expires_at = datetime.utcnow() + timedelta(minutes=10)
+        saved, save_msg = save_pending_signup(email, username, password, code, expires_at)
+        if not saved:
+            return render_template("signup.html", error=save_msg)
+
+        sent, msg = send_verification_code(email, code)
+        if not sent:
+            delete_pending_signup(email)
+            return render_template("signup.html", error=msg)
+
+        return redirect(url_for("verify_email", email=email))
 
     return render_template("signup.html")
+
+
+@app.route("/verify-email", methods=["GET", "POST"])
+def verify_email():
+    email = (request.args.get("email") or request.form.get("email") or "").strip().lower()
+    if not email:
+        return redirect(url_for("signup"))
+    pending = get_pending_signup(email)
+    if not pending:
+        return render_template("signup.html", error="No pending verification found for this email")
+
+    if request.method == "POST":
+        entered_code = (request.form.get("code") or "").strip()
+        expires_at = pending.get("expires_at")
+        if isinstance(expires_at, str):
+            try:
+                expires_at = datetime.fromisoformat(expires_at)
+            except ValueError:
+                expires_at = datetime.utcnow() - timedelta(seconds=1)
+
+        if datetime.utcnow() > expires_at:
+            delete_pending_signup(email)
+            return render_template("signup.html", error="Verification code expired. Please sign up again.")
+
+        if entered_code != pending.get("code"):
+            return render_template("verify_email.html", email=pending.get("email"), error="Invalid verification code")
+
+        created, message = create_user(
+            pending.get("username", ""),
+            pending.get("email", ""),
+            pending.get("password", ""),
+        )
+        delete_pending_signup(email)
+        if created:
+            return redirect(url_for("login", signup="success"))
+        return render_template("signup.html", error=message)
+
+    return render_template("verify_email.html", email=pending.get("email"))
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
     next_url = request.args.get("next", "")
+    signup_success = request.args.get("signup") == "success"
+
     if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
+        username = (request.form.get("username") or "").strip()
+        password = request.form.get("password") or ""
         next_url = request.form.get("next", "")
 
         if authenticate_user(username, password):
@@ -373,12 +610,15 @@ def login():
             if is_safe_next_url(next_url):
                 return redirect(next_url)
             return redirect(url_for("select_page"))
-        else:
-            return render_template("login.html",
-                                   error="Invalid Username or Password",
-                                   next_url=next_url)
 
-    return render_template("login.html", next_url=next_url)
+        return render_template(
+            "login.html",
+            error="Invalid username/email or password",
+            next_url=next_url,
+            signup_success=False,
+        )
+
+    return render_template("login.html", next_url=next_url, signup_success=signup_success)
 
 @app.route("/select")
 def select_page():
@@ -579,4 +819,5 @@ def download_file(data_type, filename):
 
 
 if __name__ == "__main__":
+    init_database()
     app.run(host='0.0.0.0', debug=True)

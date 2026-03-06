@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-apt-get update
-# Try modern package names first; fallback for older images.
-apt-get install -y chromium chromium-driver || apt-get install -y chromium-browser
+# Render native Python runtime does not allow apt installs during build.
+# Keep this script as a safe no-op.
+echo "Skipping OS package install on Render native runtime."

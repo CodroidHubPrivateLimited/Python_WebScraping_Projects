@@ -1,0 +1,154 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #6a11cb, #c471ed, #f7797d);
+    background-size: 400% 400%;
+    animation: gradientMove 10s ease infinite;
+    color: #fff;
+    padding: 40px 15px;
+}
+
+/* Gradient animation */
+@keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.back-btn {
+    text-decoration: none;
+    color: #fff;
+    font-weight: 600;
+    display: inline-block;
+    margin-bottom: 20px;
+    transition: transform 0.3s;
+}
+
+.back-btn:hover {
+    transform: translateX(-6px);
+}
+
+.feedback-container {
+    max-width: 900px;
+    margin: auto;
+    text-align: center;
+    animation: fadeUp 1.2s ease forwards;
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+h1 {
+    font-size: 2.6rem;
+    margin-bottom: 10px;
+}
+
+h2 {
+    font-weight: 400;
+    opacity: 0.9;
+    margin-bottom: 45px;
+}
+
+/* Profile Card */
+.profile-card {
+    margin-bottom: 35px;
+    animation: scaleIn 1s ease forwards;
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.85);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.profile-card h3 {
+    font-size: 1.6rem;
+}
+
+.profile-card p {
+    opacity: 0.85;
+}
+
+/* Feedback Glass Card */
+.feedback-card {
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    padding: 45px;
+    border-radius: 20px;
+    text-align: left;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+    animation: cardFloat 4s ease-in-out infinite;
+}
+
+@keyframes cardFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.feedback-card h4 {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.feedback-card h4::after {
+    content: "";
+    width: 60px;
+    height: 3px;
+    background: #fff;
+    display: block;
+    margin-top: 8px;
+    border-radius: 5px;
+}
+
+.feedback-text {
+    line-height: 1.9;
+    font-size: 1.05rem;
+    opacity: 0.95;
+}
+
+/* Mentor Signature */
+.mentor-sign {
+    margin-top: 35px;
+    text-align: right;
+    opacity: 0.9;
+}
+
+.mentor-sign strong {
+    font-size: 1.1rem;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .feedback-card {
+        padding: 30px;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+}

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Static Websites - Data Portal</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
+
+    <!-- SAME Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth2.css') }}" />
+</head>
+<body>
+
+    <!-- Back Button -->
+    <a href="/dashboard" class="back-home-btn">← Back to Dashboard</a>
+
+    <div class="hero-container">
+
+        <!-- Floating shapes (same as other pages) -->
+        <div class="shape sphere"></div>
+        <div class="shape ring"></div>
+        <div class="shape small-sphere"></div>
+
+        <!-- Page Title -->
+        <h1 class="dashboard-title">Static Websites</h1>
+
+        <!-- Cards Container -->
+        <div class="cards-container">
+
+            <div class="card">
+                <h3> Flipkart </h3>
+                <a href="/view/Static/flipkart" class="view-btn">View</a>
+            </div>
+
+          <div class="card">
+                <h3> Amazon </h3>
+                <a href="/view/Static/amazon" class="view-btn">View</a>
+            </div>
+
+            <div class="card">
+                <h3> Book to scrap </h3>
+                <a href="/view/Static/book" class="view-btn">View</a>
+            </div>
+            <div class="card">
+                <h3> Ecommers  </h3>
+                <a href="/view/Static/ecommers" class="view-btn">View</a>
+            </div>
+           <div class="card">
+                <h3> Shopsy  </h3>
+                <a href="/view/Static/shopsy" class="view-btn">View</a>
+            </div>
+            <div class="card">
+                <h3> CodroidHub  </h3>
+                <a href="/view/Static/codroidhub2" class="view-btn">View</a>
+            </div>
+
+            <div class="card">
+                <h3> Polo  </h3>
+                <a href="/view/Static/polo" class="view-btn">View</a>
+            </div>
+            
+            
+        </div>
+    </div>
+
+</body>
+</html>

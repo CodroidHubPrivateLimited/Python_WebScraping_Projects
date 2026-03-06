@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dashboard - Data Portal</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth2.css') }}" />
+</head>
+<body>
+    <a href="/logout" class="back-home-btn">Logout</a>
+
+    <div class="hero-container">
+        <!-- Floating shapes -->
+        <div class="shape sphere"></div>
+        <div class="shape ring"></div>
+        <div class="shape small-sphere"></div>
+
+        <h1 class="dashboard-title">Welcome {{ user }}!</h1>
+
+        <div class="cards-container">
+            <div class="card">
+                <h3>Static Websites</h3>
+                <a href="/static-websites" class="view-btn">View</a>
+            </div>
+            <div class="card">
+                <h3>Dynamic Websites</h3>
+                <a href="/dynamic-websites" class="view-btn">View</a>
+            </div>
+            <div class="card">  
+               <h3>APIs</h3>
+               <a href="/api-services" class="view-btn">View</a>
+            </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>

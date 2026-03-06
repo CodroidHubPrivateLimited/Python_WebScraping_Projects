@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>API Services - Data Portal</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth2.css') }}" />
+</head>
+<body>
+    <a href="/dashboard" class="back-home-btn">← Back to Dashboard</a>
+
+    <div class="hero-container">
+        <!-- Floating shapes -->
+        <div class="shape sphere"></div>
+        <div class="shape ring"></div>
+        <div class="shape small-sphere"></div>
+
+        <h1 class="dashboard-title">API Services</h1>
+
+        <div class="cards-container">
+            <div class="card">
+                <h3>Reddit API</h3>
+                <a href="/view/api/reddit" class="view-btn">View</a>
+            </div>
+
+            <div class="card">
+                <h3>CodroidHub</h3>
+                <a href="/view/api/codroidhub" class="view-btn" >View</a>
+            </div>
+           <div class="card">
+                <h3>DummyJSON</h3>
+                <a href="/view/api/dummyjson" class="view-btn" >View</a>
+            </div>
+           <div class="card">
+                <h3>GitHub</h3>
+                <a href="/view/api/github" class="view-btn" >View</a>
+            </div>
+            <div class="card">
+                <h3>Gyansetu</h3>
+                <a href="/view/api/gyansetu" class="view-btn">View</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

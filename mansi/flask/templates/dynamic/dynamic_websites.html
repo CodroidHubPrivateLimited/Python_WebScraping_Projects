@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dynamic Websites - Data Portal</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
+
+    <!-- SAME CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth2.css') }}" />
+</head>
+<body>
+
+    <a href="/dashboard" class="back-home-btn">← Back to Dashboard</a>
+
+    <div class="hero-container">
+        <div class="shape sphere"></div>
+        <div class="shape ring"></div>
+        <div class="shape small-sphere"></div>
+
+        <h1 class="dashboard-title">Dynamic Websites</h1>
+
+        <div class="cards-container">
+
+            <!-- MYNTRA -->
+            <div class="card">
+                <h3>Myntra Scraping</h3>
+                <button class="view-btn" onclick="window.location.href='/view/dynamic/myntra'">
+                    View
+                </button>
+            </div>
+
+            <!-- SNAPDEAL -->
+            <div class="card">
+                <h3>Snapdeal Scraping</h3>
+                <button class="view-btn" onclick="window.location.href='/view/dynamic/snapdeal'">
+                    View
+                </button>
+            </div>
+
+            <!-- MEESHO -->
+            <div class="card">
+                <h3>Meesho Scraping</h3>
+                <button class="view-btn" onclick="window.location.href='/view/dynamic/meesho'">
+                    View
+                </button>
+            </div>
+
+            <!-- AJIO -->
+            <div class="card">
+                <h3>Ajio Scraping</h3>
+                <button class="view-btn" onclick="window.location.href='/view/dynamic/ajio'">
+                    View
+                </button>
+            </div>
+
+            <!-- BLINKIT -->
+            <div class="card">
+                <h3>Blinkit Scraping</h3>
+                <button class="view-btn" onclick="window.location.href='/view/dynamic/blinkit'">
+                    View
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>

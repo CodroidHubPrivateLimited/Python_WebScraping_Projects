@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up - Flask-Banpany</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+</head>
+
+<body>
+    <div class="hero-container">
+        <div class="auth-card">
+            <h2>SIGN UP</h2>
+
+            <form action="/signup" method="POST">
+
+                <div class="input-group">
+                    <input type="email" name="email" placeholder="Email" required>
+                </div>
+
+                <div class="input-group">
+                    <input type="text" name="username" placeholder="Username" required>
+                </div>
+
+                <!-- Password Field -->
+                <div class="input-group password-group">
+                    <input type="password" id="loginPassword" name="password" placeholder="Password" required>
+                    <span class="toggle-password" data-target="loginPassword">👁</span>
+                </div>
+
+                <button type="submit" class="cta-button">CREATE ACCOUNT</button>
+
+            </form>
+
+            <p class="auth-footer">
+                Already a member? <a href="/login">Login </a>
+            </p>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>About Me</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<!-- ===== HEADER ===== -->
+<header>
+    <nav class="nav">
+        <div class="logo">Mansi</div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/about" class="active">About Me</a>
+            <a href="/Journey">Journey</a>
+            <a href="/login">Login</a>
+        </div>
+    </nav>
+</header>
+
+<!-- ===== ABOUT SECTION ===== -->
+<section class="about-section">
+
+    <h1 class="page-title">About <span>Me</span></h1>
+
+    <div class="about-card">
+        <div class="profile-img">
+            <img src="https://placehold.co/300x300/ffffff/ff5e95?text=M" alt="Profile">
+        </div>
+
+        <div class="about-content">
+            <h2>Hello, I'm Mansi 👋</h2>
+            <p>
+                I am a passionate learner with strong interest in
+                <b>Data Engineering, AI & Machine Learning</b>.
+                I love building real-world projects using Flask,
+                Python and data-driven solutions.
+            </p>
+
+            <h3>Skills</h3>
+            <div class="skills">
+                <span>Python</span>
+                <span>Flask</span>
+                <span>SQL</span>
+                <span>Data Engineering</span>
+                <span>Machine Learning</span>
+                <span>Web Scraping</span>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+    <p>Mansi</p>
+    <p>
+        Training and Projects powered by
+        <a href="#">CodroidHub</a>
+    </p>
+</footer>
+
+</body>
+</html>

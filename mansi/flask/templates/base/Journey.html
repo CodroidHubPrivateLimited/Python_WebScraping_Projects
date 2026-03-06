@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Project Journey</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/journey.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<a href="/" class="back-home-btn">← Home</a>
+
+<section class="journey-wrapper">
+
+    <h1>AI Project Lifecycle</h1>
+    <p class="subtitle">
+        Step-by-step process of building an AI project from start to finish
+    </p>
+
+    <div class="journey-timeline">
+
+        <div class="journey-card">
+            <div class="step-circle">1</div>
+            <h3>Problem Scoping</h3>
+            <p>
+                In this step, we clearly understand the problem.
+                We decide what we want to solve and what result we expect
+                from the AI project.
+            </p>
+        </div>
+
+        <div class="journey-card">
+            <div class="step-circle">2</div>
+            <h3>Data Acquisition</h3>
+            <p>
+                Here, we collect the data needed for the project.
+                Data can come from databases, APIs, files, or websites.
+            </p>
+        </div>
+
+        <div class="journey-card">
+            <div class="step-circle">3</div>
+            <h3>Data Exploration & Preprocessing</h3>
+            <p>
+                In this step, we clean and understand the data.
+                We fix missing values, remove errors,
+                and prepare the data for the model.
+            </p>
+        </div>
+
+        <div class="journey-card">
+            <div class="step-circle">4</div>
+            <h3>Modeling & Evaluation</h3>
+            <p>
+                We choose an AI model and train it using the data.
+                After training, we check how accurate the model is.
+            </p>
+        </div>
+
+        <div class="journey-card">
+            <div class="step-circle">5</div>
+            <h3>Optimization & Validation</h3>
+            <p>
+                We improve the model performance
+                and test it to make sure it works well
+                on new and unseen data.
+            </p>
+        </div>
+
+        <div class="journey-card">
+            <div class="step-circle">6</div>
+            <h3>Deployment & Visualization</h3>
+            <p>
+                Finally, we deploy the model using Flask.
+                Results are shown using charts or dashboards
+                so users can understand them easily.
+            </p>
+        </div>
+
+    </div>
+</section>
+
+<script src="{{ url_for('static', filename='js/journey.js') }}"></script>
+</body>
+</html>

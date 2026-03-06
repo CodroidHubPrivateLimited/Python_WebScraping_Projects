@@ -1,0 +1,163 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body, html {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* ================= HERO SECTION ================= */
+
+.hero-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(135deg, #7f3bc9 0%, #d75fad 50%, #f49bc0 100%);
+    display: flex;
+    align-items: center;
+    padding: 0 10%;
+    box-shadow: inset 0 0 120px rgba(0,0,0,0.15);
+    overflow: hidden;
+}
+
+/* Soft Light Glow Background */
+.hero-container::before {
+    content: "";
+    position: absolute;
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(circle, rgba(255,255,255,0.15), transparent 70%);
+    top: -250px;
+    right: -250px;
+    filter: blur(100px);
+    z-index: 1;
+}
+
+/* ================= CONTENT ================= */
+
+.content-wrapper {
+    z-index: 10;
+    max-width: 600px;
+    color: white;
+}
+
+.title {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    line-height: 1.1;
+    margin-bottom: 20px;
+    font-weight: 700;
+    text-shadow: 0 5px 25px rgba(0,0,0,0.2);
+}
+
+.title span {
+    display: block;
+}
+
+.description {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin-bottom: 40px;
+    opacity: 0.9;
+    max-width: 450px;
+}
+
+/* ================= BUTTON ================= */
+
+.cta-button {
+    display: inline-block;
+    text-decoration: none;
+    background: linear-gradient(to right, #ff5e95, #ff84a1);
+    color: white;
+    border: none;
+    padding: 18px 45px;
+    border-radius: 50px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow:
+        0 0 25px rgba(255, 94, 149, 0.7),
+        0 0 50px rgba(255, 94, 149, 0.5);
+    transition: all 0.3s ease;
+}
+
+.cta-button:hover {
+    transform: translateY(-5px);
+    box-shadow:
+        0 0 35px rgba(255, 94, 149, 0.9),
+        0 0 70px rgba(255, 94, 149, 0.7);
+}
+
+/* ================= SHAPES ================= */
+
+.shape {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+/* Main Glowing Sphere */
+.sphere {
+    width: 350px;
+    height: 350px;
+    right: 5%;
+    top: 10%;
+    background: radial-gradient(circle at 30% 30%, #ffb6dc, #d75fad);
+    box-shadow:
+        0 0 80px rgba(255, 120, 180, 0.7),
+        0 0 150px rgba(255, 120, 180, 0.4),
+        inset -25px -25px 60px rgba(0,0,0,0.25),
+        inset 15px 15px 50px rgba(255,255,255,0.3);
+    animation: float 6s ease-in-out infinite;
+}
+
+/* Large Glow Ring */
+.ring {
+    width: 500px;
+    height: 500px;
+    right: -100px;
+    bottom: -100px;
+    border: 45px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    box-shadow:
+        0 0 100px rgba(255,255,255,0.3)
+        0 0 180px rgba(237, 168, 199, 0.4);
+    backdrop-filter: blur(6px);
+}
+
+/* Small Glass Sphere */
+.small-sphere {
+    width: 100px;
+    height: 100px;
+    left: 45%;
+    bottom: 15%;
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 
+        0 0 50px rgba(255,255,255,0.7),
+        inset 10px 10px 30px rgba(255,255,255,0.4);
+    backdrop-filter: blur(10px);
+    animation: float 8s ease-in-out infinite reverse;
+}
+
+/* ================= FLOAT ANIMATION ================= */
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-30px); }
+    100% { transform: translateY(0px); }
+}
+
+/* ===== GLOBAL ===== */
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(120deg, #7f3fbf, #ff7eb3);
+    min-height: 100vh;
+    color: #fff;
+    overflow-x: hidden;
+}
+

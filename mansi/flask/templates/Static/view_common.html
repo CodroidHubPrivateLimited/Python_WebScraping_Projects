@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }} Products</title>
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dynamic.css') }}">
+</head>
+<body>
+
+<!-- Back Button -->
+<a href="/static-websites" class="back-btn">← Back</a>
+
+<!-- Page Heading -->
+<h1>{{ title }} – Static Scraped Products</h1>
+
+<!-- Data Table -->
+<table>
+    <thead>
+        <tr>
+            {% for h in headers %}
+                <th>{{ h }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for row in rows %}
+        <tr>
+            {% for col in row %}
+                <td>{{ col }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>

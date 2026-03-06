@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dynamic.css') }}">
+</head>
+<body>
+
+<a href="/dynamic-websites" class="back-btn">← Back</a>
+
+<h1>{{ title }}</h1>
+
+<table>
+    <thead>
+        <tr>
+            {% for h in headers %}
+                <th>{{ h }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for row in rows %}
+            <tr>
+                {% for col in row %}
+                    <td>{{ col }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>

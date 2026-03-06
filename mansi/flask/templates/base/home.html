@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask-Based Company Data Portal</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- MAIN CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+    <link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+
+<body>
+
+<!-- ===== HEADER ===== -->
+<!-- ===== HEADER ===== -->
+<header class="glass-header">
+    <nav class="nav">
+        <div class="logo">Mansi</div>
+
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/about">About Me</a>
+            <a href="/Journey">Journey</a>
+            <a href="/login">Login</a>
+            <a href="/feedback">Feedback</a>
+
+          <a href="https://www.linkedin.com/in/mansi-sharma-a701b1380"  target="_blank"class="linkedin-circle"
+          title="LinkedIn"><i class="fab fa-linkedin-in"></i>
+            </a>
+            <a href="https://github.com/mansi200799"
+                target="_blank"
+                 class="github-circle"
+                 title="GitHub">
+                <i class="fab fa-github"></i>
+            </a>
+
+            
+        </div>
+    </nav>
+</header>
+
+
+<!-- ===== HERO SECTION ===== -->
+<section class="hero-container">
+<!-- Light particles -->
+<div class="particles"></div>
+
+    <!-- floating shapes -->
+    <div class="shape sphere"></div>
+    <div class="shape ring"></div>
+    <div class="shape small-sphere"></div>
+
+    <div class="content-wrapper fade-up">
+        <h1 class="title">
+            Welcome to the <br>
+            <span>Flask-Based Company<br>Data Portal</span>
+        </h1>
+
+        <p class="description">
+            A modern Flask-based platform that displays scraped company data
+            with smooth animations and an elegant user interface.
+        </p>
+
+        <a href="/login" class="cta-button">Explore Projects</a>
+    </div>
+
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="soft-footer">
+    <p class="footer-name">Mansi</p>
+    <p class="footer-text">
+        Training and Projects powered by
+        <a href="codroidhub.html">CodroidHub</a>
+    </p>
+</footer>
+
+</body>
+</html>
+<script src="{{ url_for('static', filename='js/particles.js') }}"></script>

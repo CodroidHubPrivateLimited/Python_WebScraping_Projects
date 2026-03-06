@@ -3,6 +3,7 @@ import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import sys
+import csv
 
 sys.dont_write_bytecode = True
 
@@ -126,6 +127,29 @@ SCRAPER_MAP = {
     "blinkit": blinkit,
 }
 
+DYNAMIC_CSV_FALLBACKS = {
+    "myntra": os.path.join(BASE_DIR, "data", "dynamicfiles", "myntra_shoes.csv"),
+    "snapdeal": os.path.join(BASE_DIR, "data", "dynamicfiles", "snapdeal_tshirts.csv"),
+    "meesho": os.path.join(BASE_DIR, "data", "dynamicfiles", "Meesho_products.csv"),
+    "ajio": os.path.join(BASE_DIR, "data", "dynamicfiles", "ajio_products.csv"),
+    "blinkit": os.path.join(BASE_DIR, "data", "dynamicfiles", "blinkit_products.csv"),
+}
+
+
+def load_dynamic_fallback(site):
+    csv_path = DYNAMIC_CSV_FALLBACKS.get(site)
+    if not csv_path or not os.path.exists(csv_path):
+        return [], []
+
+    with open(csv_path, mode="r", encoding="utf-8", newline="") as f:
+        reader = csv.reader(f)
+        rows = list(reader)
+
+    if not rows:
+        return [], []
+
+    return rows[0], rows[1:]
+
 @app.route("/dynamic-websites")
 def dynamic_websites():
     if "user" not in session:
@@ -140,8 +164,19 @@ def view_dynamic(site):
 
     site = site.lower()
     module = SCRAPER_MAP.get(site)
+    if not module:
+        flash("Invalid dynamic website selected.")
+        return redirect("/dynamic-websites")
 
-    headers, rows = module.fetch_data()
+    try:
+        headers, rows = module.fetch_data()
+    except Exception:
+        app.logger.exception("Dynamic scraper failed for site: %s", site)
+        headers, rows = load_dynamic_fallback(site)
+        if rows:
+            flash("Live scrape failed on server, showing last saved data.")
+        else:
+            flash("Live scrape failed and no backup data found.")
 
     return render_template(
         "dynamic/view_common.html",

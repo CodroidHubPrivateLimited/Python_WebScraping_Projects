@@ -1,2 +1,6 @@
+#!/usr/bin/env bash
+set -e
+
 apt-get update
-apt-get install -y chromium-browser
+# Try modern package names first; fallback for older images.
+apt-get install -y chromium chromium-driver || apt-get install -y chromium-browser

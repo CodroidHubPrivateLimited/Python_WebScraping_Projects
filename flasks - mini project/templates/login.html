@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,7 +24,7 @@
             z-index: 0;
             pointer-events: none;
         }
-        
+
         .login-container {
             position: fixed;
             top: 50%;
@@ -34,7 +35,7 @@
             margin: 0;
             padding: 0;
         }
-        
+
         .login-box {
             background: rgba(255, 255, 255, 0.4);
             backdrop-filter: blur(20px);
@@ -42,11 +43,11 @@
             border-radius: 20px;
             padding: 45px 35px;
             border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 
+            box-shadow:
                 0 25px 50px rgba(0, 0, 0, 0.1),
                 inset 0 0 0 1px rgba(255, 255, 255, 0.3);
         }
-        
+
         .gradient-text {
             font-size: 2rem;
             text-align: center;
@@ -57,20 +58,28 @@
             animation: gradientMove 6s infinite linear;
             margin-bottom: 10px;
         }
-        
+
         @keyframes gradientMove {
-            0% { background-position: 0% }
-            50% { background-position: 100% }
-            100% { background-position: 0% }
+            0% {
+                background-position: 0%
+            }
+
+            50% {
+                background-position: 100%
+            }
+
+            100% {
+                background-position: 0%
+            }
         }
-        
+
         .subtitle {
             text-align: center;
             color: #4a5568;
             margin-bottom: 30px;
             font-size: 0.95rem;
         }
-        
+
         .error-message {
             background: rgba(255, 82, 82, 0.2);
             border: 1px solid rgba(255, 82, 82, 0.5);
@@ -81,11 +90,11 @@
             text-align: center;
             font-size: 0.9rem;
         }
-        
+
         .input-group {
             margin-bottom: 25px;
         }
-        
+
         .input-group label {
             display: block;
             margin-bottom: 8px;
@@ -93,7 +102,7 @@
             font-weight: 600;
             font-size: 0.95rem;
         }
-        
+
         .input-group input {
             width: 100%;
             padding: 14px 18px;
@@ -105,17 +114,17 @@
             transition: all 0.3s ease;
             outline: none;
         }
-        
+
         .input-group input::placeholder {
             color: #718096;
         }
-        
+
         .input-group input:focus {
             border-color: #3182ce;
             background: rgba(255, 255, 255, 0.8);
             box-shadow: 0 0 20px rgba(49, 130, 206, 0.2);
         }
-        
+
         .login-btn {
             width: 100%;
             padding: 15px;
@@ -129,47 +138,48 @@
             transition: all 0.3s ease;
             margin-top: 10px;
         }
-        
+
         .login-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 30px rgba(49, 130, 206, 0.4);
         }
-        
+
         .footer-links {
             text-align: center;
             margin-top: 25px;
             padding-top: 20px;
             border-top: 1px solid rgba(49, 130, 206, 0.2);
         }
-        
+
         .footer-links p {
             color: #4a5568;
             font-size: 0.9rem;
         }
-        
+
         .footer-links a {
             color: #3182ce;
             text-decoration: none;
             font-weight: 600;
             transition: all 0.3s ease;
         }
-        
+
         .footer-links a:hover {
             color: #38a169;
             text-shadow: 0 0 15px rgba(49, 130, 206, 0.5);
         }
-        
+
         @media (max-width: 480px) {
             .login-box {
                 padding: 35px 25px;
             }
-            
+
             .gradient-text {
                 font-size: 1.7rem;
             }
         }
     </style>
 </head>
+
 <body>
     <!-- Light 3D Background -->
     <div class="light-bg">
@@ -214,7 +224,7 @@
         <div class="login-box">
             <h1 class="gradient-text">Welcome Back</h1>
             <p class="subtitle">Sign in with username or email</p>
-            
+
             {% if error %}
             <div class="error-message">
                 {{ error }}
@@ -222,29 +232,32 @@
             {% endif %}
 
             {% if signup_success %}
-            <div class="error-message" style="background: rgba(56, 161, 105, 0.18); border-color: rgba(56, 161, 105, 0.5); color: #276749;">Account created. Please log in.</div>
+            <div class="error-message"
+                style="background: rgba(56, 161, 105, 0.18); border-color: rgba(56, 161, 105, 0.5); color: #276749;">
+                Account created. Please log in.</div>
             {% endif %}
-            
+
             <form method="POST" action="{{ url_for('login') }}">
                 <input type="hidden" name="next" value="{{ next_url or '' }}">
                 <div class="input-group">
                     <label for="username">Username or Email</label>
-                    <input type="text" id="username" name="username" placeholder="Enter your username or email" required>
+                    <input type="text" id="username" name="username" placeholder="Enter your username or email"
+                        required>
                 </div>
-                
+
                 <div class="input-group">
                     <label for="password">Password</label>
                     <input type="password" id="password" name="password" placeholder="Enter your password" required>
                 </div>
-                
+
                 <button type="submit" class="login-btn">Login</button>
             </form>
-            
+
             <div class="footer-links">
                 <p>Don't have an account? <a href="{{ url_for('signup') }}">Sign up</a></p>
             </div>
         </div>
     </div>
 </body>
-</html>
 
+</html>

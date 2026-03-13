@@ -4,31 +4,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verify Email - Data Scraper</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='landing.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='responsive.css') }}">
+    <style>
+        :root {
+            --color-primary: #1E1A28;
+            --color-accent: #9F69C5;
+            --color-light: #ECD6CD;
+            --text-primary: #ECD6CD;
+            --text-secondary: #CCB6B8;
+            --glass-bg: rgba(159, 105, 197, 0.08);
+            --glass-border: rgba(159, 105, 197, 0.2);
+        }
+        body { background: var(--color-primary); color: var(--text-primary); }
+        .error-message { background: rgba(255,0,0,0.1); border-color: #ff4444; color: #ff6666; }
+        .success-message { background: rgba(0,255,0,0.1); border-color: #44ff44; color: #66ff66; }
+    </style>
 </head>
 <body>
-    {% include '_page_nav.html' %}
-    <div class="login-container">
-        <div class="login-box">
-            <h1 class="gradient-text">Verify Email</h1>
-            <p class="subtitle">Verification code sent to <strong>{{ email }}</strong></p>
+    <div class="background-layer">
+        <div class="video-background">
+            <video autoplay muted loop playsinline>
+                <source src="{{ url_for('static', filename='background.mp4') }}" type="video/mp4">
+            </video>
+            <div class="video-overlay"></div>
+        </div>
+    </div>
 
-            {% if error %}
-            <div class="error-message">{{ error }}</div>
-            {% endif %}
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1>Verify Email</h1>
+                <p>Enter the 6-digit code sent to {{ email }}</p>
+                {% if error %}
+                <div class="error-message">{{ error }}</div>
+                {% endif %}
+                {% if message %}
+                <div class="success-message">{{ message }}</div>
+                {% endif %}
+                {% if info == 'console_fallback' %}
+                <div class="warning-message">Check terminal/console for OTP (fallback mode)</div>
+                {% endif %}
+            </div>
 
-            <form method="POST" action="{{ url_for('verify_email') }}">
+            <form method="POST">
                 <input type="hidden" name="email" value="{{ email }}">
-                <div class="input-group">
-                    <label for="code">6-digit Code</label>
-                    <input type="text" id="code" name="code" maxlength="6" placeholder="Enter verification code" required>
+                <div class="form-group">
+                    <label>Verification Code</label>
+                    <input type="text" name="code" maxlength="6" required pattern="\d{6}">
                 </div>
-
-                <button type="submit" class="login-btn">Verify and Create Account</button>
+                <button type="submit" class="btn-primary">Verify</button>
             </form>
 
-            <div class="footer-links">
-                <p>Wrong email? <a href="{{ url_for('signup') }}">Go back to sign up</a></p>
+            <div class="auth-actions">
+                <form method="POST" style="display: inline;">
+                    <input type="hidden" name="email" value="{{ email }}">
+                    <input type="hidden" name="resend" value="1">
+                    <button type="submit" class="btn-secondary">Resend Code</button>
+                </form>
+                <a href="{{ url_for('signup') }}">Back to Signup</a>
             </div>
         </div>
     </div>

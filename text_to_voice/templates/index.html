@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Voice Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Space Grotesk', sans-serif; 
+            background: #0a0a0a; 
+            color: #ffffff; 
+            height: 100vh; 
+            overflow: hidden;
+        }
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+        .sidebar {
+            width: 280px;
+            background: rgba(20, 20, 40, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 30px 20px;
+            border-right: 1px solid rgba(100, 150, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        .sidebar h2 { 
+            color: #64b5f6; 
+            margin-bottom: 40px; 
+            font-size: 24px;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(100, 181, 246, 0.5);
+        }
+        .sidebar-item {
+            display: block;
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+            font-weight: 500;
+        }
+        .sidebar-item:hover {
+            background: rgba(100, 181, 246, 0.1);
+            border-color: #64b5f6;
+            box-shadow: 0 0 20px rgba(100, 181, 246, 0.2);
+        }
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 40px;
+            position: relative;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            font-size: 48px;
+            background: linear-gradient(135deg, #64b5f6, #ff6b9d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            text-shadow: 0 0 30px rgba(100, 181, 246, 0.5);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            box-shadow: 0 25px 45px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+        .glass-card:hover { transform: translateY(-5px); box-shadow: 0 35px 60px rgba(0,0,0,0.4); }
+        .control-section {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .lang-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .voice-meter {
+            display: flex;
+            align-items: end;
+            justify-content: center;
+            gap: 3px;
+            height: 60px;
+            padding: 15px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.05);
+            margin: 20px 0;
+        }
+        .voice-bar {
+            width: 3px;
+            background: linear-gradient(to top, #ff6b9d, #64b5f6);
+            border-radius: 2px 2px 0 0;
+            transition: height 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 8px rgba(255, 107, 157, 0.5);
+            min-height: 5px;
+        }
+        .mic-section {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+        .clear-section {
+            display: flex;
+            justify-content: center;
+            margin: 15px 0;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-family: inherit;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            position: relative;
+            overflow: hidden;
+            min-height: 50px;
+        }
+        .lang-btn { 
+            background: linear-gradient(135deg, #64b5f6, #42a5f5); 
+            color: white; 
+            font-size: 14px;
+            min-width: 100px;
+        }
+        .lang-btn.orange { background: linear-gradient(135deg, #ff9800, #ffb74d); }
+        .start-btn { 
+            background: linear-gradient(135deg, #4caf50, #66bb6a); 
+            color: white; 
+            min-width: 140px;
+            font-size: 18px;
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.4);
+        }
+        .start-btn:hover:not(:disabled) { transform: scale(1.05); box-shadow: 0 15px 40px rgba(76, 175, 80, 0.6); }
+        .start-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .stop-btn { 
+            background: linear-gradient(135deg, #f44336, #ef5350); 
+            color: white; 
+            min-width: 140px;
+            font-size: 18px;
+            box-shadow: 0 10px 30px rgba(244, 67, 54, 0.4);
+        }
+        .stop-btn:hover:not(:disabled) { transform: scale(1.05); box-shadow: 0 15px 40px rgba(244, 67, 54, 0.6); }
+        .stop-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .clear-btn { 
+            background: linear-gradient(135deg, #9c27b0, #ba68c8); 
+            color: white; 
+            padding: 12px 28px;
+            font-size: 15px;
+        }
+        .clear-btn:hover { transform: scale(1.05); box-shadow: 0 10px 25px rgba(156, 39, 176, 0.5); }
+        .status {
+            font-size: 18px;
+            min-height: 24px;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+        }
+        .listening { color: #4caf50; text-shadow: 0 0 10px rgba(76, 175, 80, 0.8); animation: glow 2s infinite; }
+        .error { color: #f44336; }
+        @keyframes glow { 0%, 100% { text-shadow: 0 0 10px rgba(76,175,80,0.8); } 50% { text-shadow: 0 0 20px rgba(76,175,80,1); } }
+        .transcript-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .transcript {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(25px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+            overflow-y: auto;
+            font-size: 16px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            text-align: left;
+        }
+        .transcript::-webkit-scrollbar { width: 8px; }
+        .transcript::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 10px; }
+        .transcript::-webkit-scrollbar-thumb { background: rgba(100, 181, 246, 0.3); border-radius: 10px; }
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; }
+            .header h1 { font-size: 32px; }
+            .mic-section, .lang-controls { flex-direction: column; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h2>AI Voice</h2>
+            <div class="sidebar-item" onclick="window.location.href='/history.html'">📊 History</div>
+            <div class="sidebar-item">📈 Analytics</div>
+            <div class="sidebar-item active">🎤 Live Transcription</div>
+            <div class="sidebar-item">⚙️ Settings</div>
+        </div>
+        <div class="main">
+            <div class="header">
+                <h1>Voice Assistant</h1>
+            </div>
+            <div class="control-section glass-card">
+                <div class="lang-controls">
+                    <button id="langBtn" class="btn lang-btn">🇮🇳 Hindi</button>
+                    <button id="langBtn2" class="btn lang-btn orange">🇺🇸 English</button>
+                </div>
+                <div class="voice-meter" id="voiceMeter">
+                    <!-- Voice bars dynamically inserted -->
+                </div>
+                <div class="mic-section">
+                    <button id="startBtn" class="start-btn">▶️ Start</button>
+                    <button id="stopBtn" class="stop-btn">⏹️ Stop</button>
+                </div>
+                <div class="clear-section">
+                    <button id="clearBtn" class="btn clear-btn">Save to History & Clear</button>
+                </div>
+                <div id="status" class="status">Select language then click Start</div>
+            </div>
+            <div class="transcript-container glass-card">
+                <div id="transcript" class="transcript">Ready for your voice. Speak and watch the meter react to volume/pitch!</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Elements
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const langBtn = document.getElementById('langBtn');
+        const langBtn2 = document.getElementById('langBtn2');
+        const clearBtn = document.getElementById('clearBtn');
+        const status = document.getElementById('status');
+        const transcriptDiv = document.getElementById('transcript');
+        const voiceMeter = document.getElementById('voiceMeter');
+        let recognition, isListening = false;
+        let fullTranscript = localStorage.getItem('transcript') || '';
+        let mediaStream, analyser, dataArray, voiceBars = [];
+        
+        // Load transcript
+        transcriptDiv.textContent = fullTranscript || 'Ready for your voice...';
+
+        // Google-like real-time voice volume meter
+        async function initVoiceMeter() {
+            try {
+                mediaStream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: {
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                        autoGainControl: true
+                    } 
+                });
+                
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                const microphone = audioContext.createMediaStreamSource(mediaStream);
+                microphone.connect(analyser);
+                
+                analyser.fftSize = 512;
+                const bufferLength = analyser.frequencyBinCount;
+                dataArray = new Uint8Array(bufferLength);
+                
+                // Create 30 smooth voice bars
+                for (let i = 0; i < 30; i++) {
+                    const bar = document.createElement('div');
+                    bar.className = 'voice-bar';
+                    voiceMeter.appendChild(bar);
+                    voiceBars.push(bar);
+                }
+                
+                // Animate meter continuously
+                function animate() {
+                    requestAnimationFrame(animate);
+                    
+                    analyser.getByteFrequencyData(dataArray);
+                    
+                    // Calculate volume from low frequencies (voice range)
+                    let voiceVolume = 0;
+                    for (let i = 2; i < 30; i++) {
+                        voiceVolume += dataArray[i];
+                    }
+                    voiceVolume = voiceVolume / 28 / 255 * 120; // Scale to 0-120
+                    
+                    // Animate bars (peak in center, wave effect)
+                    voiceBars.forEach((bar, i) => {
+                        const distanceFromCenter = Math.abs(i - 15);
+                        const baseHeight = 8;
+                        const maxHeight = 58;
+                        const influence = (1 - distanceFromCenter / 15) * voiceVolume;
+                        const height = Math.max(baseHeight, influence);
+                        
+                        bar.style.height = `${height}px`;
+                        
+                        // Dynamic color: quiet=cyan, loud=pink/red
+                        const hue = 220 - (voiceVolume / 120 * 80); // 220(cyan) to 140(pink)
+                        const saturation = 70 + (voiceVolume / 120 * 20);
+                        bar.style.background = `hsl(${hue}, ${saturation}%, 55%)`;
+                        
+                        // Glow effect for high volume
+                        if (height > 40) {
+                            bar.style.boxShadow = `0 0 12px hsl(${hue}, 80%, 60%)`;
+                        } else {
+                            bar.style.boxShadow = 'none';
+                        }
+                    });
+                }
+                animate();
+                
+                status.textContent = '✅ Voice meter active - Speak to see volume waves!';
+                
+            } catch (err) {
+                console.error('Mic error:', err);
+                voiceMeter.innerHTML = '<div style="color: #ff6b9d; padding: 20px;">🎤 Mic permission needed for volume meter</div>';
+            }
+        }
+
+        // Speech recognition setup
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'hi-IN';
+
+            langBtn.onclick = () => {
+                recognition.lang = 'hi-IN';
+                status.textContent = '🇮🇳 Hindi - Speak loudly/softly to see meter!';
+                status.className = '';
+            };
+            langBtn2.onclick = () => {
+                recognition.lang = 'en-US';
+                status.textContent = '🇺🇸 English - Speak loudly/softly to see meter!';
+                status.className = '';
+            };
+
+            clearBtn.onclick = () => {
+                if (fullTranscript.trim()) {
+                    // Save exclusively to history
+                    const historyData = JSON.parse(localStorage.getItem('voiceHistory') || '[]');
+                    historyData.push({
+                        timestamp: new Date().toISOString(),
+                        lang: recognition.lang,
+                        text: fullTranscript.trim()
+                    });
+                    localStorage.setItem('voiceHistory', JSON.stringify(historyData));
+                    
+                    fullTranscript = '';
+                    localStorage.removeItem('transcript');
+                    transcriptDiv.textContent = '✅ Saved to History. New session ready!';
+                    
+                    window.dispatchEvent(new StorageEvent('storage', {
+                        key: 'voiceHistory',
+                        newValue: localStorage.getItem('voiceHistory')
+                    }));
+                } else {
+                    status.textContent = 'No content to save.';
+                }
+            };
+
+            recognition.onstart = () => {
+                isListening = true;
+                startBtn.disabled = true;
+                stopBtn.disabled = false;
+                status.className = 'listening';
+            };
+
+            recognition.onresult = (event) => {
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    if (event.results[i].isFinal) {
+                        fullTranscript += event.results[i][0].transcript + '. ';
+                        localStorage.setItem('transcript', fullTranscript);
+                        transcriptDiv.textContent = fullTranscript;
+                        transcriptDiv.scrollTop = transcriptDiv.scrollHeight;
+                    }
+                }
+            };
+
+            recognition.onerror = (event) => {
+                status.textContent = `❌ ${event.error}`;
+                status.className = 'error';
+                isListening = false;
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+            };
+
+            recognition.onend = () => {
+                if (isListening) recognition.start();
+                else startBtn.disabled = false, stopBtn.disabled = true;
+            };
+        }
+
+        // Init
+        initVoiceMeter();
+        startBtn.onclick = () => recognition?.start();
+        stopBtn.onclick = () => recognition?.stop();
+        stopBtn.disabled = true; // Stop disabled by default
+    </script>
+</body>
+</html>

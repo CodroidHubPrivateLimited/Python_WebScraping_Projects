@@ -5,3 +5,4 @@ streamlit
 flask
 SpeechRecognition
 PyAudio
+gunicorn==25.1.0

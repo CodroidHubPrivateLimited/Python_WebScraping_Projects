@@ -1,8 +1,10 @@
+import os
 import re
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 
 _STOPWORDS = {
     "bluetooth",
@@ -45,6 +47,8 @@ def create_driver(headless: bool = True) -> webdriver.Chrome:
     if headless:
         options.add_argument("--headless=new")
 
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-setuid-sandbox")
     options.add_argument("--disable-gpu")
     options.add_argument("--window-size=1920,1080")
     options.add_argument("--disable-dev-shm-usage")
@@ -57,7 +61,14 @@ def create_driver(headless: bool = True) -> webdriver.Chrome:
     options.add_experimental_option("excludeSwitches", ["enable-automation"])
     options.add_experimental_option("useAutomationExtension", False)
 
-    return webdriver.Chrome(options=options)
+    chrome_bin = os.getenv("CHROME_BIN")
+    if chrome_bin:
+        options.binary_location = chrome_bin
+
+    driver_path = os.getenv("CHROMEDRIVER_PATH")
+    service = Service(driver_path) if driver_path else Service()
+
+    return webdriver.Chrome(service=service, options=options)
 
 
 def clean_price(price_text: str | int | None) -> int | None:

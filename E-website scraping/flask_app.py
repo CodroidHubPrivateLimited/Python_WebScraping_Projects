@@ -205,21 +205,27 @@ def index():
         if max_price_raw.isdigit():
             max_price = int(max_price_raw)
 
-        amazon_items = _with_price_text(
-            get_amazon_products(product, headless=headless, debug=debug, limit=limit)
-        )
-        myntra_items = _with_price_text(
-            get_myntra_products(product, headless=headless, debug=debug, limit=limit)
-        )
-        blinkit_items = _with_price_text(
-            get_blinkit_products(product, headless=headless, debug=debug, limit=limit)
-        )
-        meesho_items = _with_price_text(
-            get_meesho_products(product, headless=headless, debug=debug, limit=limit)
-        )
-        snapdeal_items = _with_price_text(
-            get_snapdeal_products(product, headless=headless, debug=debug, limit=limit)
-        )
+        try:
+            amazon_items = _with_price_text(
+                get_amazon_products(product, headless=headless, debug=debug, limit=limit)
+            )
+            myntra_items = _with_price_text(
+                get_myntra_products(product, headless=headless, debug=debug, limit=limit)
+            )
+            blinkit_items = _with_price_text(
+                get_blinkit_products(product, headless=headless, debug=debug, limit=limit)
+            )
+            meesho_items = _with_price_text(
+                get_meesho_products(product, headless=headless, debug=debug, limit=limit)
+            )
+            snapdeal_items = _with_price_text(
+                get_snapdeal_products(product, headless=headless, debug=debug, limit=limit)
+            )
+        except Exception:
+            data["error"] = (
+                "Scraping failed on the server. Please try again later or check server logs."
+            )
+            return render_template("index.html", **data)
         all_items = (
             amazon_items
             + myntra_items

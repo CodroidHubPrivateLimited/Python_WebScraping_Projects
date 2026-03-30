@@ -4,3 +4,4 @@ mysql-connector-python
 requests
 beautifulsoup4
 authlib
+gunicorn

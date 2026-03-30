@@ -3,5 +3,4 @@ beautifulsoup4
 selenium
 flask
 SpeechRecognition
-PyAudio
 gunicorn==25.1.0

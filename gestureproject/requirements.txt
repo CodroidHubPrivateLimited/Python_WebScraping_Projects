@@ -1,0 +1,7 @@
+opencv-python==4.13.0.92
+mediapipe==0.10.9
+numpy
+sounddevice
+matplotlib
+pandas  # for logging analysis
+

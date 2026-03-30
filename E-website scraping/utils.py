@@ -5,6 +5,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 
 _STOPWORDS = {
     "bluetooth",
@@ -65,8 +66,7 @@ def create_driver(headless: bool = True) -> webdriver.Chrome:
     if chrome_bin:
         options.binary_location = chrome_bin
 
-    driver_path = os.getenv("CHROMEDRIVER_PATH")
-    service = Service(driver_path) if driver_path else Service()
+    service = Service(ChromeDriverManager().install())
 
     return webdriver.Chrome(service=service, options=options)
 

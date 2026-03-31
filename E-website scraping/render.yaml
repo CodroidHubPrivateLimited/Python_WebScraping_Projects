@@ -1,5 +1,5 @@
 services:
-  - type: web
+  -  type: web
     name: python-webscraping
     env: python
     buildCommand: |

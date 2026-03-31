@@ -221,10 +221,9 @@ def index():
             snapdeal_items = _with_price_text(
                 get_snapdeal_products(product, headless=headless, debug=debug, limit=limit)
             )
-        except Exception:
-            data["error"] = (
-                "Scraping failed on the server. Please try again later or check server logs."
-            )
+        except Exception as e:
+            print("Error occurred:", e)   # console me print hoga
+            data["error"] = str(e)       # frontend pe show hoga
             return render_template("index.html", **data)
         all_items = (
             amazon_items

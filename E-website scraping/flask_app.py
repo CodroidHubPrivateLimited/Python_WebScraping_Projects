@@ -155,7 +155,12 @@ def _apply_store_filter(stores: list[dict], selected: list[str]) -> list[dict]:
     return [store for store in stores if store["store"].lower() in selected_set]
 
 
-@app.route("/", methods=["GET", "POST"])
+@app.get("/")
+def landing():
+    return render_template("landing.html")
+
+
+@app.route("/search", methods=["GET", "POST"])
 def index():
     data = {
         "product": "",
@@ -309,3 +314,5 @@ def voice_stream():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
+
+

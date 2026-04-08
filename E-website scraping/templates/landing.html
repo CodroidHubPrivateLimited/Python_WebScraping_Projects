@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nocturne | Precise Web Scraping &amp; Price Comparison</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&family=Manrope:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='landing.css') }}" />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-surface": "#dae2fd",
+              "on-primary-fixed-variant": "#004395",
+              "on-secondary": "#003731",
+              "on-background": "#dae2fd",
+              "on-tertiary-container": "#e8f1ff",
+              "surface-tint": "#adc6ff",
+              "on-tertiary": "#233143",
+              secondary: "#44e2cd",
+              primary: "#adc6ff",
+              "tertiary-fixed": "#d4e4fa",
+              "on-secondary-fixed-variant": "#005047",
+              "surface-container-highest": "#2d3449",
+              "inverse-surface": "#dae2fd",
+              "surface-container-high": "#222a3d",
+              "on-primary": "#002e6a",
+              "surface-container-low": "#131b2e",
+              "on-surface-variant": "#c4c5d9",
+              "on-secondary-fixed": "#00201c",
+              "on-primary-fixed": "#001a42",
+              "surface-bright": "#31394d",
+              "on-tertiary-fixed-variant": "#39485a",
+              "inverse-primary": "#005ac2",
+              "inverse-on-surface": "#283044",
+              "on-primary-container": "#ecf0ff",
+              "surface-container-lowest": "#060e20",
+              "tertiary-container": "#5f6e82",
+              background: "#0b1326",
+              error: "#ffb4ab",
+              tertiary: "#b9c8de",
+              "surface-variant": "#2d3449",
+              "on-tertiary-fixed": "#0d1c2d",
+              "primary-container": "#0e69dc",
+              "secondary-fixed": "#62fae3",
+              "on-error-container": "#ffdad6",
+              "primary-fixed-dim": "#adc6ff",
+              "on-secondary-container": "#004d44",
+              outline: "#8e90a2",
+              "primary-fixed": "#d8e2ff",
+              "surface-dim": "#0b1326",
+              "outline-variant": "#434656",
+              "tertiary-fixed-dim": "#b9c8de",
+              "error-container": "#93000a",
+              surface: "#0b1326",
+              "on-error": "#690005",
+              "secondary-fixed-dim": "#3cddc7",
+              "secondary-container": "#03c6b2",
+              "surface-container": "#171f33"
+            },
+            borderRadius: {
+              DEFAULT: "0.125rem",
+              lg: "0.25rem",
+              xl: "0.5rem",
+              full: "0.75rem"
+            },
+            fontFamily: {
+              headline: ["Noto Serif"],
+              body: ["Manrope"],
+              label: ["Manrope"]
+            }
+          }
+        }
+      };
+    </script>
+  </head>
+  <body class="bg-background text-on-background selection:bg-secondary/30">
+    <nav class="fixed top-0 w-full z-50 bg-slate-950/40 backdrop-blur-xl shadow-[0_20px_50px_rgba(218,226,253,0.06)]">
+      <div class="max-w-7xl mx-auto flex justify-between items-center px-8 py-6">
+        <div class="text-2xl font-serif font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-blue-400">
+          Nocturne
+        </div>
+        <div class="hidden md:flex items-center space-x-12">
+          <a class="text-slate-400 uppercase tracking-widest text-[10px] font-medium hover:text-teal-300 transition-colors duration-300" href="#">Docs</a>
+          <a class="text-slate-400 uppercase tracking-widest text-[10px] font-medium hover:text-teal-300 transition-colors duration-300" href="#">Features</a>
+          <a class="text-slate-400 uppercase tracking-widest text-[10px] font-medium hover:text-teal-300 transition-colors duration-300" href="#">Pricing</a>
+          <a class="text-slate-400 uppercase tracking-widest text-[10px] font-medium hover:text-teal-300 transition-colors duration-300" href="#">Support</a>
+        </div>
+        <a class="bg-gradient-to-r from-teal-400 to-blue-400 text-on-primary-fixed font-bold py-2.5 px-6 rounded-md text-sm active:scale-95 duration-150" href="/search">
+          Start Free
+        </a>
+      </div>
+    </nav>
+
+    <main class="pt-32">
+      <section class="max-w-7xl mx-auto px-8 mb-24 lg:mb-40">
+        <div class="grid lg:grid-cols-2 gap-16 items-center">
+          <div class="flex flex-col space-y-8">
+            <div class="inline-flex items-center space-x-2 bg-surface-container-low py-2 px-4 rounded-full w-fit">
+              <span class="material-symbols-outlined text-secondary text-sm icon-fill">star</span>
+              <span class="text-label text-xs font-semibold tracking-wider text-secondary uppercase">10K+ Trusted Shoppers</span>
+            </div>
+            <h1 class="text-5xl lg:text-7xl font-bold leading-tight -tracking-[0.02em]">
+              Compare Prices with <br />
+              <span class="nocturne-gradient">Precision</span>
+            </h1>
+            <p class="text-body-lg text-on-surface-variant max-w-xl leading-relaxed">
+              Harness the power of AI-driven web scraping to unlock real-time pricing intelligence. Our Chrome extension does the heavy lifting while you focus on saving.
+            </p>
+            <div class="flex flex-wrap gap-4 pt-4">
+              <a class="btn-primary-gradient text-on-primary-fixed font-extrabold px-8 py-4 rounded-md shadow-lg shadow-secondary/10 hover:brightness-110 transition-all" href="/search">
+                Start Shopping Now
+              </a>
+              <a class="bg-transparent text-primary-fixed font-bold px-8 py-4 rounded-md ghost-border hover:bg-surface-container-low transition-all" href="#">
+                See Demo
+              </a>
+            </div>
+            <div class="flex items-center space-x-6 pt-4">
+              <div class="flex -space-x-3">
+                <img class="w-10 h-10 rounded-full border-2 border-background" alt="portrait of a young modern professional woman smiling" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlPWUqz89N8Xh2Mm1OMbhZY-IeLtHJ3-33I9LseCdYrkvEaSSoSGeHYDp9XutIQfbgIhCCQE4VBL6jfSOK336_uuMKtJXeA__AF4xblSb_eGBfU50RMwQG0coO3eDnyRT0qe33cf44oowIviwqp9fXFCwku-xxeHRMlwffPRqzOWIP9A9TSvPQeXGvswrMEgUYNhuJjj632oBDkYF3KD0so6JpyMHL1yA9MYmmGx--Pto_rdHxPeT8-ZslfpHiZR8Zy9Eh55ZlJRSh" />
+                <img class="w-10 h-10 rounded-full border-2 border-background" alt="portrait of a tech-savvy young man" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDI9r396XeBL3im86dwd32N-EJ7DSoiy-l0KSnGjLyiC9WFsdQVoiJC0NWIoyhkSe7V-Q4zv28qvEJwqlo9lGGzRZqomc0bXD_OhWyK6WqQAX_DHgS46f5ODK7MqQWyzFFmqP6YW_ItWGK1lX9aWdf4JCELwN_Zz2BEFLY4S5K3e4IH2y3wWCdrcHBUDs2LxVlzqcw2qh-7ybd3XFi5Z-KxoSqdZlsOnpuwlrEmiPz26r_GsU8tQLMWS_jAhtMXoJySVsD6O2tXHdrb" />
+                <img class="w-10 h-10 rounded-full border-2 border-background" alt="portrait of a person smiling" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4lBjfUHcf0iA8P8BAzYcZ2UczcZxLXNYrxalxcPlwKw63zuMvnhoAaZqZ_QlBgzcExptybxrNPkgJufEnIE6mezLwazvlnzgH2iCs5T4GPe11gm5Futqh3Msxq8a915zxfFeX5BEr4v4-sOHTDwWIVh2IrN92a5MlCFbcapiax2QPChg3CY2m2OIS5XQdjrelkGjQKoJ3AHnTyTU2V8VzbgEjcPudy98lld69LQAPrfZS0X2wihf44FJcaqq210rEqki3xts7voR6" />
+              </div>
+              <div class="text-sm">
+                <div class="flex items-center text-secondary">
+                  <span class="material-symbols-outlined text-xs icon-fill">star</span>
+                  <span class="material-symbols-outlined text-xs icon-fill">star</span>
+                  <span class="material-symbols-outlined text-xs icon-fill">star</span>
+                  <span class="material-symbols-outlined text-xs icon-fill">star</span>
+                  <span class="material-symbols-outlined text-xs icon-fill">star</span>
+                  <span class="ml-2 font-bold text-on-surface">5.0 Rating</span>
+                </div>
+                <span class="text-on-surface-variant text-xs">on Chrome Web Store</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="relative group">
+            <div class="absolute -inset-4 bg-primary/10 blur-3xl rounded-full transition-opacity group-hover:opacity-100 opacity-40"></div>
+            <div class="relative bg-surface-container-low rounded-xl overflow-hidden shadow-2xl border border-white/5">
+              <div class="bg-surface-container-high px-6 py-3 flex items-center justify-between border-b border-white/5">
+                <div class="flex space-x-2">
+                  <div class="w-3 h-3 rounded-full bg-error/40"></div>
+                  <div class="w-3 h-3 rounded-full bg-secondary/40"></div>
+                  <div class="w-3 h-3 rounded-full bg-primary/40"></div>
+                </div>
+                <div class="text-[10px] text-on-surface-variant font-mono uppercase tracking-widest">nocturne_scraper_v2.sh</div>
+              </div>
+              <div class="p-8 font-mono text-sm space-y-4">
+                <div class="flex items-start">
+                  <span class="text-on-surface-variant mr-4">01</span>
+                  <span class="text-secondary">import</span> <span class="text-on-surface">nocturne_engine</span>
+                </div>
+                <div class="flex items-start">
+                  <span class="text-on-surface-variant mr-4">02</span>
+                  <span class="text-on-surface">engine = nocturne_engine.Scraper(mode=</span><span class="text-primary-fixed">'real_time'</span><span class="text-on-surface">)</span>
+                </div>
+                <div class="flex items-start">
+                  <span class="text-on-surface-variant mr-4">03</span>
+                  <span class="text-on-surface-variant">// Scraping 1,450 stores for "Smart TV"</span>
+                </div>
+                <div class="flex items-start">
+                  <span class="text-on-surface-variant mr-4">04</span>
+                  <span class="text-on-surface">results = engine.compare(target_id=</span><span class="text-primary-fixed">'4K_OLED'</span><span class="text-on-surface">)</span>
+                </div>
+                <div class="flex items-start">
+                  <span class="text-on-surface-variant mr-4">05</span>
+                  <span class="text-secondary">print</span><span class="text-on-surface">(results.best_price)</span>
+                </div>
+                <div class="mt-8 pt-8 border-t border-white/5">
+                  <div class="flex justify-between items-end">
+                    <div>
+                      <p class="text-xs text-on-surface-variant mb-1 uppercase tracking-tighter">Current Best Price</p>
+                      <p class="text-3xl font-bold nocturne-gradient">$849.99</p>
+                    </div>
+                    <div class="text-right">
+                      <p class="text-[10px] text-secondary font-bold uppercase">-14% vs Amazon</p>
+                      <div class="h-1 w-24 bg-surface-container-highest rounded-full mt-2">
+                        <div class="h-full w-3/4 bg-secondary rounded-full shadow-[0_0_8px_#44e2cd]"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="absolute -bottom-8 -left-8 glass-effect ghost-border p-6 rounded-xl hidden lg:block">
+              <div class="flex items-center space-x-4">
+                <div class="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center">
+                  <span class="material-symbols-outlined text-primary icon-fill">bolt</span>
+                </div>
+                <div>
+                  <p class="text-sm font-bold">Latency</p>
+                  <p class="text-xs text-on-surface-variant">0.4ms avg response</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-surface-container-low/50 py-16 mb-24 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-8">
+          <p class="text-center text-label text-[10px] uppercase tracking-[0.2em] text-on-surface-variant mb-10">Supporting the world's leading marketplaces</p>
+          <div class="flex flex-wrap justify-center items-center gap-12 lg:gap-24 opacity-40 grayscale hover:grayscale-0 transition-all">
+            <span class="text-2xl font-black italic tracking-tighter">AMAZON</span>
+            <span class="text-2xl font-serif font-bold italic tracking-tight">eBay</span>
+            <span class="text-2xl font-bold tracking-tighter">BestBuy</span>
+            <span class="text-2xl font-mono tracking-tighter">WALMART</span>
+            <span class="text-2xl font-serif font-light">Target</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="max-w-7xl mx-auto px-8 mb-40">
+        <div class="text-center mb-20">
+          <h2 class="text-4xl lg:text-5xl font-bold mb-6">Designed for the <span class="italic font-normal">Modern Shopologist</span></h2>
+          <p class="text-on-surface-variant max-w-2xl mx-auto">We've combined deep-web scraping with intuitive AI to create a shopping experience that feels like magic.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="md:col-span-2 bg-surface-container rounded-xl p-10 flex flex-col justify-between min-h-[400px] relative overflow-hidden">
+            <div class="relative z-10">
+              <div class="w-12 h-12 bg-secondary/20 rounded-lg flex items-center justify-center mb-6">
+                <span class="material-symbols-outlined text-secondary icon-fill">mic</span>
+              </div>
+              <h3 class="text-2xl font-bold mb-4">Voice Search Comparison</h3>
+              <p class="text-on-surface-variant max-w-sm">Just speak it. Our natural language processing engine understands complex queries like "find the cheapest 4K projector with next-day shipping."</p>
+            </div>
+            <img class="absolute bottom-0 right-0 w-1/2 opacity-40 mask-image-gradient" alt="abstract 3d visualization of sound waves" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgOCqW_suzqQD7EhAWm4vGAzK1SDserbe4uonrzb14d-5gOS6UebaSawAifACdFqnDM7cvYvxsjmd1l8MiJPAbN9oecNCI7R2Sx3-jNWDRNPIPF15L5By8kdnxx_chPFd1OrrbFtrB5C2GBJ_t3AGXotygN6s4nk0b_a0REjwaGyXtdZotSv7FzYc8HC8N226ZVhxBLZNDNxmR49Rw6--XaP3DVWyQEUhYTgBlIiw5i8-KD2516FfhOHha5BsnSNoV9J1Osp6qEQ_t" />
+          </div>
+          <div class="bg-surface-container rounded-xl p-10 flex flex-col justify-between">
+            <div>
+              <div class="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center mb-6">
+                <span class="material-symbols-outlined text-primary icon-fill">psychology</span>
+              </div>
+              <h3 class="text-2xl font-bold mb-4">AI-Powered Predictions</h3>
+              <p class="text-on-surface-variant">Don't just see today's price. Our AI models predict price drops weeks in advance with 92% accuracy.</p>
+            </div>
+          </div>
+          <div class="bg-surface-container rounded-xl p-10 flex flex-col justify-between">
+            <div>
+              <div class="w-12 h-12 bg-secondary/20 rounded-lg flex items-center justify-center mb-6">
+                <span class="material-symbols-outlined text-secondary icon-fill">update</span>
+              </div>
+              <h3 class="text-2xl font-bold mb-4">Real-Time Scraping</h3>
+              <p class="text-on-surface-variant">Our scrapers refresh every 60 seconds across 10,000+ domains. If a price moves, you're the first to know.</p>
+            </div>
+          </div>
+          <div class="md:col-span-2 bg-surface-container rounded-xl p-10 flex flex-col md:flex-row items-center gap-10">
+            <div class="flex-1">
+              <div class="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center mb-6">
+                <span class="material-symbols-outlined text-primary icon-fill">extension</span>
+              </div>
+              <h3 class="text-2xl font-bold mb-4">The Chrome Extension</h3>
+              <p class="text-on-surface-variant">Browser-native price tracking. It sits quietly in the corner and alerts you when the product you're viewing is cheaper elsewhere.</p>
+            </div>
+            <div class="flex-1 bg-background p-4 rounded-lg ghost-border">
+              <div class="flex items-center space-x-3 mb-4">
+                <div class="w-2 h-2 rounded-full bg-secondary"></div>
+                <span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Smart Alert</span>
+              </div>
+              <p class="text-xs mb-2">"This item is $45.00 cheaper at Target."</p>
+              <button class="text-[10px] bg-secondary/20 text-secondary px-3 py-1 rounded font-bold">Go to Target</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="max-w-7xl mx-auto px-8 mb-40">
+        <div class="bg-gradient-to-br from-surface-container-high to-surface-container-lowest rounded-2xl p-16 lg:p-24 text-center relative overflow-hidden border border-white/5">
+          <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent"></div>
+          <div class="relative z-10">
+            <h2 class="text-4xl lg:text-6xl font-bold mb-8">Ready to reclaim your <br /> <span class="nocturne-gradient italic">shopping freedom?</span></h2>
+            <p class="text-on-surface-variant text-lg max-w-xl mx-auto mb-12">Join 10,000+ shoppers who are already saving millions every month with Nocturne's precision engine.</p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <a class="btn-primary-gradient text-on-primary-fixed font-extrabold px-10 py-5 rounded-md text-lg active:scale-95 transition-all" href="/search">
+                Get Started Free
+              </a>
+              <a class="text-primary-fixed font-bold px-10 py-5" href="#">Learn more about enterprise tools</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="w-full border-t border-slate-800/30 bg-slate-950">
+      <div class="max-w-7xl mx-auto px-8 py-12 grid grid-cols-1 md:grid-cols-4 gap-12">
+        <div class="col-span-1 md:col-span-1">
+          <div class="text-xl font-serif text-slate-100 font-bold mb-6">Nocturne</div>
+          <p class="text-slate-400 text-sm leading-relaxed">The premier price intelligence platform for the modern era. Editorial precision, data-driven savings.</p>
+        </div>
+        <div>
+          <h4 class="text-slate-100 font-bold text-sm mb-6 uppercase tracking-wider">Product</h4>
+          <ul class="space-y-4">
+            <li><a class="text-slate-500 hover:text-slate-200 transition-all text-sm" href="#">Features</a></li>
+            <li><a class="text-slate-500 hover:text-slate-200 transition-all text-sm" href="#">Chrome Extension</a></li>
+            <li><a class="text-slate-500 hover:text-slate-200 transition-all text-sm" href="#">API Docs</a></li>
+            <li><a class="text-slate-500 hover:text-slate-200 transition-all text-sm" href="#">Pricing</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-slate-100 font-bold text-sm mb-6 uppercase tracking-wider">Company</h4>
+          <ul class="space-y-4">
+            <li><a class="text-slate-500 hover:text-slate-200 transition-all text-sm" href="#">About</a></li>
+            <li><a class="text-slate-500 hover:text-slate-200 transition-all text-sm" href="#">Careers</a></li>
+            <li><a class="text-slate-500 hover:text-slate-200 transition-all text-sm" href="#">Privacy</a></li>
+            <li><a class="text-slate-500 hover:text-slate-200 transition-all text-sm" href="#">Terms</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-slate-100 font-bold text-sm mb-6 uppercase tracking-wider">Subscribe</h4>
+          <p class="text-slate-500 text-xs mb-4">Get the latest deal alerts and updates.</p>
+          <div class="flex items-center bg-surface-container-lowest rounded overflow-hidden ghost-border">
+            <input class="bg-transparent border-none text-xs focus:ring-0 text-on-surface p-3 w-full" placeholder="Email address" type="email" />
+            <button class="bg-primary/20 text-primary px-4 py-2">
+              <span class="material-symbols-outlined text-sm">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="max-w-7xl mx-auto px-8 pb-12">
+        <div class="border-t border-slate-800/20 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p class="font-sans text-slate-400 text-sm">&copy; 2024 Nocturne Editorial. All rights reserved.</p>
+          <div class="flex space-x-6">
+            <span class="material-symbols-outlined text-slate-500 hover:text-teal-400 cursor-pointer">public</span>
+            <span class="material-symbols-outlined text-slate-500 hover:text-teal-400 cursor-pointer">chat</span>
+            <span class="material-symbols-outlined text-slate-500 hover:text-teal-400 cursor-pointer">alternate_email</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

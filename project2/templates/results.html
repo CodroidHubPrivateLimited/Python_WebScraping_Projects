@@ -7,54 +7,103 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
 </head>
-<body>
-  <a href="/" class="back-link">← Back to Home</a>
-  <div class="header">
-    <h1>{{ site.capitalize() }} Jobs</h1>
-    {% if csv_jobs %}
-      <a href="/download_csv" class="btn-download">Download CSV</a>
-    {% endif %}
-  </div>
-  <div class="jobs-grid">
-    {% if csv_jobs %}
-      <h3>Scraped CSV Data ({{ csv_jobs|length }} rows)</h3>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>TEXT</th>
-              <th>IMAGE</th>
-              <th>LINK</th>
-            </tr>
-          </thead>
-        <tbody>
-          {% for row in csv_jobs %}
-          <tr>
-            <td>{{ row.TEXT[:200] }}{% if row.TEXT|length > 200 %}...{% endif %}</td>
-            <td>{% if row.IMAGE %}<img src="{{ row.IMAGE }}" style="max-width:100px; max-height:50px;">{% endif %}</td>
-            <td>{% if row.LINK %}<a href="{{ row.LINK }}" target="_blank" class="link">View Link</a>{% endif %}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-          </table>
-        </div>
-    {% elif jobs %}
-      {% for job in jobs %}
-        <div class="job-card">
-          <div class="company">{{ job[3] }}</div>
-          <div class="location">{{ job[4] }}</div>
-          <div class="other">
-            <div class="title">{{ job[2] }}</div>
-            <div class="description">{{ job[5] }}</div>
-            {% if job[6] %}
-              <a href="{{ job[6] }}" target="_blank" class="link">View Job</a>
-            {% endif %}
+<body class="results">
+  <header class="topbar results-topbar">
+    <div class="brand">
+      <span class="brand-mark"></span>
+      <span class="brand-text">VishalSachdeva</span>
+    </div>
+    <nav class="nav-links">
+      <a href="/">Home</a>
+      <a href="#">Search</a>
+      <a href="#">Saved</a>
+      <a href="#">Profile</a>
+    </nav>
+    <div class="profile-dot">VS</div>
+  </header>
+
+  <main class="results-wrap">
+    <section class="results-hero">
+      <span class="eyebrow">Discovery Engine</span>
+      <div class="title-row">
+        <h1>{{ site.capitalize() if site else 'All' }} Jobs</h1>
+        <span class="results-count">
+          {% if csv_jobs %}
+            {{ csv_jobs|length }} Results
+          {% elif jobs %}
+            {{ jobs|length }} Results
+          {% else %}
+            0 Results
+          {% endif %}
+        </span>
+      </div>
+      <p>Exploring the frontier of technical career opportunities. Curated results from the global grid.</p>
+      <!-- <div class="filter-row">
+        <span class="filter-pill active">Filters Active</span>
+        <span class="filter-pill">Remote</span>
+        <span class="filter-pill">Technology</span>
+      </div> -->
+      <div class="results-actions">
+        <a href="/" class="back-link">← Back to Home</a>
+        {% if csv_jobs %}
+          <a href="/download_csv" class="btn-download">Download CSV</a>
+        {% endif %}
+      </div>
+    </section>
+
+    <section class="results-content">
+      {% if csv_jobs %}
+        <div class="data-panel">
+          <h3>Scraped CSV Data ({{ csv_jobs|length }} rows)</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>TEXT</th>
+                  <th>IMAGE</th>
+                  <th>LINK</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for row in csv_jobs %}
+                <tr>
+                  <td>{{ row.TEXT[:200] }}{% if row.TEXT|length > 200 %}...{% endif %}</td>
+                  <td>{% if row.IMAGE %}<img src="{{ row.IMAGE }}" style="max-width:100px; max-height:50px;">{% endif %}</td>
+                  <td>{% if row.LINK %}<a href="{{ row.LINK }}" target="_blank" class="link">View Link</a>{% endif %}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
           </div>
         </div>
-      {% endfor %}
-    {% else %}
-      <p class="no-jobs">No jobs found. Try scraping again.</p>
-    {% endif %}
-  </div>
+      {% elif jobs %}
+        <div class="jobs-grid">
+          {% for job in jobs %}
+            <article class="job-card">
+              <div class="job-badge">{{ job.get('site', 'unknown').upper() }}</div>
+              <h3 class="job-title">{{ job.title }}</h3>
+              <div class="job-company">{{ job.get('company', 'N/A') }}</div>
+              <div class="job-location">{{ job.get('location', 'N/A') }}</div>
+              <div class="job-meta">
+                <div>
+                  <span>Estimated Salary</span>
+                  <strong>{{ job.get('salary', 'Not Disclosed') }}</strong>
+                </div>
+                <div>
+                  <span>Source</span>
+                  <strong>{{ job.get('site', 'Unknown') }}</strong>
+                </div>
+              </div>
+              {% if job.get('url') %}
+                <a href="{{ job.url }}" target="_blank" class="job-cta">Open Job on {{ job.get('site', 'site')|capitalize }} ↗</a>
+              {% endif %}
+            </article>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="no-jobs">No jobs found. Try a different query.</p>
+      {% endif %}
+    </section>
+  </main>
 </body>
 </html>

@@ -1,10 +1,15 @@
-# Enhancement: Add 3D animations, more attractive design, center buttons on http://127.0.0.1:5009/
+# Multi-Site Dynamic Search TODO
+Status: [ ] Complete
 
 ## Steps:
-- [x] 1. Create TODO_enhance.md
-- [x] 2. Update static/style.css (add 3D transforms, particles, neon glows, enhanced card rotations)
-- [x] 3. Ensure index.html buttons perfectly centered (body flex centering)
-- [x] 4. Add shine/particle effects for extra attractiveness
-- [x] 5. Update TODO
-- [x] 6. Complete
+1. [x] Add query-aware scrape(query) to naukri_dynamic_scraper.py (structured dicts like Indeed)
+2. [x] Add query-aware scrape(query) to jobsphere_dynamic_scraper.py (structured dicts)
+3. [x] Update app.py: Modify /scrape/naukri & /scrape/jobsphere for query, pass jobs=jobs
+4. [x] Add /scrape-all route in app.py: parallel scrape all three +site label
+5. [x] templates/index.html: Add search forms for Naukri/Jobsphere + new "Search All Sites" button
+6. [x] templates/results.html: Display job.site label, handle combined
+7. [x] static/style.css: Styles if needed
+8. [ ] Test all searches & parallel
+
+After: attempt_completion
 

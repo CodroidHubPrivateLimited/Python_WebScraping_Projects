@@ -4,6 +4,13 @@ import os
 
 app = Flask(__name__)
 
+def build_query_from_form(default_query):
+    role = (request.form.get('query') or default_query).strip()
+    experience = request.form.get('experience', '').strip()
+    location = request.form.get('location', '').strip()
+    extras = " ".join([part for part in [experience, location] if part])
+    return f"{role} {extras}".strip()
+
 def init_db():
     db_path = 'jobs.db'
     import time
@@ -31,16 +38,18 @@ def index():
 @app.route('/scrape/indeed', methods=['POST'])
 def scrape_indeed():
     init_db()
+    query = build_query_from_form('python developer')
     from indeed_dynamic_scraper import scrape
-    csv_jobs = scrape()
-    return render_template('results.html', site='indeed', csv_jobs=csv_jobs)
+    jobs = scrape(query=query)
+    return render_template('results.html', site='indeed', jobs=jobs)
 
 @app.route('/scrape/naukri', methods=['POST'])
 def scrape_naukri():
     init_db()
+    query = build_query_from_form('software developer')
     from naukri_dynamic_scraper import scrape
-    csv_jobs = scrape()
-    return render_template('results.html', site='naukri', csv_jobs=csv_jobs)
+    jobs = scrape(query)
+    return render_template('results.html', site='naukri', jobs=jobs)
 
 from flask import send_from_directory
 
@@ -48,12 +57,7 @@ from flask import send_from_directory
 def download_csv():
     return send_from_directory('.', 'indeed_scraped_data.csv', as_attachment=True)
 
-@app.route('/scrape/jobsphere', methods=['POST'])
-def scrape_jobsphere():
-    init_db()
-    from jobsphere_dynamic_scraper import scrape
-    csv_jobs = scrape()
-    return render_template('results.html', site='jobsphere', csv_jobs=csv_jobs)
+
 
 @app.route('/results/<site>')
 def results(site):
@@ -64,6 +68,39 @@ def results(site):
     jobs = c.fetchall()
     conn.close()
     return render_template('results.html', site=site, jobs=jobs)
+
+import concurrent.futures
+
+def scrape_site(scraper_module, query):
+    if scraper_module == 'indeed_dynamic_scraper':
+        from indeed_dynamic_scraper import scrape as scrape_func
+    elif scraper_module == 'naukri_dynamic_scraper':
+        from naukri_dynamic_scraper import scrape as scrape_func
+    else:
+        return []
+    jobs = scrape_func(query)
+    site_map = {
+        'indeed_dynamic_scraper': 'indeed',
+        'naukri_dynamic_scraper': 'naukri'
+    }
+    site = site_map.get(scraper_module, 'unknown')
+    for job in jobs:
+        job['site'] = site
+    return jobs
+
+@app.route('/scrape-all', methods=['POST'])
+def scrape_all():
+    init_db()
+    query = build_query_from_form('software developer')
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+        futures = [
+            executor.submit(scrape_site, 'indeed_dynamic_scraper', query),
+            executor.submit(scrape_site, 'naukri_dynamic_scraper', query)
+        ]
+        all_jobs = []
+        for future in concurrent.futures.as_completed(futures):
+            all_jobs.extend(future.result() or [])
+    return render_template('results.html', site='all', jobs=all_jobs)
 
 if __name__ == "__main__":
   app.run(debug=True, port=5009)

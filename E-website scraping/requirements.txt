@@ -1,0 +1,7 @@
+requests
+beautifulsoup4
+selenium
+flask
+SpeechRecognition
+gunicorn==25.1.0
+webdriver-manager==4.0.2

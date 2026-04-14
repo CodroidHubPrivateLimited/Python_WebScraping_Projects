@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, abort
+from authlib.integrations.flask_client import OAuth
 import os
 import pandas as pd
 from flask import send_from_directory
@@ -28,7 +29,7 @@ logger = logging.getLogger()
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "change-this-secret-key")
 
-PUBLIC_ENDPOINTS = {"index", "login", "signup", "verify_email", "static"}
+PUBLIC_ENDPOINTS = {"index", "login", "signup", "verify_email", "static", "auth_google", "auth_google_callback"}
 
 
 def is_safe_next_url(target):
@@ -58,6 +59,14 @@ DB_CONFIG = {
     'database': os.environ.get('MYSQL_DATABASE', 'ana')
 }
 
+# Connection pool
+db_pool = mysql.connector.pooling.MySQLConnectionPool(
+    pool_name="flask_app_pool",
+    pool_size=5,
+    pool_reset_session=True,
+    **DB_CONFIG
+)
+
 SMTP_CONFIG = {
     "host": os.environ.get("SMTP_HOST", ""),
     "port": int(os.environ.get("SMTP_PORT", "587")),
@@ -67,11 +76,29 @@ SMTP_CONFIG = {
     "from_email": os.environ.get("SMTP_FROM_EMAIL", os.environ.get("SMTP_USER", "")),
 }
 
+# Google OAuth
+GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
+GOOGLE_REDIRECT_URI = os.environ.get("GOOGLE_REDIRECT_URI", "http://127.0.0.1:5000/auth/google/callback")
+
+oauth = OAuth(app)
+
+google = oauth.register(
+    name='google',
+    client_id=GOOGLE_CLIENT_ID,
+    client_secret=GOOGLE_CLIENT_SECRET,
+    server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
+    client_kwargs={
+        'scope': 'openid email profile'
+    }
+)
+
 
 def get_db_connection():
-    """Create and return a database connection"""
+    """Get connection from pool with autocommit"""
     try:
-        connection = mysql.connector.connect(**DB_CONFIG)
+        connection = db_pool.get_connection()
+        connection.autocommit = True
         return connection
     except Error as e:
         logger.info(f"Database connection error: {e}")
@@ -189,35 +216,35 @@ def send_verification_code(email, code):
 
 def create_user(username, email, password):
     """Create a user in MySQL; returns (success, message)."""
+    connection = get_db_connection()
+    if not connection or not connection.is_connected():
+        return False, "Unable to connect to database"
+    
+    cursor = connection.cursor()
     try:
-        connection = get_db_connection()
-        if not connection or not connection.is_connected():
-            return False, "Unable to connect to database"
-
-        cursor = connection.cursor()
         cursor.execute(
             "INSERT INTO users (username, email, password, is_verified) VALUES (%s, %s, %s, 1)",
             (username, email, password)
         )
-        connection.commit()
-        cursor.close()
-        connection.close()
         return True, "Account created successfully"
     except IntegrityError:
         return False, "Username already exists"
     except Error as e:
         logger.info(f"Signup error: {e}")
         return False, "Unable to create account right now"
+    finally:
+        cursor.close()
+        connection.close()
 
 
 def save_pending_signup(email, username, password, code, expires_at):
     """Store pending signup details in MySQL for OTP verification."""
+    connection = get_db_connection()
+    if not connection or not connection.is_connected():
+        return False, "Database not available"
+    
+    cursor = connection.cursor()
     try:
-        connection = get_db_connection()
-        if not connection or not connection.is_connected():
-            return False, "Database not available"
-
-        cursor = connection.cursor()
         cursor.execute(
             """
             INSERT INTO email_verifications (email, username, password, code, expires_at)
@@ -230,23 +257,23 @@ def save_pending_signup(email, username, password, code, expires_at):
             """,
             (email, username, password, code, expires_at)
         )
-        connection.commit()
-        cursor.close()
-        connection.close()
         return True, "Pending signup saved"
     except Error as e:
         logger.info(f"Pending signup save error: {e}")
         return False, "Unable to save verification request"
+    finally:
+        cursor.close()
+        connection.close()
 
 
 def get_pending_signup(email):
     """Fetch pending signup data from MySQL by email."""
+    connection = get_db_connection()
+    if not connection or not connection.is_connected():
+        return None
+    
+    cursor = connection.cursor(dictionary=True)
     try:
-        connection = get_db_connection()
-        if not connection or not connection.is_connected():
-            return None
-
-        cursor = connection.cursor(dictionary=True)
         cursor.execute(
             """
             SELECT email, username, password, code, expires_at
@@ -255,50 +282,51 @@ def get_pending_signup(email):
             """,
             (email,)
         )
-        pending = cursor.fetchone()
-        cursor.close()
-        connection.close()
-        return pending
+        return cursor.fetchone()
     except Error as e:
         logger.info(f"Pending signup fetch error: {e}")
         return None
+    finally:
+        cursor.close()
+        connection.close()
 
 
 def delete_pending_signup(email):
     """Delete pending signup record after verification/expiry."""
+    connection = get_db_connection()
+    if not connection or not connection.is_connected():
+        return
+    
+    cursor = connection.cursor()
     try:
-        connection = get_db_connection()
-        if not connection or not connection.is_connected():
-            return
-        cursor = connection.cursor()
         cursor.execute("DELETE FROM email_verifications WHERE email = %s", (email,))
-        connection.commit()
-        cursor.close()
-        connection.close()
     except Error as e:
         logger.info(f"Pending signup delete error: {e}")
+    finally:
+        cursor.close()
+        connection.close()
 
 
 def authenticate_user(username, password):
     """Authenticate user against MySQL database"""
+    connection = get_db_connection()
+    if not connection or not connection.is_connected():
+        logger.info("Database unavailable during login")
+        return False
+    
+    cursor = connection.cursor(dictionary=True)
     try:
-        connection = get_db_connection()
-        if not connection or not connection.is_connected():
-            logger.info("Database unavailable during login")
-            return False
-
-        cursor = connection.cursor(dictionary=True)
         cursor.execute(
             "SELECT id FROM users WHERE (username = %s OR email = %s) AND password = %s AND is_verified = 1",
             (username, username, password)
         )
-        user = cursor.fetchone()
-        cursor.close()
-        connection.close()
-        return user is not None
+        return cursor.fetchone() is not None
     except Error as e:
         logger.info(f"Authentication error: {e}")
         return False
+    finally:
+        cursor.close()
+        connection.close()
 
 STATIC_FOLDER = "data/static_data"
 API_FOLDER = "data/api_data"
@@ -521,24 +549,25 @@ def signup():
         if not email or not username or not password:
             return render_template("signup.html", error="Email, username, and password are required")
 
+        connection = get_db_connection()
+        if not connection or not connection.is_connected():
+            return render_template("signup.html", error="Database not available")
+        
+        cursor = connection.cursor()
         try:
-            connection = get_db_connection()
-            if not connection or not connection.is_connected():
-                return render_template("signup.html", error="Database not available")
-
-            cursor = connection.cursor()
             cursor.execute(
                 "SELECT id FROM users WHERE username = %s OR email = %s",
                 (username, email)
             )
             existing = cursor.fetchone()
-            cursor.close()
-            connection.close()
             if existing:
                 return render_template("signup.html", error="Username or email already exists")
         except Error as e:
             logger.info(f"Signup pre-check error: {e}")
             return render_template("signup.html", error="Unable to validate account details")
+        finally:
+            cursor.close()
+            connection.close()
 
         code = f"{secrets.randbelow(900000) + 100000}"
         expires_at = datetime.utcnow() + timedelta(minutes=10)
@@ -593,6 +622,64 @@ def verify_email():
 
     return render_template("verify_email.html", email=pending.get("email"))
 
+
+@app.route("/auth/google")
+def auth_google():
+    if not GOOGLE_CLIENT_ID:
+        abort(503, "Google OAuth not configured")
+    redirect_uri = url_for('auth_google_callback', _external=True)
+    return google.authorize_redirect(redirect_uri)
+
+@app.route("/auth/google/callback")
+def auth_google_callback():
+    if not GOOGLE_CLIENT_ID:
+        abort(503, "Google OAuth not configured")
+    try:
+        token = google.authorize_access_token()
+    except Exception as e:
+        logger.info(f"Google auth error: {e}")
+        print(e)
+        return redirect(url_for("signup", error="Google login failed"))
+
+    userinfo = token.get('userinfo')
+    if not userinfo:
+        return redirect(url_for("signup", error="Failed to get user info"))
+
+    google_id = userinfo['sub']
+    email = userinfo['email']
+    name = userinfo['name']
+
+    # Check if user exists by email or create with INSERT IGNORE
+    connection = get_db_connection()
+    if not connection or not connection.is_connected():
+        return redirect(url_for("signup", error="Database unavailable"))
+    
+    cursor = connection.cursor(dictionary=True)
+    try:
+        cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
+        user = cursor.fetchone()
+        if user:
+            # Login existing user
+            session["logged_in"] = True
+            session["username"] = user['username']
+            logger.info(f"Google login for existing user: {email}")
+            return redirect(url_for("select_page"))
+        else:
+            # Create new user (no password needed for OAuth) - use INSERT IGNORE
+            username = name.replace(" ", "_").lower()[:50]  # Simple username from name
+            cursor.execute("""
+                INSERT IGNORE INTO users (username, email, password, is_verified) 
+                VALUES (%s, %s, %s, 1)
+                ON DUPLICATE KEY UPDATE 
+                    is_verified = 1, password = VALUES(password)
+            """, (username, email, "oauth_google"))
+            session["logged_in"] = True
+            session["username"] = username
+            logger.info(f"Created/Updated OAuth user: {email}")
+            return redirect(url_for("select_page"))
+    finally:
+        cursor.close()
+        connection.close()
 
 @app.route("/login", methods=["GET", "POST"])
 def login():

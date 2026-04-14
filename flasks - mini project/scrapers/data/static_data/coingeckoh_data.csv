@@ -2,8 +2,8 @@ Name,id,symbol
 Bitcoin,bitcoin,btc
 Ethereum,ethereum,eth
 Tether,tether,usdt
-XRP,ripple,xrp
 BNB,binancecoin,bnb
+XRP,ripple,xrp
 USDC,usd-coin,usdc
 Solana,solana,sol
 TRON,tron,trx
@@ -16,86 +16,86 @@ Bitcoin Cash,bitcoin-cash,bch
 LEO Token,leo-token,leo
 Hyperliquid,hyperliquid,hype
 Monero,monero,xmr
-Canton,canton-network,cc
-Ethena USDe,ethena-usde,usde
 Chainlink,chainlink,link
+Ethena USDe,ethena-usde,usde
+Canton,canton-network,cc
 Stellar,stellar,xlm
 USD1,usd1-wlfi,usd1
 Rain,rain,rain
 Hedera,hedera-hashgraph,hbar
+Litecoin,litecoin,ltc
 Dai,dai,dai
 PayPal USD,paypal-usd,pyusd
-Litecoin,litecoin,ltc
-Zcash,zcash,zec
 Avalanche,avalanche-2,avax
-Shiba Inu,shiba-inu,shib
+Zcash,zcash,zec
 Sui,sui,sui
+Shiba Inu,shiba-inu,shib
 Toncoin,the-open-network,ton
-World Liberty Financial,world-liberty-financial,wlfi
 Cronos,crypto-com-chain,cro
 Tether Gold,tether-gold,xaut
-MemeCore,memecore,m
+World Liberty Financial,world-liberty-financial,wlfi
 PAX Gold,pax-gold,paxg
-Uniswap,uniswap,uni
 Polkadot,polkadot,dot
+Uniswap,uniswap,uni
+MemeCore,memecore,m
 Mantle,mantle,mnt
 BlackRock USD Institutional Digital Liquidity Fund,blackrock-usd-institutional-digital-liquidity-fund,buidl
-Aave,aave,aave
-Falcon USD,falcon-finance,usdf
-Aster,aster-2,aster
-Bittensor,bittensor,tao
-Pepe,pepe,pepe
-Global Dollar,global-dollar,usdg
 Circle USYC,hashnote-usyc,usyc
+Sky,sky,sky
+Bittensor,bittensor,tao
+Aave,aave,aave
+Aster,aster-2,aster
+Pi Network,pi-network,pi
+Falcon USD,falcon-finance,usdf
+Global Dollar,global-dollar,usdg
+NEAR Protocol,near,near
 OKB,okb,okb
 Ripple USD,ripple-usd,rlusd
 Bitget Token,bitget-token,bgb
-Pi Network,pi-network,pi
-Sky,sky,sky
+Pepe,pepe,pepe
 HTX DAO,htx-dao,htx
+Internet Computer,internet-computer,icp
 Ethereum Classic,ethereum-classic,etc
 BFUSD,bfusd,bfusd
-NEAR Protocol,near,near
 Ondo,ondo-finance,ondo
-POL (ex-MATIC),polygon-ecosystem-token,pol
-Internet Computer,internet-computer,icp
-Superstate Short Duration U.S. Government Securities Fund (USTB),superstate-short-duration-us-government-securities-fund-ustb,ustb
 Worldcoin,worldcoin-wld,wld
-Gate,gatechain-token,gt
-KuCoin,kucoin-shares,kcs
 Pump.fun,pump-fun,pump
-Cosmos Hub,cosmos,atom
+Gate,gatechain-token,gt
+POL (ex-MATIC),polygon-ecosystem-token,pol
+KuCoin,kucoin-shares,kcs
+Superstate Short Duration U.S. Government Securities Fund (USTB),superstate-short-duration-us-government-securities-fund-ustb,ustb
+Morpho,morpho,morpho
 Midnight,midnight-3,night
-Provenance Blockchain,hash-2,hash
+Ethena,ethena,ena
 Quant,quant-network,qnt
+Cosmos Hub,cosmos,atom
+Ondo US Dollar Yield,ondo-us-dollar-yield,usdy
 NEXO,nexo,nexo
 USDtb,usdtb,usdtb
-Ethena,ethena,ena
-Official Trump,official-trump,trump
-Spiko EU T-Bills Money Market Fund,eutbl,eutbl
-Flare,flare-networks,flr
 Kaspa,kaspa,kas
+Provenance Blockchain,hash-2,hash
+Spiko EU T-Bills Money Market Fund,eutbl,eutbl
+Official Trump,official-trump,trump
+Flare,flare-networks,flr
 Algorand,algorand,algo
-pippin,pippin,pippin
-USDD,usdd,usdd
-OUSG,ousg,ousg
-Render,render-token,render
-Janus Henderson Anemoy AAA CLO Fund,janus-henderson-anemoy-aaa-clo-fund,jaaa
-Ondo US Dollar Yield,ondo-us-dollar-yield,usdy
-Filecoin,filecoin,fil
 Aptos,aptos,apt
+Filecoin,filecoin,fil
+OUSG,ousg,ousg
+Janus Henderson Anemoy AAA CLO Fund,janus-henderson-anemoy-aaa-clo-fund,jaaa
+Render,render-token,render
+USDD,usdd,usdd
 XDC Network,xdce-crowd-sale,xdc
-Morpho,morpho,morpho
+Jupiter,jupiter-exchange-solana,jup
 VeChain,vechain,vet
+Arbitrum,arbitrum,arb
 Beldex,beldex,bdx
+​​Stable,stable-2,stable
+YLDS,ylds,ylds
 Janus Henderson Anemoy Treasury Fund,janus-henderson-anemoy-treasury-fund,jtrsy
 Usual USD,usual-usd,usd0
-Arbitrum,arbitrum,arb
-GHO,gho,gho
-Bonk,bonk,bonk
-​​Stable,stable-2,stable
-A7A5,a7a5,a7a5
-TrueUSD,true-usd,tusd
 Decred,decred,dcr
-Jupiter,jupiter-exchange-solana,jup
-Kite,kite-2,kite
+Bonk,bonk,bonk
+GHO,gho,gho
+TrueUSD,true-usd,tusd
+Stacks,blockstack,stx
+A7A5,a7a5,a7a5

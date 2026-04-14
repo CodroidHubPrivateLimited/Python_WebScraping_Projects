@@ -7,12 +7,11 @@
 
 body {
     font-family: 'Rajdhani', sans-serif;
-    height: 100vh;
+    min-height: 100vh;
     overflow-x: hidden;
+    overflow-y: auto;
     background: linear-gradient(135deg, #1E1A28 0%, #2b213a 50%, #1E1A28 100%);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: block;
     cursor: none;
 }
 
@@ -338,7 +337,9 @@ body {
 .page-wrapper {
     position: relative;
     z-index: 10;
-    padding: 50px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 26px 50px 50px;
     text-align: center;
     min-height: 100vh;
 }

@@ -130,6 +130,19 @@
             line-height: 1.6;
         }
 
+        .csv-data-container {
+            margin-top: 30px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 149, 0, 0.3);
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+        }
+
         .button-group {
             display: flex;
             justify-content: center;
@@ -173,6 +186,7 @@
             transform: translateY(-3px);
         }
     </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='responsive.css') }}">
 </head>
 <body>
     {% include '_page_nav.html' %}
@@ -244,4 +258,5 @@
     </div>
 </body>
 </html>
+
 

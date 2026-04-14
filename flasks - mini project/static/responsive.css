@@ -1,0 +1,90 @@
+/* Global responsive safeguards */
+html {
+    -webkit-text-size-adjust: 100%;
+}
+
+html,
+body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+img,
+video,
+svg,
+canvas,
+iframe {
+    max-width: 100%;
+    height: auto;
+}
+
+table {
+    width: 100%;
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+@supports (min-height: 100dvh) {
+    body {
+        min-height: 100dvh;
+    }
+}
+
+@media (max-width: 900px) {
+    body {
+        min-height: 100vh;
+        overflow-x: hidden;
+        overflow-y: auto;
+        cursor: auto !important;
+    }
+
+    .login-container {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        transform: none !important;
+        margin: 24px auto;
+        width: min(92vw, 420px) !important;
+    }
+
+    .login-box {
+        padding: 28px 20px !important;
+    }
+
+    input,
+    select,
+    textarea,
+    button {
+        font-size: 16px;
+    }
+
+    .content,
+    .container,
+    .content-box,
+    .main-content,
+    .page-content,
+    .cards-container,
+    .files-container,
+    .grid,
+    .cards-grid,
+    .project-grid,
+    .stats-grid,
+    .timeline,
+    .timeline-grid {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .orbs,
+    .bubbles,
+    .particles,
+    .particles-light,
+    .floating-particles,
+    .floating-shapes,
+    .rays {
+        opacity: 0.45;
+    }
+}

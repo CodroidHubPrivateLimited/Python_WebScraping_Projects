@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice History - AI Voice Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Space Grotesk', sans-serif; 
+            background: #0a0a0a; 
+            color: #ffffff; 
+            min-height: 100vh;
+        }
+        .header {
+            background: linear-gradient(135deg, rgba(20, 20, 40, 0.95), rgba(10, 10, 20, 0.95));
+            backdrop-filter: blur(20px);
+            padding: 30px 40px;
+            text-align: center;
+            border-bottom: 1px solid rgba(100, 150, 255, 0.2);
+        }
+        .header h1 {
+            font-size: 36px;
+            background: linear-gradient(135deg, #64b5f6, #ff6b9d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+        .back-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            position: absolute;
+            left: 40px;
+            top: 40px;
+        }
+        .back-btn:hover {
+            background: rgba(100, 181, 246, 0.2);
+            box-shadow: 0 5px 20px rgba(100, 181, 246, 0.3);
+        }
+        .history-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #64b5f6, #ff6b9d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        .history-list {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(25px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            max-height: 600px;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+        }
+        .history-item {
+            background: rgba(100, 181, 246, 0.1);
+            margin-bottom: 15px;
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 4px solid #64b5f6;
+            transition: all 0.3s ease;
+            animation: slideIn 0.5s ease forwards;
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+        .history-item:nth-child(even) {
+            background: rgba(255, 107, 157, 0.1);
+            border-left-color: #ff6b9d;
+        }
+        .history-item:hover {
+            transform: translateX(0) scale(1.02);
+            box-shadow: 0 10px 30px rgba(100, 181, 246, 0.3);
+        }
+        .history-meta {
+            font-size: 14px;
+            opacity: 0.7;
+            margin-bottom: 8px;
+        }
+        .history-text {
+            font-size: 16px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        .empty-state {
+            text-align: center;
+            padding: 80px 40px;
+            color: rgba(255,255,255,0.5);
+        }
+        .empty-state svg {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+        @media (max-width: 768px) {
+            .back-btn { position: static; margin-bottom: 20px; }
+            .stats { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button class="back-btn" onclick="history.back()">← Back to Live</button>
+        <h1>Voice History</h1>
+    </div>
+    
+    <div class="history-container">
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalSessions">0</div>
+                <div>Total Sessions</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalWords">0</div>
+                <div>Words Spoken</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="hindiPercent">0%</div>
+                <div>Hindi Usage</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="avgSession">0min</div>
+                <div>Avg Duration</div>
+            </div>
+        </div>
+        
+        <div class="history-list" id="historyList">
+            <div class="empty-state" id="emptyState">
+                <svg viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="8"/>
+                    <path d="M30 50 Q50 30 70 50 Q50 70 30 50" stroke="rgba(255,255,255,0.3)" stroke-width="6" fill="none" stroke-linecap="round"/>
+                </svg>
+                <h3>No history yet</h3>
+                <p>Start speaking in Live mode to save your conversations here</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load and display history
+        let historyData = JSON.parse(localStorage.getItem('voiceHistory') || '[]');
+        
+        function renderHistory() {
+            const list = document.getElementById('historyList');
+            const emptyState = document.getElementById('emptyState');
+            
+            list.innerHTML = '';
+            
+            if (historyData.length === 0) {
+                emptyState.style.display = 'block';
+                list.appendChild(emptyState);
+                updateStats();
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            
+            historyData.slice().reverse().forEach((entry, index) => {
+                const item = document.createElement('div');
+                item.className = 'history-item';
+                item.style.animationDelay = `${index * 0.1}s`;
+                
+                const time = new Date(entry.timestamp).toLocaleString('en-IN', { 
+                    year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' 
+                });
+                item.innerHTML = `
+                    <div class="history-meta">
+                        <span style="background: rgba(100,181,246,0.2); padding: 4px 8px; border-radius: 12px; font-size: 12px;">
+                            ${entry.lang === 'hi-IN' ? '🇮🇳 Hindi' : '🇺🇸 English'}
+                        </span> • 
+                        <span style="opacity: 0.6;">${time}</span>
+                    </div>
+                    <div class="history-text">${entry.text}</div>
+                `;
+                list.appendChild(item);
+            });
+            
+            updateStats();
+        }
+        
+        function updateStats() {
+            document.getElementById('totalSessions').textContent = historyData.length;
+            const totalWords = historyData.reduce((sum, entry) => sum + entry.text.split(' ').length, 0);
+            document.getElementById('totalWords').textContent = totalWords;
+            
+            const hindiCount = historyData.filter(entry => entry.lang === 'hi-IN').length;
+            document.getElementById('hindiPercent').textContent = historyData.length ? 
+                Math.round((hindiCount / historyData.length) * 100) + '%' : '0%';
+        }
+        
+        // Listen for history updates from main page
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'voiceHistory') {
+                historyData = JSON.parse(e.newValue || '[]');
+                renderHistory();
+            }
+        });
+        
+        renderHistory();
+    </script>
+</body>
+</html>

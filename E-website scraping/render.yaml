@@ -1,0 +1,22 @@
+services:
+  -  type: web
+    name: python-webscraping
+    env: python
+    buildCommand: |
+      # Install Chrome and chromedriver for Selenium
+      sudo apt-get update
+      sudo apt-get install -y wget gnupg unzip
+      wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+      sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+      sudo apt-get update
+      sudo apt-get install -y google-chrome-stable
+      CHROME_BIN=/usr/bin/google-chrome CHROMEDRIVER_PATH=$(npm install -g chromedriver && echo ./node_modules/.bin/chromedriver) pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.12
+      - key: HEADLESS
+        value: "1"
+      - key: RESULT_LIMIT
+        value: "4"
+    autoDeploy: false

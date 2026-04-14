@@ -1,0 +1,663 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Smart Shopping Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}" />
+  </head>
+  <body>
+    <div class="page">
+      <div class="loading-overlay" aria-live="polite" aria-hidden="true">
+        <div class="loading-card">
+          <div class="spinner" role="status" aria-label="Loading"></div>
+          <div class="loading-text">Fetching latest prices...</div>
+        </div>
+      </div>
+
+      <form method="post" class="search-form" novalidate>
+        <header class="topbar">
+          <div class="brand">
+            <div class="logo" aria-hidden="true">VS</div>
+            <div>
+              <div class="brand-title">VishalSachdeva</div>
+              <div class="brand-sub">Smart Shopping Assistant</div>
+            </div>
+          </div>
+
+        
+
+         
+
+          <div class="search-area">
+            <label class="search-box" for="product">
+              <span class="search-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path
+                    d="M11 3a8 8 0 0 1 6.32 12.9l3.39 3.38a1 1 0 0 1-1.42 1.42l-3.38-3.39A8 8 0 1 1 11 3zm0 2a6 6 0 1 0 0 12 6 6 0 0 0 0-12z"
+                  />
+                </svg>
+              </span>
+              <input
+                id="product"
+                type="text"
+                name="product"
+                placeholder="Search a product, brand, or model"
+                value="{{ product }}"
+                autocomplete="off"
+                autofocus
+              />
+            </label>
+
+            <div class="search-actions">
+              <button type="submit" class="primary-btn">Search</button>
+              <button type="button" id="voice-btn" class="ghost-btn" aria-pressed="false">
+                Start Voice
+              </button>
+              <div id="voice-status" class="voice-status">Voice: off</div>
+              <div class="search-loading" aria-hidden="true">
+                <span class="dot-spinner"></span>
+                <span>Searching...</span>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div class="layout">
+          <aside class="sidebar">
+            <div class="panel" id="filters">
+              <div class="panel-title">Filters</div>
+
+              <div class="filter-block">
+                <div class="filter-title">Store</div>
+                <div class="filter-list">
+                  {% for value, label in store_options %}
+                    <label class="check">
+                      <input
+                        type="checkbox"
+                        name="store"
+                        value="{{ value }}"
+                        {% if value in selected_stores %}checked{% endif %}
+                      />
+                      <span>{{ label }}</span>
+                    </label>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <div class="filter-block">
+                <div class="filter-title">Brand</div>
+                {% if product %}
+                  {% if brand_options %}
+                    <div class="filter-list">
+                      {% for value, label in brand_options %}
+                        {% set brand_label = label.split('(')[0] %}
+                        <label class="check">
+                          <input
+                            type="checkbox"
+                            name="brand"
+                            value="{{ value }}"
+                            {% if value in selected_brands %}checked{% endif %}
+                          />
+                          <span>{{ brand_label | trim }}</span>
+                        </label>
+                      {% endfor %}
+                    </div>
+                  {% else %}
+                    <div class="empty">No brands found for this product.</div>
+                  {% endif %}
+                {% else %}
+                  <div class="empty">Search to load brand options.</div>
+                {% endif %}
+              </div>
+
+              <div class="filter-block">
+                <div class="filter-title">Price Range</div>
+                <div class="field-row">
+                  <label>Min</label>
+                  <input
+                    type="number"
+                    name="min_price"
+                    value="{{ min_price }}"
+                    placeholder="{{ price_min_hint or 0 }}"
+                  />
+                </div>
+                <div class="field-row">
+                  <label>Max</label>
+                  <input
+                    type="number"
+                    name="max_price"
+                    value="{{ max_price }}"
+                    placeholder="{{ price_max_hint or 10000 }}"
+                  />
+                </div>
+                {% if price_min_hint or price_max_hint %}
+                  <div class="hint">Available: ₹{{ price_min_hint }} - ₹{{ price_max_hint }}</div>
+                {% endif %}
+              </div>
+
+              <div class="filter-block">
+                <div class="filter-title">Rating</div>
+                {% if product %}
+                  {% if rating_options %}
+                    <div class="filter-list">
+                      {% for value, label in rating_options %}
+                        <label class="check">
+                          <input
+                            type="checkbox"
+                            name="rating"
+                            value="{{ value }}"
+                            {% if value in selected_ratings %}checked{% endif %}
+                          />
+                          <span>{{ label }}</span>
+                        </label>
+                      {% endfor %}
+                    </div>
+                  {% else %}
+                    <div class="empty">No ratings found.</div>
+                  {% endif %}
+                {% else %}
+                  <div class="empty">Search to load rating options.</div>
+                {% endif %}
+              </div>
+
+              <div class="panel-actions">
+                <button type="submit" class="primary-btn small">Apply Filters</button>
+                <button type="button" id="clear-filters" class="ghost-btn small">Clear Filters</button>
+              </div>
+            </div>
+
+            <div class="panel best-panel" id="best">
+              <div class="panel-title">Best Price</div>
+              {% if best_store and best_price %}
+                {% set ns = namespace(item=None) %}
+                {% if stores %}
+                  {% for store in stores %}
+                    {% if store["store"] == best_store and store["items"] %}
+                      {% set ns.item = store["items"][0] %}
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+                <div class="best-card">
+                  <div class="best-chip">Best Price</div>
+                  <div class="best-body">
+                    <div class="best-info">
+                      <div class="best-label">{{ best_store }}</div>
+                      <div class="best-title">Lowest Offer</div>
+                      <div class="best-amount">₹{{ best_price }}</div>
+                    </div>
+                    <div class="best-media">
+                      {% if ns.item and ns.item.image %}
+                        <img src="{{ ns.item.image }}" alt="Best price product" />
+                      {% endif %}
+                    </div>
+                  </div>
+                  {% if ns.item and ns.item.title %}
+                    {% set best_short = ns.item.title.split(',')[0] %}
+                    <div class="best-name">{{ best_short | truncate(70, True, '...') }}</div>
+                  {% endif %}
+                  {% if ns.item and ns.item.url %}
+                    <a class="best-cta" href="{{ ns.item.url }}">View</a>
+                  {% endif %}
+                </div>
+              {% else %}
+                <div class="empty">Search to see the best price product.</div>
+              {% endif %}
+            </div>
+          </aside>
+
+          <main class="main" id="results">
+            <div class="hero">
+              <div>
+                <h1>Premium Flagships</h1>
+                <p>Compare live prices from Amazon, Myntra, Blinkit, Meesho, and Snapdeal.</p>
+              </div>
+              {% if product %}
+                <div class="pill">Searching: {{ product }}</div>
+              {% endif %}
+            </div>
+
+            {% if error %}
+              <div class="error">{{ error }}</div>
+            {% endif %}
+
+            {% if stores and not error %}
+              {% for store in stores %}
+                <section class="store">
+                  <div class="store-head">
+                    <div>
+                      <div class="store-title">{{ store["store"] }}</div>
+                      {% if store["min_price"] %}
+                        <div class="store-sub">Min: ₹{{ store["min_price"] }}</div>
+                      {% else %}
+                        <div class="store-sub">Min: Not Found</div>
+                      {% endif %}
+                    </div>
+                    {% if store["min_price"] %}
+                      <div class="chip">Top deal from ₹{{ store["min_price"] }}</div>
+                    {% endif %}
+                  </div>
+                  <div class="grid">
+                    {% if store["items"] %}
+                      {% for entry in store["items"] %}
+                        <div class="item">
+                          <div class="item-media">
+                            {% if entry.image %}
+                              <img src="{{ entry.image }}" alt="{{ store["store"] }}" />
+                            {% endif %}
+                          </div>
+                          {% if entry.title %}
+                            {% set title_short = entry.title.split(',')[0] %}
+                            <div class="meta product-name">
+                              {{ title_short | truncate(70, True, '...') }}
+                            </div>
+                          {% endif %}
+                          <div class="price">
+                            {{ store["store"] }}: {{ entry.price_text }}
+                          </div>
+                          <div class="rating">
+                            {% if entry.rating %}
+                              {% set rating_value = entry.rating | float %}
+                              {% set full_stars = rating_value | int %}
+                              {% set has_half = (rating_value - full_stars) >= 0.5 %}
+                              {% set empty_stars = 5 - full_stars - (1 if has_half else 0) %}
+                              <div class="stars" aria-label="Rating {{ entry.rating }}">
+                                {% for _ in range(full_stars) %}
+                                  <span class="star filled">★</span>
+                                {% endfor %}
+                                {% if has_half %}
+                                  <span class="star half">★</span>
+                                {% endif %}
+                                {% for _ in range(empty_stars) %}
+                                  <span class="star">☆</span>
+                                {% endfor %}
+                              </div>
+                              <div class="rating-text">{{ entry.rating }}</div>
+                            {% else %}
+                              <div class="stars" aria-label="Rating not available">
+                                {% for _ in range(5) %}
+                                  <span class="star">☆</span>
+                                {% endfor %}
+                              </div>
+                            {% endif %}
+                          </div>
+                          <div class="item-actions">
+                            {% if entry.url %}
+                              <a
+                                class="view-btn"
+                                href="{{ entry.url }}"
+                              >
+                                View
+                              </a>
+                            {% else %}
+                              <button class="view-btn disabled" type="button" disabled>View Unavailable</button>
+                            {% endif %}
+                          </div>
+                        </div>
+                      {% endfor %}
+                    {% else %}
+                      <div class="empty">No products found.</div>
+                    {% endif %}
+                  </div>
+                </section>
+              {% endfor %}
+
+              {% if best_store %}
+                {% if best_store == "Equal" %}
+                  <div class="best">Best Price: Same on multiple stores (₹{{ best_price }})</div>
+                {% else %}
+                  <div class="best">Best Price: {{ best_store }} (₹{{ best_price }})</div>
+                {% endif %}
+              {% else %}
+                <div class="best">Best Price: Not Found</div>
+              {% endif %}
+
+              <div class="note">
+                Note: Selenium scrapers need Chrome + driver locally. Headless mode is used by default.
+              </div>
+            {% else %}
+              <div class="empty-state">
+                <div class="empty-title">Start your search</div>
+                <div class="empty-text">
+                  Type a product name above and press Enter to compare prices across stores.
+                </div>
+              </div>
+            {% endif %}
+          </main>
+        </div>
+      </form>
+    </div>
+    <script>
+      (() => {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const voiceBtn = document.getElementById("voice-btn");
+        const statusEl = document.getElementById("voice-status");
+        const productInput = document.getElementById("product");
+        const form = document.querySelector(".search-form");
+        const clearBtn = document.getElementById("clear-filters");
+
+        if (!voiceBtn || !statusEl || !productInput || !form) {
+          return;
+        }
+
+        const setLoading = (isLoading) => {
+          document.body.classList.toggle("is-loading", Boolean(isLoading));
+          form.setAttribute("aria-busy", String(Boolean(isLoading)));
+        };
+
+        const triggerLoading = () => {
+          const value = productInput.value.trim();
+          if (!value) return;
+          setLoading(true);
+        };
+
+        const speechSupported = Boolean(SpeechRecognition);
+        if (!speechSupported) {
+          voiceBtn.disabled = true;
+          voiceBtn.textContent = "Voice Not Supported";
+          statusEl.textContent = "Voice: stream only";
+        }
+
+        const recognition = speechSupported ? new SpeechRecognition() : null;
+        if (recognition) {
+          recognition.lang = "en-IN";
+          recognition.continuous = true;
+          recognition.interimResults = false;
+        }
+
+        let listening = false;
+
+        const setStatus = (text, state) => {
+          statusEl.textContent = text;
+          statusEl.dataset.state = state || "idle";
+          voiceBtn.setAttribute("aria-pressed", String(listening));
+          voiceBtn.textContent = listening ? "Stop Voice" : "Start Voice";
+        };
+
+        const normalize = (value) =>
+          value
+            .toLowerCase()
+            .replace(/[^\p{L}\p{N}]+/gu, " ")
+            .trim();
+
+        const startsWithCommand = (text, keywords) => {
+          for (const key of keywords) {
+            if (text === key) return { key, rest: "" };
+            if (text.startsWith(`${key} `)) {
+              return { key, rest: text.slice(key.length).trim() };
+            }
+          }
+          return null;
+        };
+
+        const includesAny = (text, phrases) => phrases.some((phrase) => text.includes(phrase));
+
+        const SEARCH_WORDS = [
+          "search",
+          "khoj",
+          "khojo",
+          "dhundo",
+          "dhoondo",
+          "dhundho",
+          "dhoondho",
+          "खोज",
+          "ढूंढो",
+          "ढूँढो",
+        ];
+        const BRAND_WORDS = ["brand", "ब्रांड", "ब्राण्ड"];
+        const STORE_WORDS = ["store", "स्टोर", "dukān", "dukan", "दुकान", "shop"];
+        const RATING_WORDS = ["rating", "रेटिंग"];
+        const MIN_WORDS = ["min price", "minimum price", "min", "minimum", "कम से कम", "न्यूनतम"];
+        const MAX_WORDS = ["max price", "maximum price", "max", "maximum", "अधिकतम", "ज्यादा से ज्यादा"];
+        const APPLY_PHRASES = [
+          "apply filters",
+          "filters apply",
+          "filter apply",
+          "apply",
+          "submit",
+          "compare prices",
+          "फिल्टर लागू",
+          "फिल्टर लगाओ",
+          "लागू करो",
+        ];
+        const CLEAR_PHRASES = [
+          "clear filters",
+          "filters clear",
+          "clear all",
+          "सब साफ",
+          "फिल्टर हटाओ",
+          "फिल्टर साफ",
+        ];
+        const STOP_PHRASES = ["stop listening", "stop voice", "रुको", "बंद करो", "stop"];
+
+        const setInputValue = (el, value) => {
+          el.value = value;
+          el.dispatchEvent(new Event("input", { bubbles: true }));
+          el.dispatchEvent(new Event("change", { bubbles: true }));
+        };
+
+        const checkByName = (selector, name) => {
+          const target = normalize(name);
+          if (!target) return false;
+          const boxes = Array.from(document.querySelectorAll(selector));
+          let matched = false;
+          boxes.forEach((box) => {
+            const label = box.closest("label");
+            const text = label ? label.innerText : box.value;
+            if (normalize(text).includes(target)) {
+              box.checked = true;
+              box.dispatchEvent(new Event("change", { bubbles: true }));
+              matched = true;
+            }
+          });
+          return matched;
+        };
+
+        const clearFilters = () => {
+          const checkboxes = document.querySelectorAll(
+            'input[type="checkbox"][name="brand"], input[type="checkbox"][name="store"], input[type="checkbox"][name="rating"]'
+          );
+          checkboxes.forEach((box) => {
+            box.checked = false;
+            box.dispatchEvent(new Event("change", { bubbles: true }));
+          });
+          const minInput = document.querySelector('input[name="min_price"]');
+          const maxInput = document.querySelector('input[name="max_price"]');
+          if (minInput) setInputValue(minInput, "");
+          if (maxInput) setInputValue(maxInput, "");
+        };
+
+        const parseRating = (text) => {
+          const match = text.match(/\b([2-5])\b/);
+          if (match) return match[1];
+          if (text.includes("two")) return "2";
+          if (text.includes("three")) return "3";
+          if (text.includes("four")) return "4";
+          if (text.includes("five")) return "5";
+          if (text.includes("दो")) return "2";
+          if (text.includes("तीन")) return "3";
+          if (text.includes("चार")) return "4";
+          if (text.includes("पांच") || text.includes("पाँच")) return "5";
+          return null;
+        };
+
+        const parseNumber = (text) => {
+          const match = text.match(/\b(\d+)\b/);
+          if (!match) return null;
+          return Number(match[1]);
+        };
+
+        const submitForm = () => {
+          triggerLoading();
+          if (typeof form.requestSubmit === "function") {
+            form.requestSubmit();
+          } else {
+            form.submit();
+          }
+        };
+
+        const applyCommand = (rawText) => {
+          const cleaned = normalize(rawText);
+          if (!cleaned) return;
+
+          if (includesAny(cleaned, STOP_PHRASES)) {
+            listening = false;
+            if (recognition) recognition.stop();
+            setStatus("Voice: off", "idle");
+            return;
+          }
+
+          const searchMatch = startsWithCommand(cleaned, SEARCH_WORDS);
+          if (searchMatch) {
+            const query = searchMatch.rest;
+            if (query) {
+              setInputValue(productInput, query);
+            }
+            submitForm();
+            setStatus(`Searching: ${query || productInput.value}`, "success");
+            return;
+          }
+
+          const brandMatch = startsWithCommand(cleaned, BRAND_WORDS);
+          if (brandMatch) {
+            const name = brandMatch.rest;
+            const matched = checkByName('input[name="brand"]', name);
+            setStatus(matched ? `Brand: ${name}` : `Brand not found: ${name}`, matched ? "success" : "warn");
+            return;
+          }
+
+          const storeMatch = startsWithCommand(cleaned, STORE_WORDS);
+          if (storeMatch) {
+            const name = storeMatch.rest;
+            const matched = checkByName('input[name="store"]', name);
+            setStatus(matched ? `Store: ${name}` : `Store not found: ${name}`, matched ? "success" : "warn");
+            return;
+          }
+
+          const ratingMatch = startsWithCommand(cleaned, RATING_WORDS);
+          if (ratingMatch) {
+            const rating = parseRating(cleaned);
+            if (!rating) {
+              setStatus("Rating not recognized", "warn");
+              return;
+            }
+            const matched = checkByName('input[name="rating"]', rating);
+            setStatus(matched ? `Rating: ${rating}+` : `Rating option missing: ${rating}+`, matched ? "success" : "warn");
+            return;
+          }
+
+          const minMatch = startsWithCommand(cleaned, MIN_WORDS);
+          if (minMatch) {
+            const value = parseNumber(cleaned);
+            const minInput = document.querySelector('input[name="min_price"]');
+            if (minInput && value !== null) {
+              setInputValue(minInput, String(value));
+              setStatus(`Min price: ${value}`, "success");
+            } else {
+              setStatus("Min price not recognized", "warn");
+            }
+            return;
+          }
+
+          const maxMatch = startsWithCommand(cleaned, MAX_WORDS);
+          if (maxMatch) {
+            const value = parseNumber(cleaned);
+            const maxInput = document.querySelector('input[name="max_price"]');
+            if (maxInput && value !== null) {
+              setInputValue(maxInput, String(value));
+              setStatus(`Max price: ${value}`, "success");
+            } else {
+              setStatus("Max price not recognized", "warn");
+            }
+            return;
+          }
+
+          if (includesAny(cleaned, CLEAR_PHRASES)) {
+            clearFilters();
+            setStatus("Filters cleared", "success");
+            return;
+          }
+
+          if (includesAny(cleaned, APPLY_PHRASES)) {
+            submitForm();
+            setStatus("Filters applied", "success");
+            return;
+          }
+
+          setInputValue(productInput, rawText.trim());
+          setStatus(`Search text: ${rawText.trim()}`, "success");
+        };
+
+        if (recognition) {
+          recognition.onresult = (event) => {
+            const result = event.results[event.results.length - 1];
+            if (!result.isFinal) return;
+            const transcript = result[0].transcript.trim();
+            applyCommand(transcript);
+          };
+
+          recognition.onerror = (event) => {
+            setStatus(`Voice error: ${event.error}`, "error");
+          };
+
+          recognition.onend = () => {
+            if (listening) {
+              recognition.start();
+            }
+          };
+        }
+
+        voiceBtn.addEventListener("click", () => {
+          if (!recognition) return;
+          if (listening) {
+            listening = false;
+            recognition.stop();
+            setStatus("Voice: off", "idle");
+            return;
+          }
+          listening = true;
+          setStatus("Listening...", "listening");
+          recognition.start();
+        });
+
+        if (clearBtn) {
+          clearBtn.addEventListener("click", () => {
+            clearFilters();
+            setStatus("Filters cleared", "success");
+          });
+        }
+
+        form.addEventListener("submit", () => {
+          triggerLoading();
+        });
+
+        window.addEventListener("pageshow", () => {
+          setLoading(false);
+        });
+
+        window.addEventListener("load", () => {
+          setLoading(false);
+        });
+
+        const startVoiceStream = () => {
+          if (!window.EventSource) {
+            setStatus("Voice stream not supported", "warn");
+            return;
+          }
+          const source = new EventSource("/voice-stream");
+          source.onmessage = (event) => {
+            if (event.data) {
+              applyCommand(event.data);
+            }
+          };
+          source.onerror = () => {
+            setStatus("Voice stream disconnected", "warn");
+          };
+        };
+
+        setStatus("Voice: off", "idle");
+        startVoiceStream();
+      })();
+    </script>
+  </body>
+</html>

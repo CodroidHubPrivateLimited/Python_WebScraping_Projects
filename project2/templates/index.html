@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Portal</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+
+</head>
+
+<body class="landing landing-v2">
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark"></span>
+      <span class="brand-text">Vishal</span>
+    </div>
+    <nav class="nav-links">
+      <a href="#">Home</a>
+      <a href="#">Explore</a>
+      <a href="#">Messages</a>
+    </nav>
+    <div class="profile-dot">VS</div>
+  </header>
+
+  <main class="hero-stack">
+    <span class="eyebrow">Discovery Engine • Talent Intelligence</span>
+    <h1 class="hero-title">Architect Your <span>Career Destiny</span></h1>
+    <p class="hero-sub">Traverse the global job ecosystem through a high‑fidelity portal. Aggregate premier career databases into one luminous interface and launch a focused search in seconds.</p>
+
+    <div class="hero-panel hero-panel-centered">
+      <form method="POST" action="/scrape-all" class="hero-search hero-search-extended">
+        <span class="search-icon">⌕</span>
+        <input type="text" name="query" placeholder="Enter skills / designations / companies" class="hero-input" required autofocus>
+        <span class="hero-divider"></span>
+        <select name="experience" class="hero-select">
+          <option value="" selected>Select experience</option>
+          <option value="Fresher">Fresher</option>
+          <option value="1-3 years">1-3 years</option>
+          <option value="3-5 years">3-5 years</option>
+          <option value="5-8 years">5-8 years</option>
+          <option value="8+ years">8+ years</option>
+        </select>
+        <span class="hero-divider"></span>
+        <input type="text" name="location" placeholder="Enter location" class="hero-input hero-input-location">
+        <button type="submit" class="hero-btn">Search</button>
+      </form>
+
+      <div class="quick-access">
+        <span class="quick-label">Quick Access</span>
+        <!-- <a href="/scrape/indeed" class="quick-pill">Indeed</a>
+        <a href="/scrape/naukri" class="quick-pill">Naukri</a> -->
+      </div>
+    </div>
+
+    <section class="metric-row">
+      <div class="metric-card">
+        <span class="metric-label">Global Surge</span>
+        <h3>14.2%</h3>
+        <p>Weekly growth in AI &amp; Engineering roles.</p>
+      </div>
+      <div class="metric-card">
+        <span class="metric-label">Openings Indexed</span>
+        <h3>2.4M+</h3>
+        <p>Curated listings across premium sources.</p>
+      </div>
+      <div class="metric-card">
+        <span class="metric-label">Match Accuracy</span>
+        <h3>98.4%</h3>
+        <p>Signal‑driven ranking tuned for relevance.</p>
+      </div>
+    </section>
+
+    <section class="feature-block">
+      <div class="feature-header">
+        <h2>Core Infrastructures</h2>
+        <p>Systems designed to keep your career search precise, fast, and luminous.</p>
+      </div>
+      <div class="feature-grid">
+        <article class="feature-card">
+          <span class="feature-icon"></span>
+          <h3>AI Route Mapping</h3>
+          <p>Navigate opportunity graphs with intelligent role clustering.</p>
+        </article>
+        <article class="feature-card">
+          <span class="feature-icon accent"></span>
+          <h3>Unified Market Insights</h3>
+          <p>Aggregate signal from global boards in one control panel.</p>
+        </article>
+        <article class="feature-card">
+          <span class="feature-icon highlight"></span>
+          <h3>Enterprise Access</h3>
+          <p>Plug into verified openings from trusted employers.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="cta-panel">
+      <h2>Ready to Transcend?</h2>
+      <p>Refine your next move with a search experience designed for high‑signal talent.</p>
+      <a href="#" class="cta-btn">Activate Mission</a>
+    </section>
+  </main>
+
+</body>
+
+</html>

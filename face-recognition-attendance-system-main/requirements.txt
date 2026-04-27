@@ -4,5 +4,4 @@ pymongo
 openpyxl
 numpy
 opencv-python
-pygame
 gunicorn

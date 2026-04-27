@@ -1,0 +1,768 @@
+{% extends "base.html" %}
+{% block title %}My Assigned Tasks{% endblock %}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+<style>
+.taskmaster-body {
+    min-height: 100vh;
+    background: linear-gradient(180deg, #f4f7fb 0%, #edf2f7 100%);
+}
+.taskmaster-shell {
+    display: grid;
+    grid-template-columns: 250px minmax(0, 1fr);
+    min-height: 100vh;
+}
+.taskmaster-sidebar {
+    background: linear-gradient(180deg, #233447 0%, #1d2b3b 100%);
+    color: #d8e1eb;
+    padding: 1rem 0.9rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.taskmaster-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.35rem 0.55rem 1.2rem;
+}
+.taskmaster-brand-badge {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, #95dbe5 0%, #76bfc6 100%);
+    color: #1f3649;
+}
+.taskmaster-brand strong {
+    display: block;
+    color: white;
+    font-size: 1.35rem;
+    line-height: 1.05;
+}
+.taskmaster-brand span {
+    display: block;
+    margin-top: 0.22rem;
+    font-size: 0.64rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(216, 225, 235, 0.56);
+}
+.taskmaster-nav {
+    display: grid;
+    gap: 0.45rem;
+}
+.taskmaster-nav-link,
+.taskmaster-side-link {
+    display: flex;
+    align-items: center;
+    gap: 0.78rem;
+    padding: 0.95rem 1rem;
+    border-radius: 16px;
+    color: rgba(216, 225, 235, 0.76);
+    font-weight: 700;
+}
+.taskmaster-nav-link:hover,
+.taskmaster-nav-link.active,
+.taskmaster-side-link:hover {
+    background: rgba(36, 149, 160, 0.18);
+    color: white;
+}
+.taskmaster-nav-link .material-symbols-outlined,
+.taskmaster-side-link .material-symbols-outlined {
+    font-size: 1.15rem;
+}
+.taskmaster-sidebar-spacer {
+    flex: 1;
+}
+.taskmaster-sidebar-bottom {
+    display: grid;
+    gap: 0.45rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+.taskmaster-main {
+    min-width: 0;
+    display: grid;
+    grid-template-rows: auto 1fr;
+}
+.taskmaster-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    background: rgba(255, 255, 255, 0.88);
+    border-bottom: 1px solid #e4ebf2;
+    backdrop-filter: blur(16px);
+}
+.taskmaster-topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-width: 0;
+}
+.taskmaster-company {
+    font-weight: 800;
+    color: #526377;
+    white-space: nowrap;
+}
+.taskmaster-search {
+    min-width: min(100%, 320px);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.82rem 1rem;
+    border-radius: 999px;
+    border: 1px solid #e7edf3;
+    background: #f8fafc;
+    color: #a0acb7;
+}
+.taskmaster-search .material-symbols-outlined,
+.taskmaster-top-icon .material-symbols-outlined {
+    font-size: 1.1rem;
+}
+.taskmaster-topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+}
+.taskmaster-top-icon {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #e4ebf1;
+    border-radius: 14px;
+    background: white;
+    color: #697b8c;
+    display: grid;
+    place-items: center;
+}
+.taskmaster-profile {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding-left: 0.5rem;
+}
+.taskmaster-profile strong {
+    display: block;
+    font-size: 0.9rem;
+    color: #66788a;
+}
+.taskmaster-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, #ffd6b2 0%, #f2a869 100%);
+    color: #2f4051;
+    font-weight: 800;
+}
+.taskmaster-content {
+    padding: 1.65rem 1.5rem 1.8rem;
+    display: grid;
+    gap: 1.25rem;
+    align-content: start;
+}
+.taskmaster-hero {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+}
+.taskmaster-hero h1 {
+    margin: 0;
+    font-size: clamp(2rem, 3vw, 2.6rem);
+    letter-spacing: -0.04em;
+    color: #1f3349;
+}
+.taskmaster-hero p {
+    margin: 0.35rem 0 0;
+    color: #7c8c9b;
+    font-weight: 600;
+}
+.taskmaster-request {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.95rem 1.2rem;
+    border-radius: 16px;
+    border: 0;
+    background: linear-gradient(135deg, #14283c 0%, #233f56 100%);
+    color: white;
+    font-weight: 800;
+    box-shadow: 0 18px 30px rgba(20, 40, 60, 0.18);
+}
+.taskmaster-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+}
+.taskmaster-stat {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.95rem;
+    padding: 1.25rem;
+    border: 1px solid #e7edf3;
+    border-radius: 22px;
+    background: white;
+    box-shadow: 0 16px 34px rgba(18, 37, 55, 0.05);
+}
+.taskmaster-stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+    display: grid;
+    place-items: center;
+}
+.taskmaster-stat-icon.neutral { background: #eef2f6; color: #617282; }
+.taskmaster-stat-icon.urgent { background: #fff0e7; color: #f1823b; }
+.taskmaster-stat-icon.live { background: #eef2ff; color: #5d7cf0; }
+.taskmaster-stat-icon.success { background: #eaf8ef; color: #2eb36d; }
+.taskmaster-stat span {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #a2afba;
+}
+.taskmaster-stat strong {
+    display: block;
+    margin-top: 0.85rem;
+    font-size: 2.1rem;
+    line-height: 1;
+    color: #23374c;
+}
+.taskmaster-stat small {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #a2afba;
+}
+.taskmaster-board {
+    border: 1px solid #e6edf3;
+    border-radius: 24px;
+    background: white;
+    box-shadow: 0 18px 38px rgba(18, 37, 55, 0.06);
+    overflow: hidden;
+}
+.taskmaster-board-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.15rem 1.2rem;
+    border-bottom: 1px solid #ebf0f5;
+}
+.taskmaster-board-head h2 {
+    margin: 0;
+    color: #23374c;
+}
+.taskmaster-board-head p {
+    margin: 0.2rem 0 0;
+    color: #8c9aab;
+}
+.taskmaster-board-actions {
+    display: flex;
+    gap: 0.65rem;
+}
+.taskmaster-board-action {
+    width: 42px;
+    height: 42px;
+    border: 1px solid #e7edf3;
+    border-radius: 14px;
+    background: white;
+    color: #708395;
+    display: grid;
+    place-items: center;
+}
+.taskmaster-table-wrap {
+    overflow-x: auto;
+}
+.taskmaster-table {
+    width: 100%;
+    min-width: 920px;
+    border-collapse: collapse;
+}
+.taskmaster-table th,
+.taskmaster-table td {
+    padding: 1rem 1.2rem;
+    border-bottom: 1px solid #edf2f6;
+    vertical-align: top;
+    text-align: left;
+}
+.taskmaster-table th {
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #92a1b0;
+    background: #f9fbfd;
+}
+.taskmaster-task-title {
+    display: block;
+    font-weight: 800;
+    color: #2a3d50;
+}
+.taskmaster-task-id {
+    display: block;
+    margin-top: 0.2rem;
+    font-size: 0.82rem;
+    color: #a0aebb;
+}
+.taskmaster-role-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.6rem;
+    border-radius: 10px;
+    background: #f1f5f8;
+    color: #6f8396;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+.taskmaster-location {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: #66798b;
+}
+.taskmaster-location .material-symbols-outlined {
+    font-size: 1rem;
+    color: #96a4b2;
+}
+.taskmaster-schedule strong {
+    display: block;
+    color: #32465b;
+}
+.taskmaster-schedule span {
+    display: block;
+    margin-top: 0.2rem;
+    font-size: 0.82rem;
+    color: #96a4b2;
+}
+.taskmaster-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.45rem 0.9rem;
+    border-radius: 999px;
+    font-size: 0.76rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+.taskmaster-status.pending {
+    background: #fff3e5;
+    color: #d38827;
+}
+.taskmaster-status.in-progress {
+    background: #eaf1ff;
+    color: #5477f0;
+}
+.taskmaster-status.completed {
+    background: #eaf8ef;
+    color: #28aa67;
+}
+.taskmaster-status.delayed {
+    background: #fff0f2;
+    color: #dd5d7d;
+}
+.taskmaster-action-dot {
+    color: #97a5b3;
+    font-size: 1.3rem;
+}
+.taskmaster-board-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.2rem 1.2rem;
+    color: #8fa0af;
+    flex-wrap: wrap;
+}
+.taskmaster-pager {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+.taskmaster-page {
+    min-width: 34px;
+    height: 34px;
+    padding: 0 0.6rem;
+    border-radius: 10px;
+    border: 1px solid #e6edf3;
+    background: white;
+    color: #738596;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+.taskmaster-page.active {
+    background: #172739;
+    border-color: #172739;
+    color: white;
+}
+.taskmaster-notes-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+    gap: 1rem;
+}
+.taskmaster-note-card,
+.taskmaster-side-panel {
+    border: 1px solid #e6edf3;
+    border-radius: 24px;
+    background: white;
+    box-shadow: 0 16px 34px rgba(18, 37, 55, 0.05);
+    padding: 1.2rem;
+}
+.taskmaster-note-card h3,
+.taskmaster-side-panel h3 {
+    margin: 0;
+    color: #23374c;
+}
+.taskmaster-note-card p,
+.taskmaster-side-panel p {
+    margin: 0.3rem 0 0;
+    color: #8b99a8;
+}
+.taskmaster-note-list {
+    display: grid;
+    gap: 0.85rem;
+    margin-top: 1rem;
+}
+.taskmaster-note-item {
+    padding: 0.9rem 1rem;
+    border-radius: 16px;
+    background: #f9fbfd;
+    border: 1px solid #edf2f6;
+}
+.taskmaster-note-item strong {
+    display: block;
+    color: #2f4357;
+}
+.taskmaster-note-item span {
+    display: block;
+    margin-top: 0.28rem;
+    color: #8b99a8;
+    line-height: 1.55;
+}
+.taskmaster-side-list {
+    display: grid;
+    gap: 0.85rem;
+    margin-top: 1rem;
+}
+.taskmaster-side-item {
+    display: grid;
+    gap: 0.25rem;
+    padding: 0.9rem 1rem;
+    border-radius: 16px;
+    background: linear-gradient(180deg, #213345 0%, #1a2938 100%);
+    color: white;
+}
+.taskmaster-side-item small {
+    color: rgba(255, 255, 255, 0.6);
+}
+.taskmaster-empty {
+    padding: 3rem 1.2rem;
+    text-align: center;
+    color: #7e8f9f;
+}
+@media (max-width: 1180px) {
+    .taskmaster-stats,
+    .taskmaster-notes-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+@media (max-width: 980px) {
+    .taskmaster-shell {
+        grid-template-columns: 1fr;
+    }
+    .taskmaster-sidebar {
+        gap: 0.8rem;
+    }
+    .taskmaster-nav {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+@media (max-width: 760px) {
+    .taskmaster-topbar,
+    .taskmaster-hero {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .taskmaster-topbar-left,
+    .taskmaster-topbar-right {
+        flex-wrap: wrap;
+    }
+    .taskmaster-search {
+        min-width: 0;
+        width: 100%;
+    }
+    .taskmaster-stats,
+    .taskmaster-notes-grid {
+        grid-template-columns: 1fr;
+    }
+    .taskmaster-nav {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}
+{% block body_class %}taskmaster-body{% endblock %}
+{% block content %}
+{% set pending_count = tasks|selectattr('status', 'equalto', 'Pending')|list|length %}
+{% set progress_count = tasks|selectattr('status', 'equalto', 'In Progress')|list|length %}
+{% set completed_count = tasks|selectattr('status', 'equalto', 'Completed')|list|length %}
+{% set delayed_count = tasks|selectattr('status', 'equalto', 'Delayed')|list|length %}
+<div class="taskmaster-shell">
+    <aside class="taskmaster-sidebar">
+        <div>
+            <div class="taskmaster-brand">
+                <div class="taskmaster-brand-badge">
+                    <span class="material-symbols-outlined">shield</span>
+                </div>
+                <div>
+                    <strong>TaskMaster</strong>
+                    <span>Enterprise Suite</span>
+                </div>
+            </div>
+
+            <nav class="taskmaster-nav">
+                <a class="taskmaster-nav-link" href="/employee">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    <span>Dashboard</span>
+                </a>
+                <a class="taskmaster-nav-link active" href="/user_tasks">
+                    <span class="material-symbols-outlined">assignment</span>
+                    <span>Tasks</span>
+                </a>
+                <a class="taskmaster-nav-link" href="/employee_attendance_history">
+                    <span class="material-symbols-outlined">event_note</span>
+                    <span>Projects</span>
+                </a>
+                <a class="taskmaster-nav-link" href="/employee_profile">
+                    <span class="material-symbols-outlined">groups</span>
+                    <span>Team</span>
+                </a>
+                <a class="taskmaster-nav-link" href="/employee_profile">
+                    <span class="material-symbols-outlined">bar_chart</span>
+                    <span>Reports</span>
+                </a>
+            </nav>
+        </div>
+
+        <div class="taskmaster-sidebar-spacer"></div>
+
+        <div class="taskmaster-sidebar-bottom">
+            <a class="taskmaster-side-link" href="#">
+                <span class="material-symbols-outlined">help</span>
+                <span>Support</span>
+            </a>
+            <a class="taskmaster-side-link" href="/logout">
+                <span class="material-symbols-outlined">logout</span>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <main class="taskmaster-main">
+        <header class="taskmaster-topbar">
+            <div class="taskmaster-topbar-left">
+                <div class="taskmaster-company">Guardian Enterprise</div>
+                <div class="taskmaster-search">
+                    <span class="material-symbols-outlined">search</span>
+                    <span>Search tasks...</span>
+                </div>
+            </div>
+
+            <div class="taskmaster-topbar-right">
+                <button class="taskmaster-top-icon" type="button" aria-label="Notifications">
+                    <span class="material-symbols-outlined">notifications</span>
+                </button>
+                <button class="taskmaster-top-icon" type="button" aria-label="Settings">
+                    <span class="material-symbols-outlined">settings</span>
+                </button>
+                <div class="taskmaster-profile">
+                    <strong>{{ current_user.full_name or current_user.username or 'Employee' }}</strong>
+                    <div class="taskmaster-avatar">{{ (current_user.full_name or current_user.username or 'E')[0]|upper }}</div>
+                </div>
+            </div>
+        </header>
+
+        <section class="taskmaster-content">
+            <div class="taskmaster-hero">
+                <div>
+                    <h1>My Assigned Tasks</h1>
+                    <p>Review and manage your current operational and security task responsibilities.</p>
+                </div>
+                <button class="taskmaster-request" type="button">
+                    <span class="material-symbols-outlined">add</span>
+                    <span>Request New Task</span>
+                </button>
+            </div>
+
+            <section class="taskmaster-stats">
+                <article class="taskmaster-stat">
+                    <div class="taskmaster-stat-icon neutral">
+                        <span class="material-symbols-outlined">content_copy</span>
+                    </div>
+                    <div>
+                        <span>Weekly Overview</span>
+                        <strong>{{ tasks|length }}</strong>
+                        <small>Total Tasks</small>
+                    </div>
+                </article>
+                <article class="taskmaster-stat">
+                    <div class="taskmaster-stat-icon urgent">
+                        <span class="material-symbols-outlined">assignment_late</span>
+                    </div>
+                    <div>
+                        <span>Urgent</span>
+                        <strong>{{ pending_count + delayed_count }}</strong>
+                        <small>Pending Approval</small>
+                    </div>
+                </article>
+                <article class="taskmaster-stat">
+                    <div class="taskmaster-stat-icon live">
+                        <span class="material-symbols-outlined">sync_alt</span>
+                    </div>
+                    <div>
+                        <span>Live</span>
+                        <strong>{{ progress_count }}</strong>
+                        <small>In Progress</small>
+                    </div>
+                </article>
+                <article class="taskmaster-stat">
+                    <div class="taskmaster-stat-icon success">
+                        <span class="material-symbols-outlined">check_circle</span>
+                    </div>
+                    <div>
+                        <span>Efficiency</span>
+                        <strong>{{ completed_count }}</strong>
+                        <small>Completed YTD</small>
+                    </div>
+                </article>
+            </section>
+
+            <section class="taskmaster-board">
+                <div class="taskmaster-board-head">
+                    <div>
+                        <h2>Current Assignments</h2>
+                        <p>Read-only task list synced from admin task assignments.</p>
+                    </div>
+                    <div class="taskmaster-board-actions">
+                        <button class="taskmaster-board-action" type="button" aria-label="Filter tasks">
+                            <span class="material-symbols-outlined">filter_list</span>
+                        </button>
+                        <button class="taskmaster-board-action" type="button" aria-label="Download tasks">
+                            <span class="material-symbols-outlined">download</span>
+                        </button>
+                    </div>
+                </div>
+
+                {% if tasks %}
+                <div class="taskmaster-table-wrap">
+                    <table class="taskmaster-table">
+                        <thead>
+                            <tr>
+                                <th>Task Name &amp; ID</th>
+                                <th>Role</th>
+                                <th>Location</th>
+                                <th>Schedule</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for task in tasks %}
+                            {% set status_class = (task.status or 'Pending')|lower|replace(' ', '-') %}
+                            <tr>
+                                <td>
+                                    <span class="taskmaster-task-title">{{ task.title or 'Untitled Task' }}</span>
+                                    <span class="taskmaster-task-id">#{{ task.id or loop.index }}</span>
+                                </td>
+                                <td>
+                                    <span class="taskmaster-role-chip">{{ task.role or 'Employee' }}</span>
+                                </td>
+                                <td>
+                                    <span class="taskmaster-location">
+                                        <span class="material-symbols-outlined">location_on</span>
+                                        <span>{{ task.location or 'No location' }}</span>
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="taskmaster-schedule">
+                                        <strong>{{ task.date or 'Not set' }}</strong>
+                                        <span>{{ task.start_time or '--' }}{% if task.end_time %} - {{ task.end_time }}{% endif %}</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="taskmaster-status {{ status_class }}">{{ task.status or 'Pending' }}</span>
+                                </td>
+                                <td>
+                                    <span class="material-symbols-outlined taskmaster-action-dot">more_vert</span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="taskmaster-board-footer">
+                    <span>Showing 1-{{ tasks|length }} of {{ tasks|length }} tasks</span>
+                    <div class="taskmaster-pager">
+                        <span class="taskmaster-page">Previous</span>
+                        <span class="taskmaster-page active">1</span>
+                        <span class="taskmaster-page">2</span>
+                        <span class="taskmaster-page">Next</span>
+                    </div>
+                </div>
+                {% else %}
+                <div class="taskmaster-empty">
+                    <h2>No tasks assigned yet</h2>
+                    <p>When admin assigns tasks to your employee account, they will appear here automatically.</p>
+                </div>
+                {% endif %}
+            </section>
+
+            {% if tasks %}
+            <section class="taskmaster-notes-grid">
+                <article class="taskmaster-note-card">
+                    <h3>Task Notes</h3>
+                    <p>Recent notes attached by admin to your assignments.</p>
+                    <div class="taskmaster-note-list">
+                        {% for task in tasks[:3] %}
+                        <div class="taskmaster-note-item">
+                            <strong>{{ task.title or 'Untitled Task' }}</strong>
+                            <span>{{ task.notes or 'No notes were added for this task.' }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </article>
+
+                <aside class="taskmaster-side-panel">
+                    <h3>Upcoming Deadlines</h3>
+                    <p>Closest schedule windows from your assigned tasks.</p>
+                    <div class="taskmaster-side-list">
+                        {% for task in tasks[:3] %}
+                        <div class="taskmaster-side-item">
+                            <strong>{{ task.title or 'Untitled Task' }}</strong>
+                            <small>{{ task.date or 'Not set' }}{% if task.end_time %} · Deadline {{ task.end_time }}{% endif %}</small>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </aside>
+            </section>
+            {% endif %}
+        </section>
+    </main>
+</div>
+{% endblock %}

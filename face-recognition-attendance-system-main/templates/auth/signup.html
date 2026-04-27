@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Employee Signup{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">{% endblock %}
+{% block body_class %}auth-body{% endblock %}
+{% block content %}
+<main class="auth-shell">
+    <section class="auth-card">
+        <a class="brand-link" href="/">SecureTrack</a>
+        <h1>Create employee account</h1>
+        <p class="muted-copy">Register a workforce profile with a cleaner and more maintainable UI.</p>
+
+        <form class="auth-form" data-role="{{ selected_role }}" id="signupForm" novalidate>
+            <div class="split-grid">
+                <label class="field">
+                    <span>Full Name</span>
+                    <input id="signupName" name="full_name" type="text" placeholder="Enter full name" required>
+                    <small class="field-error" id="signupNameError"></small>
+                </label>
+                <label class="field">
+                    <span>Employee ID</span>
+                    <input id="signupEmployeeId" name="employee_id" type="text" placeholder="EMP-001" required>
+                    <small class="field-error" id="signupEmployeeIdError"></small>
+                </label>
+            </div>
+            <label class="field">
+                <span>Department</span>
+                <input id="signupDepartment" name="department" type="text" placeholder="Engineering" required>
+                <small class="field-error" id="signupDepartmentError"></small>
+            </label>
+            <label class="field">
+                <span>Email Address</span>
+                <input id="signupEmail" name="email" type="email" placeholder="name@company.com" required>
+                <small class="field-error" id="signupEmailError"></small>
+            </label>
+            <label class="field">
+                <span>Password</span>
+                <div class="password-wrap">
+                    <input id="signupPassword" name="password" type="password" placeholder="Create password" required>
+                    <button class="toggle-password" data-target="signupPassword" type="button"><span class="material-symbols-outlined">visibility</span></button>
+                </div>
+                <small class="field-error" id="signupPasswordError"></small>
+            </label>
+            <label class="field">
+                <span>Confirm Password</span>
+                <div class="password-wrap">
+                    <input id="signupConfirmPassword" name="confirm_password" type="password" placeholder="Confirm password" required>
+                    <button class="toggle-password" data-target="signupConfirmPassword" type="button"><span class="material-symbols-outlined">visibility</span></button>
+                </div>
+                <small class="field-error" id="signupConfirmPasswordError"></small>
+            </label>
+            <label class="checkbox-row card-check">
+                <input id="signupTerms" name="terms" type="checkbox" required>
+                <span>I agree to the platform terms and responsible use policy.</span>
+            </label>
+            <small class="field-error" id="signupTermsError"></small>
+            <button class="submit-button" type="submit">Create Account</button>
+            <p class="panel-note">Already have an account? <a class="inline-link" href="/login?role=employee">Login here</a></p>
+            <p class="form-status" id="signupStatus" role="status" aria-live="polite"></p>
+        </form>
+    </section>
+
+    <section class="hero-panel">
+        <p class="eyebrow">Employee Onboarding</p>
+        <h2>Simple signup, cleaner structure.</h2>
+        <div class="stats-row">
+            <article class="mini-stat"><strong>Fast</strong><span>One-page account creation</span></article>
+            <article class="mini-stat"><strong>Clear</strong><span>Readable fields and spacing</span></article>
+            <article class="mini-stat"><strong>Mobile</strong><span>Compact touch-friendly layout</span></article>
+        </div>
+    </section>
+</main>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/pages/signup.js') }}"></script>{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Employee Workspace{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">{% endblock %}
+{% block body_class %}app-body{% endblock %}
+{% block content %}
+<div class="app-shell employee-shell">
+    <aside class="sidebar">
+        <div class="sidebar-brand"><span class="material-symbols-outlined">badge</span><div><strong>SecureTrack</strong><small>Employee</small></div></div>
+        <nav class="sidebar-nav">
+            <a class="nav-link active" href="/employee">Dashboard</a>
+            <a class="nav-link" href="/user_tasks">Tasks</a>
+            <a class="nav-link" href="/employee_attendance_history">Attendance History</a>
+            <a class="nav-link" href="/employee_profile">Profile</a>
+            <a class="nav-link" href="/auth/logout">Logout</a>
+        </nav>
+    </aside>
+    <main class="main-panel">
+        <header class="page-header">
+            <div><p class="eyebrow">Employee Workspace</p><h1>Welcome, {{ current_user.full_name or 'Employee' }}</h1></div>
+            <a class="profile-pill" href="/employee_profile">{{ current_user.username or 'employee' }}</a>
+        </header>
+
+        <section class="metrics-grid">
+            <article class="metric-card"><span>Current Time</span><strong id="currentTime">09:12 AM</strong></article>
+            <article class="metric-card"><span>Employee ID</span><strong>{{ current_user.employee_id or 'Pending' }}</strong></article>
+            <article class="metric-card"><span>Security</span><strong>Admin Controlled</strong></article>
+            <article class="metric-card"><span>Workspace</span><strong>View Only</strong></article>
+        </section>
+
+        <section class="content-grid">
+            <article class="panel-card">
+                <div class="panel-head"><div><h2>Employee Access</h2><p>Employees can only view profile, attendance, and assigned tasks.</p></div></div>
+                <div class="button-grid">
+                    <a class="primary-button link-button" href="/employee_profile">View Profile</a>
+                    <a class="secondary-button link-button" href="/user_tasks">My Tasks</a>
+                    <a class="secondary-button link-button" href="/employee_attendance_history">Attendance History</a>
+                    <a class="secondary-button link-button" href="#employeeTasksPanel">Assigned Tasks</a>
+                </div>
+                <div id="employeeStatusCard" class="message-card">Attendance is marked by admin from the admin panel camera only.</div>
+            </article>
+
+            <section class="panel-card" id="employeeTasksPanel">
+                <div class="panel-head"><div><h2>Assigned Tasks</h2><p>Tasks assigned by admin appear here automatically.</p></div></div>
+                <div id="employeeTasksList" class="message-card">Loading assigned tasks...</div>
+            </section>
+
+            <section class="panel-card">
+                <div class="panel-head"><div><h2>Change Password</h2><p>Update employee credentials securely.</p></div></div>
+                <form id="changePasswordForm" class="form-grid" novalidate>
+                    <label class="field"><span>Current Password</span><input id="currentPassword" type="password" required></label>
+                    <label class="field"><span>New Password</span><input id="newPassword" type="password" required></label>
+                    <button class="primary-button" type="submit">Update Password</button>
+                    <p id="passwordStatus" class="message-card" role="status" aria-live="polite"></p>
+                </form>
+            </section>
+        </section>
+    </main>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/pages/employee.js') }}"></script>{% endblock %}

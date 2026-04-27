@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Daily Task Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+<script src="{{ url_for('static', filename='js/common/theme-init.js') }}"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="{{ url_for('static', filename='daily_task.css') }}" rel="stylesheet"/>
+</head>
+<body class="min-h-screen">
+<div class="min-h-screen lg:flex">
+    <aside class="w-full bg-[#e8edf4] px-4 py-5 lg:min-h-screen lg:w-72 lg:px-5 lg:py-6">
+        <div class="mb-8 flex items-center gap-3 rounded-2xl bg-white px-4 py-4 shadow-sm">
+            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-[#5a6480] text-white">
+                <span class="material-symbols-outlined">shield</span>
+            </div>
+            <div>
+                <p class="text-base font-extrabold text-[#243c63]">Aegis Enterprise</p>
+                <p class="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">Sovereign Sentinel</p>
+            </div>
+        </div>
+
+        <nav class="flex gap-2 overflow-x-auto pb-2 lg:block lg:space-y-2">
+            <a class="nav-link flex min-w-max items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold" href="{{ url_for('admin_dashboard') }}">
+                <span class="material-symbols-outlined text-[20px]">dashboard</span>
+                <span>Dashboard</span>
+            </a>
+            <a class="nav-link active flex min-w-max items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold" href="/daily_task">
+                <span class="material-symbols-outlined text-[20px]">assignment</span>
+                <span>Daily Tasks</span>
+            </a>
+            <a class="nav-link flex min-w-max items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold" href="/new_register">
+                <span class="material-symbols-outlined text-[20px]">groups</span>
+                <span>Personnel</span>
+            </a>
+            <a class="nav-link flex min-w-max items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold" href="/attendance_log">
+                <span class="material-symbols-outlined text-[20px]">receipt_long</span>
+                <span>Audit Logs</span>
+            </a>
+            <a class="nav-link flex min-w-max items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold" href="#">
+                <span class="material-symbols-outlined text-[20px]">verified_user</span>
+                <span>Security</span>
+            </a>
+        </nav>
+
+        <div class="mt-8 space-y-2 text-sm lg:mt-12">
+            <a class="nav-link flex items-center gap-3 rounded-2xl px-4 py-3 font-semibold" href="#">
+                <span class="material-symbols-outlined text-[20px]">settings</span>
+                <span>Settings</span>
+            </a>
+            <a class="nav-link flex items-center gap-3 rounded-2xl px-4 py-3 font-semibold" href="#">
+                <span class="material-symbols-outlined text-[20px]">help</span>
+                <span>Support</span>
+            </a>
+        </div>
+    </aside>
+
+    <main class="flex-1 px-4 py-4 sm:px-6 lg:px-8 lg:py-5">
+        <div class="mb-6 flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+            <div class="shell-card flex items-center gap-3 rounded-2xl px-4 py-3">
+                <span class="material-symbols-outlined text-[20px] text-slate-400">search</span>
+                <input id="searchInput" class="w-full bg-transparent text-sm text-slate-600 outline-none placeholder:text-slate-400 sm:min-w-[380px]" placeholder="Search tasks, personnel, or locations..." type="text"/>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-3 self-end">
+                <button id="themeToggle" class="theme-toggle flex h-11 items-center gap-2 rounded-2xl px-4 text-sm font-bold transition hover:bg-slate-50">
+                    <span class="material-symbols-outlined">dark_mode</span>
+                    Theme
+                </button>
+                <button class="flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-[#243c63] transition hover:bg-slate-50">
+                    <span class="material-symbols-outlined text-[20px]">notifications</span>
+                </button>
+                <button id="refreshTasks" class="flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-[#243c63] transition hover:bg-slate-50">
+                    <span class="material-symbols-outlined text-[20px]">refresh</span>
+                </button>
+                <div class="shell-card flex items-center gap-3 rounded-2xl px-3 py-2">
+                    <div class="text-right">
+                        <p class="text-xs font-extrabold text-[#243c63]">Admin Principal</p>
+                        <p class="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">Security Level 5</p>
+                    </div>
+                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#243c63] text-sm font-extrabold text-white">AP</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-6 flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+            <div class="max-w-2xl">
+                <h1 class="text-3xl font-extrabold tracking-tight text-[#243c63] sm:text-[2.1rem]">Daily Task Management</h1>
+                <p class="mt-2 text-base text-slate-500">Monitor operational throughput and assign live company tasks to registered personnel.</p>
+            </div>
+            <button id="openNewTask" class="flex items-center justify-center gap-2 rounded-2xl bg-[#5a6480] px-5 py-3.5 text-sm font-extrabold text-white shadow-lg transition hover:bg-[#4d5872]">
+                <span class="material-symbols-outlined text-[20px]">add</span>
+                New Task
+            </button>
+        </div>
+
+        <section class="mb-6 grid gap-4 xl:grid-cols-[1fr_1fr_1fr_1.1fr]">
+            <div class="metric-tile rounded-3xl p-4">
+                <div class="flex items-center gap-4">
+                    <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#eef3ff] text-[#6878c7]">
+                        <span class="material-symbols-outlined">task_alt</span>
+                    </div>
+                    <div>
+                        <p class="text-[11px] font-extrabold uppercase tracking-[0.2em] text-slate-400">Active Tasks</p>
+                        <p id="activeTasksCount" class="mt-1 text-4xl font-extrabold text-[#243c63]">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metric-tile rounded-3xl p-4">
+                <div class="flex items-center gap-4">
+                    <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#eef3ff] text-[#5c78b8]">
+                        <span class="material-symbols-outlined">hourglass_top</span>
+                    </div>
+                    <div>
+                        <p class="text-[11px] font-extrabold uppercase tracking-[0.2em] text-slate-400">In Progress</p>
+                        <p id="inProgressCount" class="mt-1 text-4xl font-extrabold text-[#243c63]">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metric-tile rounded-3xl p-4">
+                <div class="flex items-center gap-4">
+                    <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#ffe7e2] text-[#f06a61]">
+                        <span class="material-symbols-outlined">priority_high</span>
+                    </div>
+                    <div>
+                        <p class="text-[11px] font-extrabold uppercase tracking-[0.2em] text-slate-400">Delayed</p>
+                        <p id="delayedCount" class="mt-1 text-4xl font-extrabold text-[#243c63]">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metric-tile rounded-3xl p-4">
+                <div class="flex items-center gap-4">
+                    <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#e8f6ef] text-[#34a26f]">
+                        <span class="material-symbols-outlined">task</span>
+                    </div>
+                    <div>
+                        <p class="text-[11px] font-extrabold uppercase tracking-[0.2em] text-slate-400">Complete Task</p>
+                        <p id="completedCount" class="mt-1 text-4xl font-extrabold text-[#243c63]">0</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="shell-card overflow-hidden rounded-[2rem]">
+            <div class="overflow-x-auto">
+                <div class="table-head min-w-full bg-[#edf3fa] px-5 py-4 text-[11px] font-extrabold uppercase tracking-[0.18em] text-slate-500">
+                    <div>Task Name</div>
+                    <div>Assigned Personnel</div>
+                    <div>Timeline</div>
+                    <div>Status</div>
+                    <div class="text-right">Actions</div>
+                </div>
+
+                <div id="taskTableBody" class="divide-y divide-slate-100 bg-white">
+                    <div class="px-5 py-16 text-center text-sm text-slate-400">Loading live tasks...</div>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-4 border-t border-slate-100 bg-white px-5 py-5 sm:flex-row sm:items-center sm:justify-between">
+                <p id="taskCountSummary" class="text-sm text-slate-500">Showing 0 live tasks</p>
+                <div id="taskPageStamp" class="text-sm text-slate-400">Last sync pending</div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<div id="taskModal" class="modal-backdrop fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <div class="shell-card w-full max-w-2xl rounded-[2rem] p-5 sm:p-6">
+        <div class="mb-5 flex items-start justify-between gap-4">
+            <div>
+                <h2 id="modalTitle" class="text-2xl font-extrabold text-[#243c63]">Create Daily Task</h2>
+                <p class="mt-1 text-sm text-slate-500">Assign work to a registered company employee and keep the table live.</p>
+            </div>
+            <button id="closeModal" class="flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+
+        <form id="taskForm" class="space-y-4">
+            <input id="taskId" type="hidden"/>
+            <div class="grid gap-4 md:grid-cols-2">
+                <label class="block">
+                    <span class="mb-2 block text-sm font-bold text-slate-700">Task Name</span>
+                    <input id="taskTitle" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" placeholder="Daily patrol briefing" required type="text"/>
+                </label>
+                <label class="block">
+                    <span class="mb-2 block text-sm font-bold text-slate-700">Location</span>
+                    <input id="taskLocation" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" placeholder="North Wing" required type="text"/>
+                </label>
+            </div>
+
+            <div class="grid gap-4 md:grid-cols-2">
+                <label class="block">
+                    <span class="mb-2 block text-sm font-bold text-slate-700">Assigned Employee</span>
+                    <select id="taskPersonnel" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm">
+                        <option value="">Unassigned</option>
+                    </select>
+                </label>
+                <label class="block">
+                    <span class="mb-2 block text-sm font-bold text-slate-700">Role</span>
+                    <input id="taskRole" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" placeholder="Employee" type="text"/>
+                </label>
+            </div>
+
+            <div class="grid gap-4 md:grid-cols-3">
+                <label class="block">
+                    <span class="mb-2 block text-sm font-bold text-slate-700">Date</span>
+                    <input id="taskDate" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" required type="date"/>
+                </label>
+                <label class="block">
+                    <span class="mb-2 block text-sm font-bold text-slate-700">Start Time</span>
+                    <input id="taskStartTime" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" required type="time"/>
+                </label>
+                <label class="block">
+                    <span class="mb-2 block text-sm font-bold text-slate-700">End Time</span>
+                    <input id="taskEndTime" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" type="time"/>
+                </label>
+            </div>
+
+            <div class="grid gap-4 md:grid-cols-[1fr_1.4fr]">
+                <label class="block">
+                    <span class="mb-2 block text-sm font-bold text-slate-700">Status</span>
+                    <select id="taskStatus" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm">
+                        <option>Pending</option>
+                        <option>In Progress</option>
+                        <option>Completed</option>
+                        <option>Delayed</option>
+                    </select>
+                </label>
+                <label class="block">
+                    <span class="mb-2 block text-sm font-bold text-slate-700">Notes</span>
+                    <textarea id="taskNotes" class="min-h-[48px] w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" placeholder="Optional task notes"></textarea>
+                </label>
+            </div>
+
+            <div id="taskFormMessage" class="hidden rounded-2xl px-4 py-3 text-sm font-medium"></div>
+
+            <div class="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end">
+                <button id="cancelTask" class="rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-600 transition hover:bg-slate-50" type="button">Cancel</button>
+                <button id="saveTaskButton" class="rounded-2xl bg-[#5a6480] px-5 py-3 text-sm font-extrabold text-white transition hover:bg-[#4d5872]" type="submit">Save Task</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/pages/daily_task.js') }}"></script>
+</body>
+</html>

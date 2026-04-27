@@ -1,0 +1,64 @@
+{% set active_admin_page = "daily_task" %}
+{% extends "admin/base.html" %}
+{% block title %}Daily Task Management{% endblock %}
+{% block admin_content %}
+<div class="main-panel">
+        <header class="page-header">
+            <div><p class="eyebrow">Operations</p><h1>Daily Task Management</h1></div>
+            <div class="toolbar-row">
+                <input id="searchInput" class="input-chip wide" type="text" placeholder="Search tasks, personnel, or locations...">
+                <button id="themeToggle" class="chip-button" type="button">Theme</button>
+                <button id="refreshTasks" class="chip-button" type="button">Refresh</button>
+                <button id="openNewTask" class="primary-button" type="button">New Task</button>
+            </div>
+        </header>
+        <section class="metrics-grid">
+            <article class="metric-card"><span>Active Tasks</span><strong id="activeTasksCount">0</strong></article>
+            <article class="metric-card"><span>In Progress</span><strong id="inProgressCount">0</strong></article>
+            <article class="metric-card"><span>Delayed</span><strong id="delayedCount">0</strong></article>
+            <article class="metric-card"><span>Completed</span><strong id="completedCount">0</strong></article>
+        </section>
+        <section class="panel-card">
+            <div id="taskTableBody" class="task-list"><div class="empty-state">Loading live tasks...</div></div>
+            <div class="toolbar-row between">
+                <p id="taskCountSummary" class="small-copy">Showing 0 live tasks</p>
+                <div id="taskPageStamp" class="small-copy">Last sync pending</div>
+            </div>
+        </section>
+</div>
+
+<div id="taskModal" class="modal-backdrop hidden">
+    <div class="modal-card">
+        <div class="panel-head">
+            <div><h2 id="modalTitle">Create Daily Task</h2><p>Assign work to registered personnel.</p></div>
+            <button id="closeModal" class="chip-button" type="button">Close</button>
+        </div>
+        <form id="taskForm" class="form-grid">
+            <input id="taskId" type="hidden">
+            <div class="two-column">
+                <label class="field"><span>Task Name</span><input id="taskTitle" type="text" required></label>
+                <label class="field"><span>Location</span><input id="taskLocation" type="text" required></label>
+            </div>
+            <div class="two-column">
+                <label class="field"><span>Assigned Employee</span><select id="taskPersonnel"><option value="">Unassigned</option></select></label>
+                <label class="field"><span>Role</span><input id="taskRole" type="text"></label>
+            </div>
+            <div class="triple-column">
+                <label class="field"><span>Date</span><input id="taskDate" type="date" required></label>
+                <label class="field"><span>Start Time</span><input id="taskStartTime" type="time" required></label>
+                <label class="field"><span>End Time</span><input id="taskEndTime" type="time"></label>
+            </div>
+            <div class="two-column">
+                <label class="field"><span>Status</span><select id="taskStatus"><option>Pending</option><option>In Progress</option><option>Completed</option><option>Delayed</option></select></label>
+                <label class="field"><span>Notes</span><textarea id="taskNotes"></textarea></label>
+            </div>
+            <div id="taskFormMessage" class="message-card hidden"></div>
+            <div class="toolbar-row end">
+                <button id="cancelTask" class="chip-button" type="button">Cancel</button>
+                <button id="saveTaskButton" class="primary-button" type="submit">Save Task</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block admin_scripts %}<script src="{{ url_for('static', filename='js/pages/daily_task.js') }}"></script>{% endblock %}

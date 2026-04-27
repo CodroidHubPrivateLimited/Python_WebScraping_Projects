@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}{{ selected_role|title }} Login{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">{% endblock %}
+{% block body_class %}auth-body{% endblock %}
+{% block content %}
+<main class="auth-shell">
+    <section class="hero-panel">
+        <p class="eyebrow">{{ selected_role|title }} Access</p>
+        <h1>Sign in to SecureTrack.</h1>
+        <p class="hero-text">Use the same login flow as before, now inside a cleaner mobile-friendly layout.</p>
+    </section>
+
+    <section class="auth-card">
+        <a class="brand-link" href="/">SecureTrack</a>
+        <h2>{{ selected_role|title }} Login</h2>
+        <p class="muted-copy">{% if selected_role == 'admin' %}Use the fixed admin credentials.{% else %}Employees can sign in using their registered email and password.{% endif %}</p>
+
+        <form class="auth-form" data-role="{{ selected_role }}" id="loginForm" novalidate>
+            <label class="field">
+                <span>{% if selected_role == 'admin' %}Username{% else %}Email{% endif %}</span>
+                <input id="loginUsername" name="username" type="text" placeholder="{% if selected_role == 'admin' %}admin{% else %}name@company.com{% endif %}" required>
+                <small class="field-error" id="loginUsernameError"></small>
+            </label>
+
+            <label class="field">
+                <span>Password</span>
+                <div class="password-wrap">
+                    <input id="loginPassword" name="password" type="password" placeholder="Enter password" required>
+                    <button class="toggle-password" data-target="loginPassword" type="button"><span class="material-symbols-outlined">visibility</span></button>
+                </div>
+                <small class="field-error" id="loginPasswordError"></small>
+            </label>
+
+            <div class="form-row">
+                <label class="checkbox-row">
+                    <input id="rememberMe" name="remember_me" type="checkbox">
+                    <span>Remember me</span>
+                </label>
+                {% if selected_role == 'employee' %}
+                <a class="inline-link" href="/signup?role=employee">Create account</a>
+                {% endif %}
+            </div>
+
+            <button class="submit-button" type="submit">Login</button>
+            <p class="form-status" id="loginStatus" role="status" aria-live="polite"></p>
+        </form>
+    </section>
+</main>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/pages/login.js') }}"></script>{% endblock %}

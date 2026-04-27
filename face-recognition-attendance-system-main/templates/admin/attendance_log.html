@@ -1,0 +1,50 @@
+{% set active_admin_page = "attendance_log" %}
+{% extends "admin/base.html" %}
+{% block title %}Attendance History{% endblock %}
+{% block admin_content %}
+<div class="main-panel">
+        <header class="page-header">
+            <div><p class="eyebrow">Reports</p><h1>Attendance History</h1></div>
+            <button id="themeToggle" class="chip-button" type="button">Theme</button>
+        </header>
+        <section class="metrics-grid">
+            <article class="metric-card"><span>Attendance Rate</span><strong id="attendanceRate">0.0%</strong></article>
+            <article class="metric-card"><span>Trend</span><strong id="attendanceTrend">+0.0%</strong></article>
+            <article class="metric-card"><span>Absences</span><strong id="absenceCount">0</strong></article>
+            <article class="metric-card"><span>Avg Hours</span><strong id="avgHours">0h 00m</strong></article>
+        </section>
+        <section class="panel-card">
+            <div class="panel-head">
+                <div><h2>Month Filters</h2><p>Quick month selection with mobile-friendly table cards.</p></div>
+                <div class="toolbar-row wrap">
+                    <button class="month-chip" data-month="1" type="button">Jan</button>
+                    <button class="month-chip" data-month="2" type="button">Feb</button>
+                    <button class="month-chip" data-month="3" type="button">Mar</button>
+                    <button class="month-chip" data-month="4" type="button">Apr</button>
+                    <input id="monthPicker" type="month" class="input-chip">
+                    <button id="clearMonthFilter" class="chip-button" type="button">All</button>
+                </div>
+            </div>
+            <div class="table-scroll">
+                <table class="responsive-table records-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Employee Name</th>
+                            <th>Employee ID</th>
+                            <th>Check-In</th>
+                            <th>Check-Out</th>
+                            <th>Total Hours</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="attendanceTableBody">
+                        <tr><td colspan="8">Loading attendance records...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+</div>
+{% endblock %}
+{% block admin_scripts %}<script src="{{ url_for('static', filename='js/pages/attendance_log.js') }}"></script>{% endblock %}

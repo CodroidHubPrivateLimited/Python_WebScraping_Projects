@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Employee Workspace</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="{{ url_for('static', filename='employee.css') }}" rel="stylesheet"/>
+</head>
+<body>
+    <div class="ops-shell">
+        <aside class="ops-sidebar">
+            <div class="sidebar-brand">
+                <div class="sidebar-brand-icon">
+                    <span class="material-symbols-outlined">verified_user</span>
+                </div>
+                <div>
+                    <strong>Enterprise ERP</strong>
+                    <span>Disciplined Guardian</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a class="sidebar-nav-link active" href="/employee">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    <span>Dashboard</span>
+                </a>
+                <a class="sidebar-nav-link" href="/user_tasks">
+                    <span class="material-symbols-outlined">assignment</span>
+                    <span>Tasks</span>
+                </a>
+                <a class="sidebar-nav-link" href="/employee_attendance_history">
+                    <span class="material-symbols-outlined">calendar_month</span>
+                    <span>Attendance History</span>
+                </a>
+                <a class="sidebar-nav-link" href="/employee_profile">
+                    <span class="material-symbols-outlined">person</span>
+                    <span>Profile</span>
+                </a>
+                <a class="sidebar-nav-link" href="#">
+                    <span class="material-symbols-outlined">support</span>
+                    <span>Support</span>
+                </a>
+                <a class="sidebar-nav-link" href="#">
+                    <span class="material-symbols-outlined">settings</span>
+                    <span>Device Settings</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <a class="sidebar-logout" href="/logout">
+                    <span class="material-symbols-outlined">logout</span>
+                    <span>Logout</span>
+                </a>
+
+                <a class="sidebar-user" href="/employee_profile">
+                    <div class="sidebar-user-avatar">{{ (current_user.full_name or current_user.username or 'E')[0]|upper }}</div>
+                    <div>
+                        <strong>{{ current_user.full_name or 'Administrator' }}</strong>
+                        <span>Security Clearance A</span>
+                    </div>
+                </a>
+            </div>
+        </aside>
+
+        <div class="ops-content">
+            <header class="ops-topbar">
+                <div class="topbar-search">
+                    <span class="material-symbols-outlined">search</span>
+                    <span>Search across enterprise data...</span>
+                </div>
+
+                <div class="topbar-actions">
+                    <button class="topbar-icon" type="button" aria-label="Notifications">
+                        <span class="material-symbols-outlined">notifications</span>
+                    </button>
+                    <button class="topbar-icon" type="button" aria-label="Workspace Settings">
+                        <span class="material-symbols-outlined">settings</span>
+                    </button>
+                    <button class="topbar-icon" type="button" aria-label="Profile Options">
+                        <span class="material-symbols-outlined">help</span>
+                    </button>
+                    <a class="topbar-profile" href="/employee_profile">
+                        <div class="topbar-profile-copy">
+                            <strong>{{ current_user.full_name or 'Employee User' }}</strong>
+                            <span>{{ current_user.username or 'employee' }}</span>
+                        </div>
+                        <div class="topbar-avatar">{{ (current_user.full_name or current_user.username or 'E')[0]|upper }}</div>
+                    </a>
+                </div>
+            </header>
+
+            <main class="ops-main">
+            <section class="ops-hero">
+                <div>
+                    <p class="section-eyebrow">Operations Overview</p>
+                    <h1>Real-time performance metrics and workspace tools for employee operations.</h1>
+                </div>
+                <div class="ops-hero-tools">
+                    <a class="hero-chip" href="/employee_profile">
+                        <span class="material-symbols-outlined">person</span>
+                        <span>My Profile</span>
+                    </a>
+                    <a class="hero-chip" href="/employee_attendance_history">
+                        <span class="material-symbols-outlined">history</span>
+                        <span>Attendance</span>
+                    </a>
+                </div>
+            </section>
+
+            <section class="summary-grid">
+                <article class="summary-card">
+                    <div class="summary-icon tone-teal">
+                        <span class="material-symbols-outlined">monitoring</span>
+                    </div>
+                    <div class="summary-meta">
+                        <span class="summary-trend positive">+2.6%</span>
+                        <span class="summary-label">Attendance Rate</span>
+                        <strong>98.2%</strong>
+                    </div>
+                </article>
+
+                <article class="summary-card">
+                    <div class="summary-icon tone-sky">
+                        <span class="material-symbols-outlined">task_alt</span>
+                    </div>
+                    <div class="summary-meta">
+                        <span class="summary-trend positive">84/90</span>
+                        <span class="summary-label">Tasks Completed</span>
+                        <strong>93%</strong>
+                    </div>
+                </article>
+
+                <article class="summary-card">
+                    <div class="summary-icon tone-coral">
+                        <span class="material-symbols-outlined">calendar_month</span>
+                    </div>
+                    <div class="summary-meta">
+                        <span class="summary-trend neutral">Available</span>
+                        <span class="summary-label">Leave Balance</span>
+                        <strong>12 <small>Days</small></strong>
+                    </div>
+                </article>
+
+                <article class="summary-card">
+                    <div class="summary-icon tone-mint">
+                        <span class="material-symbols-outlined">trending_up</span>
+                    </div>
+                    <div class="summary-meta">
+                        <span id="currentTime" class="summary-trend info">09:12 AM</span>
+                        <span class="summary-label">System Uptime</span>
+                        <strong>99.9%</strong>
+                    </div>
+                </article>
+            </section>
+
+            <section class="workspace-grid">
+                <div class="workspace-primary">
+                    <section class="card tasks-card" id="employeeTasksSection">
+                        <div class="card-head">
+                            <div>
+                                <h2>Assigned Tasks</h2>
+                                <p id="employeeStatusCard" class="card-subtitle">Loading your workspace status...</p>
+                            </div>
+                            <a class="card-link" href="/user_tasks">View All</a>
+                        </div>
+
+                        <div id="employeeTasksList" class="task-list-shell">
+                            <div class="task-row">
+                                <div class="task-icon">
+                                    <span class="material-symbols-outlined">schedule</span>
+                                </div>
+                                <div class="task-copy">
+                                    <strong>Loading assigned tasks...</strong>
+                                    <span>Syncing with admin workspace</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="card resources-card">
+                        <div class="card-head">
+                            <div>
+                                <h2>Project Resources</h2>
+                                <p class="card-subtitle">Quick access to employee tools and secure workspace actions.</p>
+                            </div>
+                            <a class="card-link" href="/employee_profile">Manage</a>
+                        </div>
+
+                        <div class="resource-grid">
+                            <a class="resource-tile" href="/employee_profile">
+                                <div class="resource-icon">
+                                    <span class="material-symbols-outlined">badge</span>
+                                </div>
+                                <div>
+                                    <strong>Profile Center</strong>
+                                    <span>Identity, role, and employee details</span>
+                                </div>
+                                <span class="material-symbols-outlined resource-arrow">open_in_new</span>
+                            </a>
+
+                            <a class="resource-tile" href="/employee_attendance_history">
+                                <div class="resource-icon">
+                                    <span class="material-symbols-outlined">event_note</span>
+                                </div>
+                                <div>
+                                    <strong>Attendance Hub</strong>
+                                    <span>Review logs, dates, and attendance records</span>
+                                </div>
+                                <span class="material-symbols-outlined resource-arrow">open_in_new</span>
+                            </a>
+
+                            <a class="resource-tile" href="/user_tasks">
+                                <div class="resource-icon">
+                                    <span class="material-symbols-outlined">assignment</span>
+                                </div>
+                                <div>
+                                    <strong>Task Board</strong>
+                                    <span>View all admin-assigned tasks in one page</span>
+                                </div>
+                                <span class="material-symbols-outlined resource-arrow">open_in_new</span>
+                            </a>
+
+                            <label class="resource-tile password-tile" for="currentPassword">
+                                <div class="resource-icon">
+                                    <span class="material-symbols-outlined">lock_reset</span>
+                                </div>
+                                <div>
+                                    <strong>Password Update</strong>
+                                    <span>Secure your account with a new password</span>
+                                </div>
+                            </label>
+
+                            <a class="resource-tile" href="/logout">
+                                <div class="resource-icon">
+                                    <span class="material-symbols-outlined">logout</span>
+                                </div>
+                                <div>
+                                    <strong>Logout</strong>
+                                    <span>Exit the employee workspace safely</span>
+                                </div>
+                                <span class="material-symbols-outlined resource-arrow">open_in_new</span>
+                            </a>
+                        </div>
+                    </section>
+
+                    <section class="card password-card">
+                        <div class="card-head">
+                            <div>
+                                <h2>Change Password</h2>
+                                <p class="card-subtitle">Your current password and new password are required to update access.</p>
+                            </div>
+                            <span class="mini-badge">Employee Only</span>
+                        </div>
+
+                        <form class="password-form" id="changePasswordForm" novalidate>
+                            <label class="password-field">
+                                <span>Current Password</span>
+                                <input id="currentPassword" type="password" placeholder="Enter current password" required/>
+                            </label>
+                            <label class="password-field">
+                                <span>New Password</span>
+                                <input id="newPassword" type="password" placeholder="Enter new password" required/>
+                            </label>
+                            <button class="password-submit" type="submit">Update Password</button>
+                            <p class="password-status" id="passwordStatus" role="status" aria-live="polite"></p>
+                        </form>
+                    </section>
+                </div>
+
+                <aside class="workspace-side">
+                    <section class="card chart-card">
+                        <div class="card-head compact-head">
+                            <div>
+                                <h2>Regional Yield</h2>
+                                <p class="card-subtitle">Last 30 days trend</p>
+                            </div>
+                        </div>
+                        <div class="chart-bars" aria-hidden="true">
+                            <span style="height: 44%;"></span>
+                            <span style="height: 62%;"></span>
+                            <span style="height: 50%;"></span>
+                            <span class="accent" style="height: 88%;"></span>
+                            <span class="dark" style="height: 72%;"></span>
+                            <span style="height: 40%;"></span>
+                            <span style="height: 64%;"></span>
+                        </div>
+                    </section>
+
+                    <section class="card activity-card">
+                        <div class="card-head compact-head">
+                            <div>
+                                <h2>Recent Activity</h2>
+                                <p class="card-subtitle">Latest workspace updates</p>
+                            </div>
+                        </div>
+
+                        <div class="activity-list">
+                            <div class="activity-item success">
+                                <span class="material-symbols-outlined">check_circle</span>
+                                <div>
+                                    <strong>Attendance sync completed</strong>
+                                    <span>Your latest logs were updated a few moments ago.</span>
+                                </div>
+                            </div>
+                            <div class="activity-item neutral">
+                                <span class="material-symbols-outlined">campaign</span>
+                                <div>
+                                    <strong>Workspace notice published</strong>
+                                    <span>Monthly review reminders are now available.</span>
+                                </div>
+                            </div>
+                            <div class="activity-item subtle">
+                                <span class="material-symbols-outlined">shield</span>
+                                <div>
+                                    <strong>Account security active</strong>
+                                    <span>Password protection and session controls are enabled.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="deadline-stack">
+                        <div class="deadline-head">
+                            <h2>Upcoming Deadlines</h2>
+                        </div>
+
+                        <div class="deadline-list">
+                            <article class="deadline-item">
+                                <div class="deadline-icon">
+                                    <span class="material-symbols-outlined">description</span>
+                                </div>
+                                <div>
+                                    <strong>Task Review Window</strong>
+                                    <span>Due in 2 days</span>
+                                </div>
+                            </article>
+
+                            <article class="deadline-item">
+                                <div class="deadline-icon">
+                                    <span class="material-symbols-outlined">inventory_2</span>
+                                </div>
+                                <div>
+                                    <strong>Attendance Reconciliation</strong>
+                                    <span>Next 24 hours</span>
+                                </div>
+                            </article>
+
+                            <article class="deadline-item">
+                                <div class="deadline-icon">
+                                    <span class="material-symbols-outlined">groups</span>
+                                </div>
+                                <div>
+                                    <strong>Profile Verification Check</strong>
+                                    <span>Due this week</span>
+                                </div>
+                            </article>
+                        </div>
+
+                        <a class="deadline-button" href="/employee_attendance_history">View Full Calendar</a>
+                    </section>
+                </aside>
+            </section>
+            </main>
+        </div>
+
+        <a class="floating-profile-button" href="/employee_profile" aria-label="Open employee profile">
+            <span class="material-symbols-outlined">add</span>
+        </a>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/pages/employee.js') }}"></script>
+</body>
+</html>

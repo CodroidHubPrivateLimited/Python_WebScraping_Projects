@@ -1,0 +1,38 @@
+<aside class="admin-sidebar">
+    <div class="admin-sidebar-brand">
+        <div class="admin-sidebar-brand-icon">
+            <span class="material-symbols-outlined">fingerprint</span>
+        </div>
+        <div class="admin-sidebar-brand-copy">
+            <p>Admin Portal</p>
+            <span>Premium Security</span>
+        </div>
+    </div>
+
+    <nav class="admin-sidebar-nav" aria-label="Admin Navigation">
+        <a class="admin-nav-link{% if active_admin_page == 'dashboard' %} is-active{% endif %}" href="{{ url_for('pages.admin_dashboard') }}">
+            <span class="material-symbols-outlined">dashboard</span>
+            <span>Dashboard</span>
+        </a>
+        <a class="admin-nav-link{% if active_admin_page == 'live_feed' %} is-active{% endif %}" href="{{ url_for('pages.admin_dashboard') }}#live-feed">
+            <span class="material-symbols-outlined">videocam</span>
+            <span>Live Feed</span>
+        </a>
+        <a class="admin-nav-link{% if active_admin_page == 'new_register' %} is-active{% endif %}" href="{{ url_for('pages.new_register') }}">
+            <span class="material-symbols-outlined">person_add</span>
+            <span>User Registration</span>
+        </a>
+        <a class="admin-nav-link{% if active_admin_page == 'attendance_log' %} is-active{% endif %}" href="{{ url_for('pages.attendance_log') }}">
+            <span class="material-symbols-outlined">history</span>
+            <span>Attendance Log</span>
+        </a>
+        <a class="admin-nav-link{% if active_admin_page == 'daily_task' %} is-active{% endif %}" href="{{ url_for('pages.daily_task') }}">
+            <span class="material-symbols-outlined">assignment</span>
+            <span>Daily Tasks</span>
+        </a>
+        <a class="admin-nav-link{% if active_admin_page == 'visitor' %} is-active{% endif %}" href="{{ url_for('pages.visitor_log') }}">
+            <span class="material-symbols-outlined">groups</span>
+            <span>Visitors</span>
+        </a>
+    </nav>
+</aside>

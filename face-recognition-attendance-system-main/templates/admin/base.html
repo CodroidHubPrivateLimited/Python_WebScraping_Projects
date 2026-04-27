@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_sidebar.css') }}">
+{% block admin_styles %}{% endblock %}
+{% endblock %}
+{% block body_class %}app-body{% endblock %}
+{% block content %}
+<div class="admin-shell">
+    {% include "admin/sidebar.html" %}
+    <main class="admin-main">
+        {% block admin_content %}{% endblock %}
+    </main>
+</div>
+{% endblock %}
+{% block scripts %}{% block admin_scripts %}{% endblock %}{% endblock %}

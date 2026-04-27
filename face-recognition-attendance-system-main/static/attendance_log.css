@@ -1,0 +1,145 @@
+body {
+  font-family: 'Inter', sans-serif;
+  background: #f4f7fb;
+  color: #20364a;
+  overflow-x: hidden;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+}
+
+.soft-card {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #e7edf5;
+  box-shadow: 0 14px 40px rgba(32, 57, 84, 0.07);
+}
+
+.nav-item {
+  border: 1px dashed #b9d2f1;
+  color: #6a7f93;
+  transition: all 0.2s ease;
+}
+
+.nav-item:hover,
+.nav-item.active {
+  background: #ffffff;
+  color: #0b5f83;
+  border-color: #8eb7e4;
+  box-shadow: 0 10px 24px rgba(32, 57, 84, 0.08);
+}
+
+.metric-card {
+  background: linear-gradient(180deg, #ffffff 0%, #f9fbfe 100%);
+  border: 1px solid #e9eff6;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.25rem 0.8rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.status-present {
+  background: #e9f8f1;
+  color: #0e8a57;
+}
+
+.status-absent {
+  background: #eef2f7;
+  color: #6a7687;
+}
+
+.status-late {
+  background: #fff1ef;
+  color: #e24d3f;
+}
+
+.month-chip.active {
+  background: #f1f6fb;
+  color: #0d5a7d;
+  box-shadow: inset 0 0 0 1px #e2ebf5;
+}
+
+.theme-toggle {
+  border: 1px solid #dbe4ee;
+  background: #ffffff;
+  color: #205d86;
+}
+
+.bar-h-30 {
+  height: 30%;
+}
+
+.bar-h-48 {
+  height: 48%;
+}
+
+.bar-h-55 {
+  height: 55%;
+}
+
+.bar-h-70 {
+  height: 70%;
+}
+
+.bar-h-78 {
+  height: 78%;
+}
+
+.bar-h-90 {
+  height: 90%;
+}
+
+html.dark-theme body {
+  background: #0f172a;
+  color: #e2e8f0;
+}
+
+html.dark-theme aside,
+html.dark-theme .soft-card,
+html.dark-theme .metric-card,
+html.dark-theme .theme-toggle {
+  background: #111827 !important;
+  color: #e5e7eb !important;
+  border-color: #334155 !important;
+}
+
+html.dark-theme .bg-white,
+html.dark-theme .bg-\[\#fbfcfe\],
+html.dark-theme .bg-\[\#eef3f9\],
+html.dark-theme .bg-\[\#eef3f8\] {
+  background: #111827 !important;
+}
+
+html.dark-theme .text-slate-800,
+html.dark-theme .text-slate-500,
+html.dark-theme .text-slate-400,
+html.dark-theme .text-\[\#0d5a7d\],
+html.dark-theme .text-\[\#0d3850\],
+html.dark-theme .text-\[\#23384c\] {
+  color: #e5e7eb !important;
+}
+
+@media (max-width: 1023px) {
+  .mobile-nav {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+    scrollbar-width: none;
+  }
+
+  .mobile-nav::-webkit-scrollbar {
+    display: none;
+  }
+}
+@media (max-width: 768px) {
+  .status-pill {
+    padding: 0.35rem 0.65rem;
+    font-size: 0.68rem;
+  }
+}

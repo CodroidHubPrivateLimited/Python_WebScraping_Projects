@@ -1,0 +1,46 @@
+{% set active_admin_page = "visitor" %}
+{% extends "admin/base.html" %}
+{% block title %}Visitor Log{% endblock %}
+{% block admin_content %}
+<div class="main-panel">
+        <header class="page-header">
+            <div><p class="eyebrow">Visitors</p><h1>Visitor Log</h1></div>
+            <div class="toolbar-row">
+                <input id="visitorDateFilter" type="date" class="input-chip">
+                <button id="clearVisitorFilter" class="chip-button" type="button">Show All</button>
+                <button id="themeToggle" class="chip-button" type="button">Theme</button>
+            </div>
+        </header>
+        <section class="metrics-grid">
+            <article class="metric-card"><span>Total Visitors</span><strong id="totalVisitors">0</strong></article>
+            <article class="metric-card"><span>Today Visitors</span><strong id="todayVisitors">0</strong></article>
+            <article class="metric-card"><span>Visible Records</span><strong id="filteredVisitors">0</strong></article>
+            <article class="metric-card"><span>Export</span><strong><a href="/export_visitors">Download</a></strong></article>
+        </section>
+        <section class="panel-card">
+            <div class="table-scroll">
+                <table class="responsive-table visitor-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Visitor Name</th>
+                            <th>Purpose</th>
+                            <th>Person to Meet</th>
+                            <th>Question Responses</th>
+                            <th>Face Image</th>
+                            <th>Feedback</th>
+                            <th>Check Out</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="visitorTableBody">
+                        <tr><td colspan="11">Loading visitor records...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+</div>
+{% endblock %}
+{% block admin_scripts %}<script src="{{ url_for('static', filename='js/pages/visitor.js') }}"></script>{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Choose Role{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">{% endblock %}
+{% block body_class %}auth-body{% endblock %}
+{% block content %}
+<main class="auth-landing">
+    <section class="hero-panel">
+        <p class="eyebrow">Face Recognition Attendance</p>
+        <h1>Clean access for admins and employees.</h1>
+        <p class="hero-text">SecureTrack now uses a cleaner Flask structure and a responsive interface that works smoothly from desktop to mobile.</p>
+        <div class="stats-row">
+            <article class="mini-stat"><strong>Responsive</strong><span>Mobile-first layout</span></article>
+            <article class="mini-stat"><strong>Modular</strong><span>Blueprint-based backend</span></article>
+            <article class="mini-stat"><strong>Secure</strong><span>Role-aware access flow</span></article>
+        </div>
+    </section>
+
+    <section class="role-grid">
+        <button class="role-card" data-role="admin" type="button">
+            <span class="material-symbols-outlined role-icon">admin_panel_settings</span>
+            <span class="role-title">Administrator</span>
+            <span class="role-text">Manage attendance, enrollment, visitors, reports, and daily operations.</span>
+            <span class="role-cta">Open Admin Portal</span>
+        </button>
+        <button class="role-card role-card-light" data-role="user" type="button">
+            <span class="material-symbols-outlined role-icon">badge</span>
+            <span class="role-title">Employee</span>
+            <span class="role-text">Access your workspace, update your password, and review attendance activity.</span>
+            <span class="role-cta">Open Employee Portal</span>
+        </button>
+    </section>
+</main>
+<p id="roleSelectionStatus" class="status-floating">Select a role to continue.</p>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/pages/role_selection.js') }}"></script>{% endblock %}

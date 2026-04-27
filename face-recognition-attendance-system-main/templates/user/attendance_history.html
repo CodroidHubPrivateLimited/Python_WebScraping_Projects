@@ -1,0 +1,442 @@
+{% extends "base.html" %}
+{% block title %}My Attendance History{% endblock %}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+<style>
+.attendance-page {
+    display: grid;
+    gap: 1.25rem;
+}
+.attendance-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.2rem;
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.78);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(14px);
+}
+.attendance-topbar h1 {
+    margin: 0;
+    font-size: 1.55rem;
+}
+.attendance-topbar p {
+    margin: 0.2rem 0 0;
+    color: var(--muted);
+}
+.attendance-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+.icon-orb {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.employee-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.45rem 0.8rem;
+    border-radius: 999px;
+    background: #eef6fb;
+    border: 1px solid #dbeaf5;
+}
+.employee-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, #173848 0%, #0f6775 100%);
+    color: #fff;
+    font-weight: 800;
+}
+.employee-badge strong,
+.employee-badge small {
+    display: block;
+}
+.employee-badge small {
+    color: var(--muted);
+}
+.stats-strip {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+}
+.stats-card {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 1rem 1.1rem;
+    border-radius: 22px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+}
+.stats-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 18px;
+    display: grid;
+    place-items: center;
+    font-size: 1.35rem;
+}
+.stats-icon.teal { background: #e5f7f6; color: #12928d; }
+.stats-icon.green { background: #eaf8ee; color: #27a45d; }
+.stats-icon.red { background: #fff0f2; color: #e05275; }
+.stats-icon.amber { background: #fff6e7; color: #d88b1b; }
+.stats-card span {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+.stats-card strong {
+    display: block;
+    margin-top: 0.2rem;
+    font-size: 1.7rem;
+}
+.records-panel {
+    padding: 0;
+    overflow: hidden;
+}
+.records-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.2rem;
+    border-bottom: 1px solid #e7eef3;
+    background: linear-gradient(180deg, rgba(242,247,251,0.9) 0%, rgba(255,255,255,0.95) 100%);
+    flex-wrap: wrap;
+}
+.filters-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+.search-shell {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-width: 280px;
+    padding: 0.78rem 1rem;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+}
+.search-shell input {
+    width: 100%;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--text);
+}
+.advanced-filters {
+    display: none;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0 1.2rem 1rem;
+    flex-wrap: wrap;
+}
+.advanced-filters.show {
+    display: flex;
+}
+.table-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.2rem 1.2rem;
+    color: var(--muted);
+    flex-wrap: wrap;
+}
+.pager {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+.pager button {
+    width: 34px;
+    height: 34px;
+    border-radius: 11px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+}
+.pager button.active {
+    background: var(--primary);
+    color: white;
+    border-color: transparent;
+}
+.bottom-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.65fr) minmax(280px, 0.8fr);
+    gap: 1rem;
+}
+.trend-card,
+.export-card {
+    min-height: 260px;
+}
+.trend-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+.trend-chart {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    align-items: end;
+    gap: 0.9rem;
+    min-height: 190px;
+    padding-top: 0.5rem;
+}
+.trend-bar-wrap {
+    display: grid;
+    gap: 0.55rem;
+    justify-items: center;
+}
+.trend-bar {
+    width: 100%;
+    max-width: 58px;
+    border-radius: 18px 18px 0 0;
+    background: linear-gradient(180deg, #cceff0 0%, #9bdadd 100%);
+    min-height: 24px;
+}
+.trend-bar.active {
+    background: linear-gradient(180deg, #16a39a 0%, #0f7d77 100%);
+}
+.trend-bar-label {
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-transform: uppercase;
+}
+.trend-bar-value {
+    font-size: 0.76rem;
+    font-weight: 800;
+    color: var(--text);
+}
+.export-card {
+    background: linear-gradient(180deg, #082031 0%, #0a2638 100%);
+    color: white;
+    border-color: rgba(255,255,255,0.06);
+}
+.export-card p {
+    color: rgba(255,255,255,0.7);
+}
+.export-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+    display: grid;
+    place-items: center;
+    background: rgba(255,255,255,0.08);
+}
+.export-actions {
+    display: grid;
+    gap: 0.85rem;
+    margin-top: 2rem;
+}
+.export-actions .primary-button,
+.export-actions .secondary-button {
+    width: 100%;
+}
+.export-actions .secondary-button {
+    background: rgba(255,255,255,0.08);
+    color: white;
+    border-color: rgba(255,255,255,0.1);
+}
+.status-pill.status-present {
+    background: #e8f8ec;
+    color: #21a45d;
+}
+.status-pill.status-late {
+    background: #fff1e6;
+    color: #dd7d1d;
+}
+.status-pill.status-absent {
+    background: #fff0f2;
+    color: #dd4f72;
+}
+@media (max-width: 1100px) {
+    .stats-strip,
+    .bottom-grid {
+        grid-template-columns: 1fr;
+    }
+}
+@media (max-width: 760px) {
+    .attendance-topbar {
+        padding: 1rem;
+    }
+    .search-shell {
+        min-width: 100%;
+    }
+    .stats-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+</style>
+{% endblock %}
+{% block body_class %}app-body{% endblock %}
+{% block content %}
+<div class="app-shell employee-shell">
+    <aside class="sidebar">
+        <div class="sidebar-brand"><span class="material-symbols-outlined">badge</span><div><strong>SecureTrack</strong><small>Employee</small></div></div>
+        <nav class="sidebar-nav">
+            <a class="nav-link" href="/employee">Dashboard</a>
+            <a class="nav-link" href="/user_tasks">Tasks</a>
+            <a class="nav-link active" href="/employee_attendance_history">Attendance History</a>
+            <a class="nav-link" href="/employee_profile">Profile</a>
+            <a class="nav-link" href="/logout">Logout</a>
+        </nav>
+    </aside>
+
+    <main class="main-panel">
+        <div class="attendance-page">
+            <header class="attendance-topbar">
+                <div>
+                    <p class="eyebrow">Employee Records</p>
+                    <h1>Attendance History</h1>
+                </div>
+                <div class="attendance-actions">
+                    <button id="themeToggle" class="icon-orb" type="button">
+                        <span class="material-symbols-outlined">dark_mode</span>
+                    </button>
+                    <div class="employee-badge">
+                        <div>
+                            <strong>{{ current_user.full_name or 'Employee' }}</strong>
+                            <small>{{ current_user.employee_id or current_user.username or 'employee' }}</small>
+                        </div>
+                        <div class="employee-avatar">{{ (current_user.full_name or current_user.username or 'E')[0]|upper }}</div>
+                    </div>
+                </div>
+            </header>
+
+            <section class="stats-strip">
+                <article class="stats-card">
+                    <div class="stats-icon teal"><span class="material-symbols-outlined">calendar_month</span></div>
+                    <div><span>Total Records</span><strong id="historyTotalDays">0</strong></div>
+                </article>
+                <article class="stats-card">
+                    <div class="stats-icon green"><span class="material-symbols-outlined">check_circle</span></div>
+                    <div><span>Present Days</span><strong id="historyPresentDays">0</strong></div>
+                </article>
+                <article class="stats-card">
+                    <div class="stats-icon red"><span class="material-symbols-outlined">cancel</span></div>
+                    <div><span>Absences</span><strong id="historyAbsenceDays">0</strong></div>
+                </article>
+                <article class="stats-card">
+                    <div class="stats-icon amber"><span class="material-symbols-outlined">schedule</span></div>
+                    <div><span>Avg Work Hours</span><strong id="historyAvgHours">0h 00m</strong></div>
+                </article>
+            </section>
+
+            <section class="panel-card records-panel">
+                <div class="records-toolbar">
+                    <div class="filters-row">
+                        <input id="monthPicker" type="month" class="input-chip">
+                        <button id="toggleAdvancedFilters" class="chip-button" type="button">
+                            <span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle;margin-right:0.35rem;">tune</span>
+                            Advanced Filters
+                        </button>
+                        <button id="clearMonthFilter" class="chip-button" type="button">All</button>
+                    </div>
+                    <label class="search-shell">
+                        <span class="material-symbols-outlined" style="font-size:18px;">search</span>
+                        <input id="attendanceSearchInput" type="text" placeholder="Search by date or notes...">
+                    </label>
+                </div>
+
+                <div id="advancedFiltersPanel" class="advanced-filters">
+                    <select id="statusFilter" class="input-chip">
+                        <option value="">All Status</option>
+                        <option value="present">Present</option>
+                        <option value="late">Late</option>
+                        <option value="absent">Absent</option>
+                        <option value="short leave">Short Leave</option>
+                        <option value="queued">Queued</option>
+                    </select>
+                    <button class="month-chip" data-month="1" type="button">Jan</button>
+                    <button class="month-chip" data-month="2" type="button">Feb</button>
+                    <button class="month-chip" data-month="3" type="button">Mar</button>
+                    <button class="month-chip" data-month="4" type="button">Apr</button>
+                    <button class="month-chip" data-month="5" type="button">May</button>
+                    <button class="month-chip" data-month="6" type="button">Jun</button>
+                    <button class="month-chip" data-month="7" type="button">Jul</button>
+                    <button class="month-chip" data-month="8" type="button">Aug</button>
+                    <button class="month-chip" data-month="9" type="button">Sep</button>
+                    <button class="month-chip" data-month="10" type="button">Oct</button>
+                    <button class="month-chip" data-month="11" type="button">Nov</button>
+                    <button class="month-chip" data-month="12" type="button">Dec</button>
+                </div>
+
+                <div class="table-scroll">
+                    <table class="responsive-table records-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Clock-In</th>
+                                <th>Clock-Out</th>
+                                <th>Total Hours</th>
+                                <th>Status</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody id="employeeAttendanceTableBody">
+                            <tr><td colspan="6">Loading attendance records...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="table-footer">
+                    <p id="attendanceRangeLabel">Showing 0 to 0 of 0 records</p>
+                    <div id="attendancePager" class="pager"></div>
+                </div>
+            </section>
+
+            <section class="bottom-grid">
+                <article class="panel-card trend-card">
+                    <div class="trend-head">
+                        <div>
+                            <h2 style="margin:0;">Monthly Trend</h2>
+                            <p class="small-copy">Past 6 months</p>
+                        </div>
+                        <p class="small-copy" id="trendSummaryLabel">Attendance distribution</p>
+                    </div>
+                    <div id="trendChart" class="trend-chart"></div>
+                </article>
+
+                <aside class="panel-card export-card">
+                    <div class="export-icon"><span class="material-symbols-outlined">download</span></div>
+                    <h2 style="margin:1rem 0 0;">Export Summary</h2>
+                    <p id="exportSummaryText">Generate a clean attendance export for reporting and personal tracking.</p>
+                    <div class="export-actions">
+                        <a class="primary-button link-button" href="/download_employee_attendance_csv">Download CSV Record</a>
+                        <button id="emailManagerButton" class="secondary-button" type="button">Email to Manager</button>
+                    </div>
+                </aside>
+            </section>
+        </div>
+    </main>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/pages/employee_attendance_history.js') }}"></script>{% endblock %}

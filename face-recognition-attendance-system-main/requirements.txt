@@ -1,0 +1,8 @@
+Flask
+deepface
+pymongo
+python-dotenv
+openpyxl
+numpy
+opencv-python
+Werkzeug

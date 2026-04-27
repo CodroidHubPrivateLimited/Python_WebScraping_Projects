@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Visitor Log</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="{{ url_for('static', filename='js/common/theme-init.js') }}"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='visitor.css') }}">
+</head>
+<body class="min-h-screen">
+  <div class="flex min-h-screen flex-col lg:flex-row">
+    <aside class="flex w-full shrink-0 flex-col bg-[#eef3f9] px-4 py-4 lg:w-72 lg:px-6 lg:py-5">
+      <div class="flex items-center gap-3">
+        <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#0a607b] text-white">
+          <span class="material-symbols-outlined">groups</span>
+        </div>
+        <div>
+          <h1 class="text-2xl font-extrabold leading-none text-[#23384c]">Admin Portal</h1>
+          <p class="mt-1 text-[11px] font-bold uppercase tracking-[0.22em] text-slate-400">Visitor Monitoring</p>
+        </div>
+      </div>
+
+      <nav class="mobile-nav mt-6 gap-3 space-y-0 lg:mt-10 lg:block lg:space-y-3">
+        <a href="{{ url_for('admin_dashboard') }}" class="nav-item flex min-w-max items-center gap-3 rounded-2xl px-4 py-4 text-sm font-semibold">
+          <span class="material-symbols-outlined text-[20px]">dashboard</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="/attendance_log" class="nav-item flex min-w-max items-center gap-3 rounded-2xl px-4 py-4 text-sm font-semibold">
+          <span class="material-symbols-outlined text-[20px]">history</span>
+          <span>Attendance History</span>
+        </a>
+        <a href="/visitor" class="nav-item active flex min-w-max items-center gap-3 rounded-2xl px-4 py-4 text-sm font-semibold">
+          <span class="material-symbols-outlined text-[20px]">badge</span>
+          <span>Visitor Log</span>
+        </a>
+        <a href="/new_register" class="nav-item flex min-w-max items-center gap-3 rounded-2xl px-4 py-4 text-sm font-semibold">
+          <span class="material-symbols-outlined text-[20px]">person_add</span>
+          <span>User Registration</span>
+        </a>
+      </nav>
+
+      <div class="mt-6 space-y-4 lg:mt-auto">
+        <a href="/export_visitors" class="flex w-full items-center justify-center rounded-2xl bg-[#0a607b] px-5 py-4 text-sm font-extrabold text-white shadow-lg transition hover:bg-[#084f67]">
+          Export Visitors Excel
+        </a>
+        <a href="{{ url_for('admin_dashboard') }}" class="nav-item flex w-full items-center gap-3 rounded-2xl px-4 py-4 text-sm font-semibold">
+          <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+          <span>Back to Dashboard</span>
+        </a>
+      </div>
+    </aside>
+
+    <main class="flex-1 px-4 py-4 sm:px-6 sm:py-5">
+      <header class="mb-8 flex flex-col gap-4 lg:mb-10 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+          <h2 class="text-2xl font-extrabold text-[#0d3850] sm:text-3xl">Visitor Log</h2>
+          <p class="mt-2 text-sm text-slate-500">Excel-based visitor records with date, time, meeting details, face path, and feedback.</p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3 text-slate-500 sm:gap-4">
+          <input id="visitorDateFilter" type="date" class="rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600" />
+          <button id="clearVisitorFilter" class="rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-[#0a607b] transition hover:bg-slate-50">
+            Show All
+          </button>
+          <button id="themeToggle" class="theme-toggle rounded-2xl px-4 py-2 text-sm font-bold transition hover:bg-slate-50">
+            <span class="material-symbols-outlined mr-1 align-middle text-[18px]">dark_mode</span>
+            Theme
+          </button>
+        </div>
+      </header>
+
+      <section class="mb-8 grid gap-6 md:grid-cols-3">
+        <div class="metric-card rounded-[1.6rem] p-5">
+          <p class="text-xs font-extrabold uppercase tracking-[0.24em] text-slate-400">Total Visitors</p>
+          <p id="totalVisitors" class="mt-3 text-4xl font-extrabold text-[#0a5d83]">0</p>
+        </div>
+        <div class="metric-card rounded-[1.6rem] p-5">
+          <p class="text-xs font-extrabold uppercase tracking-[0.24em] text-slate-400">Today Visitors</p>
+          <p id="todayVisitors" class="mt-3 text-4xl font-extrabold text-[#0a5d83]">0</p>
+        </div>
+        <div class="metric-card rounded-[1.6rem] p-5">
+          <p class="text-xs font-extrabold uppercase tracking-[0.24em] text-slate-400">Visible Records</p>
+          <p id="filteredVisitors" class="mt-3 text-4xl font-extrabold text-[#0a5d83]">0</p>
+        </div>
+      </section>
+
+      <section class="soft-card overflow-hidden rounded-[2rem]">
+        <div class="flex flex-col gap-4 border-b border-slate-100 px-6 py-6 md:flex-row md:items-center md:justify-between">
+          <div>
+            <div class="flex items-center gap-3">
+              <h3 class="text-xl font-extrabold text-[#0d5a7d] sm:text-2xl">Visitor Records</h3>
+              <span class="rounded-md bg-[#dff2ff] px-2 py-1 text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#0d5a7d]">Excel Sync</span>
+            </div>
+            <p class="mt-2 text-sm text-slate-500">All visitor records saved in `visitors.xlsx` are shown here.</p>
+          </div>
+
+          <a href="/export_visitors" class="rounded-xl bg-[#0a607b] px-5 py-3 text-sm font-extrabold text-white transition hover:bg-[#084f67]">Download Excel</a>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full min-w-[900px] text-left">
+            <thead class="bg-[#fbfcfe] text-xs font-extrabold uppercase tracking-[0.18em] text-slate-400">
+              <tr>
+                <th class="px-5 py-5">Date</th>
+                <th class="px-5 py-5">Time</th>
+                <th class="px-5 py-5">Visitor Name</th>
+                <th class="px-5 py-5">Purpose</th>
+                <th class="px-5 py-5">Person to Meet</th>
+                <th class="px-5 py-5">Question Responses</th>
+                <th class="px-5 py-5">Face Image</th>
+                <th class="px-5 py-5">Feedback</th>
+                <th class="px-5 py-5">Check Out</th>
+                <th class="px-5 py-5">Status</th>
+                <th class="px-5 py-5">Action</th>
+              </tr>
+            </thead>
+            <tbody id="visitorTableBody" class="divide-y divide-slate-100 bg-white">
+              <tr>
+                <td colspan="11" class="px-5 py-14 text-center text-sm text-slate-400">Loading visitor records...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/pages/visitor.js') }}"></script>
+</body>
+</html>

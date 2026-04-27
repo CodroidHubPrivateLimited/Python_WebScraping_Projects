@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% block title %}Employee Profile{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">{% endblock %}
+{% block body_class %}app-body{% endblock %}
+{% block content %}
+<div class="app-shell employee-shell">
+    <aside class="sidebar">
+        <div class="sidebar-brand"><span class="material-symbols-outlined">badge</span><div><strong>SecureTrack</strong><small>Employee</small></div></div>
+        <nav class="sidebar-nav">
+            <a class="nav-link" href="/employee">Dashboard</a>
+            <a class="nav-link" href="/user_tasks">Tasks</a>
+            <a class="nav-link" href="/employee_attendance_history">Attendance History</a>
+            <a class="nav-link active" href="/employee_profile">Profile</a>
+            <a class="nav-link" href="/logout">Logout</a>
+        </nav>
+    </aside>
+
+    <main class="main-panel profile-page">
+        <header class="profile-topbar">
+            <div class="profile-search">
+                <span class="material-symbols-outlined">search</span>
+                <span>Search employees, records...</span>
+            </div>
+            <div class="profile-topbar-actions">
+                <button class="profile-icon-button" type="button" aria-label="Notifications">
+                    <span class="material-symbols-outlined">notifications</span>
+                </button>
+                <button class="profile-icon-button" type="button" aria-label="Help">
+                    <span class="material-symbols-outlined">help</span>
+                </button>
+                <a class="profile-manage-link" href="/employee">
+                    <span>Employee Management</span>
+                    <span class="material-symbols-outlined">open_in_new</span>
+                </a>
+            </div>
+        </header>
+
+        <section class="profile-hero">
+            <div>
+                <h1>My Profile</h1>
+                <p>Manage your personal information and account settings.</p>
+            </div>
+        </section>
+
+        <section class="metrics-grid profile-metrics">
+            <article class="metric-card profile-metric-card">
+                <div class="profile-metric-head">
+                    <span>Employee ID</span>
+                    <span class="material-symbols-outlined">badge</span>
+                </div>
+                <strong>{{ employee_profile.employee_id or 'Not Assigned' }}</strong>
+            </article>
+            <article class="metric-card profile-metric-card">
+                <div class="profile-metric-head">
+                    <span>Department</span>
+                    <span class="material-symbols-outlined">apartment</span>
+                </div>
+                <strong>{{ employee_profile.department or 'General' }}</strong>
+            </article>
+            <article class="metric-card profile-metric-card">
+                <div class="profile-metric-head">
+                    <span>Username</span>
+                    <span class="material-symbols-outlined">account_circle</span>
+                </div>
+                <strong>{{ employee_profile.username or 'employee' }}</strong>
+            </article>
+            <article class="metric-card profile-metric-card">
+                <div class="profile-metric-head">
+                    <span>Role</span>
+                    <span class="material-symbols-outlined">work</span>
+                </div>
+                <strong>{{ employee_profile.role or 'employee' }}</strong>
+            </article>
+        </section>
+
+        <section class="profile-layout">
+            <article class="panel-card profile-card">
+                <div class="profile-card-head">
+                    <div class="profile-card-title">
+                        <span class="material-symbols-outlined">group</span>
+                        <h2>Personal Details</h2>
+                    </div>
+                    <span class="status-pill profile-status-pill">Active Status</span>
+                </div>
+
+                <div class="profile-field-grid">
+                    <label class="field profile-field">
+                        <span>Full Name</span>
+                        <input type="text" value="{{ employee_profile.full_name or current_user.full_name or '' }}" readonly>
+                    </label>
+                    <label class="field profile-field">
+                        <span>Email Address</span>
+                        <input type="text" value="{{ employee_profile.email or 'Not Available' }}" readonly>
+                    </label>
+                    <label class="field profile-field">
+                        <span>Department</span>
+                        <input type="text" value="{{ employee_profile.department or 'General' }}" readonly>
+                    </label>
+                    <label class="field profile-field">
+                        <span>Purpose</span>
+                        <input type="text" value="{{ employee_profile.purpose or 'Not Assigned' }}" readonly>
+                    </label>
+                </div>
+
+                <label class="field profile-field profile-wide-field">
+                    <span>Current Role</span>
+                    <div class="profile-role-display">
+                        <span class="material-symbols-outlined">verified</span>
+                        <strong>{{ employee_profile.role or 'Employee' }}</strong>
+                    </div>
+                </label>
+
+                <div class="profile-identity-card">
+                    <div class="profile-identity-icon">
+                        <span class="material-symbols-outlined">shield_lock</span>
+                    </div>
+                    <div>
+                        <strong>Identity Verified</strong>
+                        <p>Your profile information was last verified on October 12, 2023.</p>
+                    </div>
+                </div>
+            </article>
+
+            <aside class="profile-side-column">
+                <section class="panel-card profile-card side-card">
+                    <div class="profile-card-head side-card-head">
+                        <div class="profile-card-title">
+                            <h2>Quick Actions</h2>
+                        </div>
+                    </div>
+
+                    <div class="profile-action-stack">
+                        <a class="primary-button link-button profile-action-primary" href="/employee">Edit Profile</a>
+                        <a class="secondary-button link-button profile-action-secondary" href="/employee">Change Password</a>
+                        <a class="secondary-button link-button profile-action-secondary" href="/employee_attendance_history">View Attendance</a>
+                    </div>
+
+                    <div class="profile-notice-card">
+                        <span class="status-label">System Notice</span>
+                        <strong>Performance reviews are scheduled for next month.</strong>
+                        <p>Please ensure your project logs and attendance records are up to date.</p>
+                    </div>
+                </section>
+
+                <section class="panel-card profile-leave-card">
+                    <span class="status-label">Remaining Leaves</span>
+                    <div class="profile-leave-value">
+                        <strong>14</strong>
+                        <span>Days Total</span>
+                    </div>
+                </section>
+            </aside>
+        </section>
+    </main>
+</div>
+{% endblock %}

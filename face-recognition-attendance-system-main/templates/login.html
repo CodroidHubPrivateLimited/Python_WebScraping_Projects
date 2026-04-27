@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>{{ selected_role|title }} Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="{{ url_for('static', filename='login.css') }}" rel="stylesheet"/>
+</head>
+<body>
+    <main class="auth-shell">
+        <section class="auth-hero">
+            <p class="eyebrow">{{ selected_role|title }} Access</p>
+            <h1>Welcome back to <span>SecureTrack</span></h1>
+            <p class="hero-copy">Sign in to manage attendance, monitor activity, and keep your organization running smoothly.</p>
+
+            <div class="hero-points">
+                <div class="hero-point">
+                    <span class="material-symbols-outlined">shield_lock</span>
+                    <span>Protected employee access</span>
+                </div>
+                <div class="hero-point">
+                    <span class="material-symbols-outlined">schedule</span>
+                    <span>Fast daily attendance workflow</span>
+                </div>
+                <div class="hero-point">
+                    <span class="material-symbols-outlined">insights</span>
+                    <span>Dashboard-ready administration</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="auth-panel">
+            <div class="panel-head">
+                <a class="brand" href="/">
+                    <span class="material-symbols-outlined">verified_user</span>
+                    <span>SecureTrack</span>
+                </a>
+                <p class="panel-kicker">{{ selected_role|title }} Login</p>
+                <h2>Access your account</h2>
+                <p class="panel-copy">{% if selected_role == 'admin' %}Use the fixed administrator credentials to continue.{% else %}Use your registered employee email and password to continue.{% endif %}</p>
+            </div>
+
+            <form class="auth-form" data-role="{{ selected_role }}" id="loginForm" novalidate>
+                <label class="field">
+                    <span>{% if selected_role == 'admin' %}Username{% else %}Email{% endif %}</span>
+                    <input id="loginUsername" name="username" placeholder="{% if selected_role == 'admin' %}admin{% else %}name@company.com{% endif %}" required type="text"/>
+                    <small class="field-error" id="loginUsernameError"></small>
+                </label>
+
+                <label class="field">
+                    <span>Password</span>
+                    <div class="password-wrap">
+                        <input id="loginPassword" name="password" placeholder="Enter your password" required type="password"/>
+                        <button class="toggle-password" data-target="loginPassword" type="button">
+                            <span class="material-symbols-outlined">visibility</span>
+                        </button>
+                    </div>
+                    <small class="field-error" id="loginPasswordError"></small>
+                </label>
+
+                <div class="form-row">
+                    <label class="checkbox-row">
+                        <input id="rememberMe" name="remember_me" type="checkbox"/>
+                        <span>Remember me</span>
+                    </label>
+                    {% if selected_role == 'employee' %}
+                    <a class="inline-link" href="/signup?role=employee">Create account</a>
+                    {% else %}
+                    <span class="inline-note">Admin account is fixed</span>
+                    {% endif %}
+                </div>
+
+                <button class="submit-button" type="submit">Login</button>
+                <p class="form-status" id="loginStatus" role="status" aria-live="polite"></p>
+            </form>
+        </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/pages/login.js') }}"></script>
+</body>
+</html>

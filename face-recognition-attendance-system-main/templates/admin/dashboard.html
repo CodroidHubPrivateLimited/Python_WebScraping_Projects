@@ -1,0 +1,142 @@
+{% set active_admin_page = "dashboard" %}
+{% extends "admin/base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block admin_content %}
+<div class="main-panel">
+        <header class="page-header">
+            <div>
+                <p class="eyebrow">Overview</p>
+                <h1>Attendance Dashboard</h1>
+            </div>
+            <div class="header-actions">
+                <button id="themeToggle" class="chip-button" type="button">Theme</button>
+                <button id="cameraToggle" class="chip-icon" type="button"><span class="material-symbols-outlined">videocam</span></button>
+            </div>
+        </header>
+
+        <section class="metrics-grid">
+            <article class="metric-card"><span>Total Users</span><strong id="totalUsers">0</strong></article>
+            <article class="metric-card"><span>Today Marks</span><strong id="todayMarks">0</strong></article>
+            <article class="metric-card"><span>Live Count</span><strong id="liveCount">0</strong></article>
+            <article class="metric-card"><span>Accuracy</span><strong id="accuracyRate">0%</strong></article>
+        </section>
+
+        <section class="content-grid">
+            <article class="panel-card camera-card">
+                <div class="panel-head">
+                    <div>
+                        <h2>Live Recognition Feed</h2>
+                        <p>Start the camera and mark attendance from the dashboard.</p>
+                    </div>
+                    <button id="startAttendanceBig" class="primary-button" type="button">Start Session</button>
+                </div>
+                <div class="camera-surface">
+                    <video id="video" autoplay muted playsinline class="hidden"></video>
+                    <div id="overlay" class="overlay-badge hidden"></div>
+                    <div class="camera-placeholder">
+                        <span class="material-symbols-outlined">camera_indoor</span>
+                        <p>Camera preview appears here</p>
+                    </div>
+                </div>
+            </article>
+
+            <aside class="stack-grid">
+                <section class="panel-card">
+                    <div class="panel-head compact-head"><h2>Attendance Actions</h2></div>
+                    <div class="button-stack">
+                        <button id="checkOutButton" class="secondary-button" type="button">Check Out</button>
+                        <button id="breakToggleButton" class="secondary-button warning" type="button">Take Break</button>
+                    </div>
+                    <div id="attendanceActionResult" class="message-card">Camera-based actions are ready.</div>
+                </section>
+
+                <section class="panel-card">
+                    <div class="panel-head compact-head"><h2>Quick Controls</h2></div>
+                    <div class="button-stack">
+                        <a class="secondary-button link-button" href="/new_register">Register New Employee</a>
+                        <a class="secondary-button link-button" href="/visitor">Open Visitor Log</a>
+                        <button id="singleMark" class="secondary-button" type="button">Single Mark</button>
+                        <button id="voiceCommandButton" class="secondary-button" type="button">Voice Command</button>
+                    </div>
+                    <div id="voiceCommandStatus" class="message-card info">Voice control ready.</div>
+                    <label class="toggle-row">
+                        <span>Continuous Mode</span>
+                        <div class="toggle-meta">
+                            <span id="continuousLabel">Off</span>
+                            <input id="continuousToggle" type="checkbox">
+                        </div>
+                    </label>
+                    <div id="controlResult" class="message-card">System ready. Start camera to begin attendance.</div>
+                </section>
+            </aside>
+        </section>
+
+        <section class="panel-card">
+            <div class="panel-head">
+                <div>
+                    <h2>Daily Attendance Log</h2>
+                    <p>Responsive table with compact mobile layout.</p>
+                </div>
+                <div class="toolbar-row">
+                    <span id="recordCount" class="count-pill">0</span>
+                    <input id="attendanceDateFilter" type="date" class="input-chip">
+                    <button id="exportAttendanceButton" class="chip-button" type="button">Export Attendance</button>
+                    <button id="exportVisitorsButton" class="chip-button" type="button">Export Visitors</button>
+                </div>
+            </div>
+            <div class="table-scroll">
+                <table class="responsive-table">
+                    <thead>
+                        <tr>
+                            <th>User Name</th>
+                            <th>User ID</th>
+                            <th>Department</th>
+                            <th>Date</th>
+                            <th>IN Time</th>
+                            <th>OUT Time</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="attendanceBody">
+                        <tr><td colspan="8">Loading attendance records...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+</div>
+
+<div id="visitorModal" class="modal-backdrop hidden">
+    <div class="modal-card">
+        <div class="panel-head">
+            <div>
+                <p class="eyebrow">Visitor Check-In</p>
+                <h2>Complete Visitor Details</h2>
+            </div>
+            <button id="closeVisitorModal" class="chip-button" type="button">Close</button>
+        </div>
+        <div class="modal-grid">
+            <div class="panel-card inset-card">
+                <p class="eyebrow">Captured Face</p>
+                <img id="visitorPreview" alt="Visitor preview" class="preview-image">
+                <p id="visitorImagePath" class="small-copy"></p>
+            </div>
+            <form id="visitorForm" class="form-grid">
+                <input id="visitorToken" type="hidden">
+                <label class="field"><span>Visitor Name</span><input id="visitorName" type="text" required></label>
+                <div class="field"><span>Visit Questions</span><div id="visitorQuestions" class="question-stack"></div></div>
+                <div class="two-column">
+                    <label class="field"><span>Rating</span><select id="visitorFeedbackRating" required><option value="">Select</option><option value="Excellent">Excellent</option><option value="Good">Good</option><option value="Average">Average</option><option value="Poor">Poor</option></select></label>
+                    <label class="field"><span>Feedback Comments</span><textarea id="visitorFeedbackComments" rows="4" required></textarea></label>
+                </div>
+                <div id="visitorFormStatus" class="message-card">Complete all visitor fields to save the record.</div>
+                <div class="toolbar-row end">
+                    <button id="cancelVisitorButton" class="chip-button" type="button">Cancel</button>
+                    <button id="submitVisitorButton" class="primary-button" type="submit">Save Visitor Entry</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block admin_scripts %}<script src="{{ url_for('static', filename='js/pages/index.js') }}"></script>{% endblock %}

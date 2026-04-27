@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Employee Signup</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="{{ url_for('static', filename='signup.css') }}" rel="stylesheet"/>
+</head>
+<body>
+    <main class="auth-shell">
+        <section class="auth-panel signup-panel">
+            <div class="panel-head">
+                <a class="brand" href="/">
+                    <span class="material-symbols-outlined">person_add</span>
+                    <span>SecureTrack</span>
+                </a>
+                <p class="panel-kicker">Employee Signup</p>
+                <h1>Create your account</h1>
+                <p class="panel-copy">Register a new profile for secure attendance and workforce access.</p>
+            </div>
+
+            <form class="auth-form" data-role="{{ selected_role }}" id="signupForm" novalidate>
+                <div class="split-grid">
+                    <label class="field">
+                        <span>Full Name</span>
+                        <input id="signupName" name="full_name" placeholder="Enter full name" required type="text"/>
+                        <small class="field-error" id="signupNameError"></small>
+                    </label>
+
+                    <label class="field">
+                        <span>Employee ID</span>
+                        <input id="signupEmployeeId" name="employee_id" placeholder="EMP-001" required type="text"/>
+                        <small class="field-error" id="signupEmployeeIdError"></small>
+                    </label>
+                </div>
+
+                <label class="field">
+                    <span>Department</span>
+                    <input id="signupDepartment" name="department" placeholder="Engineering" required type="text"/>
+                    <small class="field-error" id="signupDepartmentError"></small>
+                </label>
+
+                <label class="field">
+                    <span>Email Address</span>
+                    <input id="signupEmail" name="email" placeholder="name@company.com" required type="email"/>
+                    <small class="field-error" id="signupEmailError"></small>
+                </label>
+
+                <label class="field">
+                    <span>Password</span>
+                    <div class="password-wrap">
+                        <input id="signupPassword" name="password" placeholder="Create password" required type="password"/>
+                        <button class="toggle-password" data-target="signupPassword" type="button">
+                            <span class="material-symbols-outlined">visibility</span>
+                        </button>
+                    </div>
+                    <small class="field-error" id="signupPasswordError"></small>
+                </label>
+
+                <label class="field">
+                    <span>Confirm Password</span>
+                    <div class="password-wrap">
+                        <input id="signupConfirmPassword" name="confirm_password" placeholder="Confirm password" required type="password"/>
+                        <button class="toggle-password" data-target="signupConfirmPassword" type="button">
+                            <span class="material-symbols-outlined">visibility</span>
+                        </button>
+                    </div>
+                    <small class="field-error" id="signupConfirmPasswordError"></small>
+                </label>
+
+                <label class="checkbox-row checkbox-card">
+                    <input id="signupTerms" name="terms" required type="checkbox"/>
+                    <span>I agree to the platform terms and responsible use policy.</span>
+                </label>
+                <small class="field-error" id="signupTermsError"></small>
+
+                <button class="submit-button" type="submit">Create Account</button>
+                <p class="panel-note">Already have an account? <a class="inline-link" href="/login?role=employee">Login here</a></p>
+                <p class="form-status" id="signupStatus" role="status" aria-live="polite"></p>
+            </form>
+        </section>
+
+        <section class="auth-hero signup-hero">
+            <p class="eyebrow">New Registration</p>
+            <h2>Build a secure identity for your team</h2>
+            <p class="hero-copy">Create access credentials now, then move into attendance, personnel records, and daily tracking without friction.</p>
+
+            <div class="stats-grid">
+                <article class="stat-card">
+                    <strong>99.9%</strong>
+                    <span>Reliable access operations</span>
+                </article>
+                <article class="stat-card">
+                    <strong>24/7</strong>
+                    <span>Availability for workforce check-ins</span>
+                </article>
+                <article class="stat-card">
+                    <strong>Fast</strong>
+                    <span>Simple onboarding in one flow</span>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/pages/signup.js') }}"></script>
+</body>
+</html>

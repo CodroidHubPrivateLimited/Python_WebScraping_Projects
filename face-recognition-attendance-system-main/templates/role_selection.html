@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Role Selection</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="{{ url_for('static', filename='role_selection.css') }}" rel="stylesheet"/>
+</head>
+<body>
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-mark">
+                <span class="material-symbols-outlined">verified_user</span>
+            </div>
+            <span class="brand-name">SecureTrack</span>
+        </div>
+
+        <div class="topbar-actions">
+            <button class="icon-button" type="button" aria-label="Help">
+                <span class="material-symbols-outlined">help</span>
+            </button>
+            <button class="language-pill" type="button">
+                <span class="material-symbols-outlined">language</span>
+                English
+            </button>
+        </div>
+    </header>
+
+    <main class="role-page">
+        <section class="hero-copy">
+            <p class="eyebrow">Institutional Access</p>
+            <h1>Enterprise <span>Attendance Suite.</span></h1>
+            <p class="subtitle">Connect your workforce with enterprise-grade precision. Access management dashboards or operative tools through your secure organizational profile.</p>
+
+            <div class="trust-row">
+                <div class="avatar-stack" aria-hidden="true">
+                    <span class="avatar avatar-one"></span>
+                    <span class="avatar avatar-two"></span>
+                    <span class="avatar avatar-three"></span>
+                </div>
+                <div>
+                    <p class="trust-title">2,000+ Teams</p>
+                    <p class="trust-text">Global Security Standard</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="role-grid">
+            <button class="role-card role-card-admin" data-role="admin" type="button">
+                <span class="role-card-content">
+                    <span class="material-symbols-outlined role-icon role-icon-dark">monitoring</span>
+                    <span class="role-title">Administrator</span>
+                    <span class="role-text">Full-scale organizational management. Analyze attendance trends, generate compliance reports, and audit system logs.</span>
+                    <ul class="role-list">
+                        <li>Real-time dashboards</li>
+                        <li>Advanced reporting</li>
+                        <li>Secure audit trails</li>
+                    </ul>
+                </span>
+                <span class="role-card-actions">
+                    <span class="role-cta">Enter Admin Portal <span class="material-symbols-outlined">arrow_forward</span></span>
+                </span>
+            </button>
+
+            <button class="role-card role-card-user" data-role="user" type="button">
+                <span class="role-card-content">
+                    <span class="material-symbols-outlined role-icon role-icon-light">fingerprint</span>
+                    <span class="role-title">Employee</span>
+                    <span class="role-text">Your daily operative workspace. Precise clock-in, interactive schedule management, and seamless leave requests.</span>
+                    <ul class="role-list">
+                        <li>Smart check-in/out</li>
+                        <li>Shift & schedule</li>
+                        <li>Leave management</li>
+                    </ul>
+                </span>
+                <span class="role-card-actions">
+                    <span class="role-cta">Access Workspace <span class="material-symbols-outlined">arrow_forward</span></span>
+                </span>
+            </button>
+        </section>
+    </main>
+
+    <footer class="footer-bar">
+        <div class="footer-badges">
+            <span class="footer-badge"><span class="material-symbols-outlined">verified</span>SOC2 TYPE II</span>
+            <span class="footer-badge"><span class="material-symbols-outlined">lock</span>AES-256</span>
+        </div>
+        <div class="footer-links">
+            <span>Privacy</span>
+            <span>Terms</span>
+            <span>Support</span>
+        </div>
+        <div class="footer-copy">© 2026 SecureTrack Enterprise Systems</div>
+    </footer>
+
+    <p id="roleSelectionStatus" class="role-status">Select a role to continue.</p>
+
+    <script src="{{ url_for('static', filename='js/pages/role_selection.js') }}"></script>
+</body>
+</html>

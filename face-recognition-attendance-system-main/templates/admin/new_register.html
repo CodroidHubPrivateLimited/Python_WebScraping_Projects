@@ -1,0 +1,50 @@
+{% set active_admin_page = "new_register" %}
+{% extends "admin/base.html" %}
+{% block title %}Identity Enrollment{% endblock %}
+{% block admin_content %}
+<div class="main-panel">
+        <header class="page-header">
+            <div><p class="eyebrow">Enrollment</p><h1>Identity Enrollment</h1></div>
+            <button id="themeToggle" class="chip-button" type="button">Theme</button>
+        </header>
+        <section class="content-grid">
+            <article class="panel-card camera-card">
+                <div class="panel-head"><div><h2>Capture Faces</h2><p>Capture five or more images for reliable admin-managed registration.</p></div></div>
+                <div class="camera-surface tall">
+                    <video id="registerVideo" autoplay muted playsinline class="hidden"></video>
+                    <div id="captureOverlay"></div>
+                    <div class="camera-placeholder"><span class="material-symbols-outlined">photo_camera</span><p>Camera preview appears here</p></div>
+                    <button id="captureButton" class="primary-button floating-action" type="button">Click To Capture Face</button>
+                </div>
+                <div class="metrics-grid compact">
+                    <article class="metric-card"><span>Lighting</span><strong id="lightingStatus">Camera Ready</strong></article>
+                    <article class="metric-card"><span>Status</span><strong id="captureStatus">Waiting for Capture</strong></article>
+                </div>
+                <div class="panel-card inset-card">
+                    <div class="panel-head compact-head">
+                        <h2>Capture Progress</h2>
+                        <button id="resetCaptures" class="chip-button" type="button">Reset</button>
+                    </div>
+                    <p id="captureCountText" class="small-copy">0 / 5 images captured</p>
+                    <div id="capturePreviewGrid" class="thumb-grid">
+                        <div class="thumb">1</div><div class="thumb">2</div><div class="thumb">3</div><div class="thumb">4</div><div class="thumb">5</div>
+                    </div>
+                </div>
+            </article>
+            <section class="panel-card">
+                <div class="panel-head"><div><h2>Personnel Details</h2><p>Save employee details, login credentials, and purpose with captured images.</p></div></div>
+                <form id="registerForm" class="form-grid">
+                    <label class="field"><span>Full Name</span><input id="regName" type="text" required></label>
+                    <label class="field"><span>Department</span><input id="regDepartment" type="text"></label>
+                    <label class="field"><span>Employee ID</span><input id="regEmpId" type="text" required></label>
+                    <label class="field"><span>Email</span><input id="regEmail" type="email" required></label>
+                    <label class="field"><span>Password</span><input id="regPassword" type="password" minlength="4" required></label>
+                    <label class="field"><span>Purpose</span><input id="regPurpose" type="text" placeholder="Developer, Security, HR, etc."></label>
+                    <div id="regResult" class="message-card hidden"></div>
+                    <button id="submitRegistration" class="primary-button" type="submit">Create Employee Account</button>
+                </form>
+            </section>
+        </section>
+</div>
+{% endblock %}
+{% block admin_scripts %}<script src="{{ url_for('static', filename='js/pages/new_register.js') }}"></script>{% endblock %}

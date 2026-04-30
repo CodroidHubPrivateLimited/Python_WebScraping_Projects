@@ -5,3 +5,4 @@ SQLAlchemy
 numpy
 Pillow
 PyMySQL
+gunicorn

@@ -4,5 +4,4 @@ Werkzeug
 SQLAlchemy
 numpy
 Pillow
-PyMySQL
 gunicorn

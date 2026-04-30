@@ -6,4 +6,4 @@ face-recognition
 opencv-python
 numpy
 Pillow
-gunicorn
+PyMySQL

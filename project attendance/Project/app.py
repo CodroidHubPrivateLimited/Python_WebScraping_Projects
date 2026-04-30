@@ -533,6 +533,5 @@ def upload_profile():
 
     flash("Profile photo updated")
     return redirect(url_for("student"))
-
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)  
+    app.run(debug=True)

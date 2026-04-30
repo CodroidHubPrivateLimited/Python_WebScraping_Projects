@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mark Attendance | Attendance Portal</title>
+    <script>
+        document.documentElement.setAttribute("data-theme", localStorage.getItem("theme") || "light");
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="page-shell">
+        <div class="blob"></div>
+
+        <section class="auth-layout">
+            <div class="modal-box camera-card auth-simple-card" style="max-width: 720px;">
+                <div class="auth-form-shell">
+                    <div class="auth-buttons" style="justify-content: space-between; margin-bottom: 20px;">
+                        <a href="{{ url_for('student') }}" class="btn btn-secondary">Back</a>
+                        <button type="button" class="btn btn-secondary theme-toggle" onclick="toggleTheme()">Dark Mode</button>
+                    </div>
+
+                    <div class="section-heading" style="text-align:center;">
+                        <h2>Mark Attendance</h2>
+                        <p>Capture your face and verify it with your registered profile photo.</p>
+                    </div>
+
+                    {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <div class="flash-stack">
+                            {% for msg in messages %}
+                                <p class="flash-error">{{ msg }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    {% endwith %}
+
+                    <form method="POST" id="attendanceForm">
+                        <video id="attendanceVideo" class="camera-frame" autoplay playsinline></video>
+                        <canvas id="attendanceCanvas" class="hidden"></canvas>
+                        <img id="attendancePreview" class="capture-preview hidden" alt="Attendance preview">
+                        <input type="hidden" name="attendance_face_data" id="attendanceFaceData">
+
+                        <div class="camera-actions">
+                            <button type="button" class="btn btn-secondary" id="openCameraBtn">Open Camera</button>
+                            <button type="button" class="btn btn-primary" id="captureAttendanceBtn">Capture Photo</button>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary form-btn" id="attendanceSubmitBtn">Verify and Mark Attendance</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const attendanceVideo = document.getElementById("attendanceVideo");
+        const attendanceCanvas = document.getElementById("attendanceCanvas");
+        const attendancePreview = document.getElementById("attendancePreview");
+        const attendanceFaceData = document.getElementById("attendanceFaceData");
+        let attendanceStream;
+
+        function syncThemeButton() {
+            const currentTheme = document.documentElement.getAttribute("data-theme") || "light";
+            const button = document.querySelector(".theme-toggle");
+            if (button) {
+                button.textContent = currentTheme === "dark" ? "Light Mode" : "Dark Mode";
+            }
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute("data-theme") || "light";
+            const nextTheme = currentTheme === "dark" ? "light" : "dark";
+            document.documentElement.setAttribute("data-theme", nextTheme);
+            localStorage.setItem("theme", nextTheme);
+            syncThemeButton();
+        }
+
+        async function startAttendanceCamera() {
+            if (attendanceStream) {
+                return;
+            }
+
+            try {
+                attendanceStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+                attendanceVideo.srcObject = attendanceStream;
+            } catch (error) {
+                alert("Unable to access camera. Please allow camera permission.");
+            }
+        }
+
+        document.getElementById("openCameraBtn").addEventListener("click", startAttendanceCamera);
+
+        document.getElementById("captureAttendanceBtn").addEventListener("click", async function() {
+            if (!attendanceStream) {
+                await startAttendanceCamera();
+            }
+
+            if (!attendanceVideo.videoWidth) {
+                alert("Camera is still loading. Please try again.");
+                return;
+            }
+
+            attendanceCanvas.width = attendanceVideo.videoWidth;
+            attendanceCanvas.height = attendanceVideo.videoHeight;
+            attendanceCanvas.getContext("2d").drawImage(attendanceVideo, 0, 0);
+
+            const imageData = attendanceCanvas.toDataURL("image/jpeg");
+            attendanceFaceData.value = imageData;
+            attendancePreview.src = imageData;
+            attendancePreview.classList.remove("hidden");
+        });
+
+        document.getElementById("attendanceForm").addEventListener("submit", function(e) {
+            if (!attendanceFaceData.value) {
+                e.preventDefault();
+                alert("Please capture your face before submitting attendance.");
+                return;
+            }
+
+            const btn = document.getElementById("attendanceSubmitBtn");
+            btn.innerText = "Checking Face...";
+            btn.disabled = true;
+        });
+
+        syncThemeButton();
+    </script>
+</body>
+</html>

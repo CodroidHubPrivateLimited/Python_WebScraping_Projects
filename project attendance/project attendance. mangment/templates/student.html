@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard | Attendance Portal</title>
+    <script>
+        document.documentElement.setAttribute("data-theme", localStorage.getItem("theme") || "light");
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="page-shell">
+        <div class="blob"></div>
+
+        <div class="site-header">
+            <div class="header">
+                <div class="logo">
+                    <span class="logo-mark">AP</span>
+                    Attendance Portal
+                </div>
+                <div class="auth-buttons">
+                    <button type="button" class="btn btn-secondary theme-toggle" onclick="toggleTheme()">Dark Mode</button>
+                    <span style="color: var(--text-soft); font-weight: 700;">Hi, {{ name }}</span>
+                    <a href="/logout" class="btn btn-secondary">Logout</a>
+                </div>
+            </div>
+        </div>
+
+        <section class="hero">
+            <h1>Student Dashboard</h1>
+            <p>Welcome {{ name }}, manage your attendance, leave requests, complaints, and records from one place.</p>
+
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash-stack">
+                    {% for msg in messages %}
+                        <p class="flash-success">{{ msg }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% endwith %}
+
+            <div class="stats-grid">
+                <div class="dashboard-card">
+                    <h3>Total Classes</h3>
+                    <p class="stat-value">{{ stats.total_classes }}</p>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Present</h3>
+                    <p class="stat-value success-text">{{ stats.present }}</p>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Absent</h3>
+                    <p class="stat-value danger-text">{{ stats.absent }}</p>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Attendance %</h3>
+                    <p class="stat-value">{{ stats.percentage }}%</p>
+                </div>
+            </div>
+
+           <div class="dashboard-card profile-card">
+    <h3>Profile Photo</h3>
+
+    <div class="profile-preview-wrap">
+        <img 
+            src="{{ url_for('static', filename='profile/user_' ~ session['user_id'] ~ '.png') }}"
+            onerror="this.src='https://via.placeholder.com/150'"
+            class="profile-preview"
+        >
+
+        <div>
+            <p class="profile-name">{{ name }}</p>
+            <p class="table-note">This profile photo is visible to you only.</p>
+        </div>
+    </div>
+
+    <!-- Upload Form -->
+        <form method="POST" action="{{ url_for('upload_profile') }}" enctype="multipart/form-data" style="margin-top:15px;">
+             <input type="file" name="profile_pic" accept="image/*" required>
+            <button type="submit" class="btn btn-primary">Upload Profile</button>
+        </form>
+    </div>
+
+            <div class="dashboard-card info-card">
+                <h3>Attendance Actions</h3>
+                <p class="table-note">{{ "Your face profile is active and ready for attendance verification." if has_face else "No face profile is available yet." }}</p>
+                <div class="dashboard-actions" style="margin-top:16px;">
+                    <a href="/attendance" class="btn btn-primary">Mark Attendance</a>
+                    <a href="{{ url_for('download_student_attendance') }}" class="btn btn-secondary">Download CSV</a>
+                </div>
+            </div>
+
+            <div class="table-card student-history-card">
+                <h3>Apply Leave</h3>
+                <p class="table-note">Submit leave dates with a reason. You can track each request below.</p>
+                <form method="POST" action="{{ url_for('apply_leave') }}" class="leave-form">
+                    <div class="leave-grid">
+                        <div>
+                            <label for="from_date">From Date</label>
+                            <input type="date" id="from_date" name="from_date" required>
+                        </div>
+                        <div>
+                            <label for="to_date">To Date</label>
+                            <input type="date" id="to_date" name="to_date" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="reason">Reason</label>
+                        <textarea id="reason" name="reason" rows="4" placeholder="Write your leave reason" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Apply Leave</button>
+                </form>
+            </div>
+
+            <div class="table-card student-history-card">
+                <h3>Leave History</h3>
+                <p class="table-note">Status shows Pending, Approved, or Rejected for each request.</p>
+                <table>
+                    <tr>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th>Applied On</th>
+                        <th>Action</th>
+                    </tr>
+                    {% if leave_requests %}
+                        {% for leave in leave_requests %}
+                        <tr>
+                            <td>{{ leave.from_date }}</td>
+                            <td>{{ leave.to_date }}</td>
+                            <td>{{ leave.reason }}</td>
+                            <td class="{{ 'success-text' if leave.status == 'Approved' else 'danger-text' if leave.status == 'Rejected' else 'warning-text' }}">{{ leave.status }}</td>
+                            <td>{{ leave.created_at }}</td>
+                        
+                        <td>
+                            {% if leave.status|lower == 'pending' %}
+                                <form method="POST" action="{{ url_for('delete_leave', leave_id=leave.id) }}">
+                                     <button type="submit" class="btn btn-secondary"
+                                         onclick="return confirm('Cancel this request?')">
+                                         Cancel
+                                     </button>
+                                </form>
+                             {% else %}
+                                 -
+                             {% endif %}
+                        </td>
+                        {% endfor %}
+                    {% else %}
+                    </tr>
+                        <tr>
+                            <td colspan="5">No leave requests submitted yet.</td>
+                        </tr>
+                    {% endif %}
+                </table>
+                
+            </div>
+
+            <div class="table-card student-history-card">
+                <h3>Complaint Box</h3>
+                <p class="table-note">Write your issue here and send it to the teacher.</p>
+                <form method="POST" action="{{ url_for('submit_complaint') }}" class="leave-form">
+                    <div>
+                        <label for="message">Issue / Complaint</label>
+                        <textarea id="message" name="message" rows="5" placeholder="Describe your issue clearly" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Send Complaint</button>
+                </form>
+            </div>
+
+            <div class="table-card student-history-card">
+                <h3>Complaint History</h3>
+                <p class="table-note">Track whether your complaint is Pending, Replied, or Solved.</p>
+                <table>
+                    <tr>
+                        <th>Complaint</th>
+                        <th>Teacher Reply</th>
+                        <th>Status</th>
+                        <th>Updated On</th>
+                    </tr>
+                    {% if complaints %}
+                        {% for complaint in complaints %}
+                        <tr>
+                            <td>{{ complaint.message }}</td>
+                            <td>{{ complaint.teacher_reply if complaint.teacher_reply else '-' }}</td>
+                            <td class="{{ 'success-text' if complaint.status == 'Solved' else 'warning-text' if complaint.status == 'Replied' else '' }}">{{ complaint.status }}</td>
+                            <td>{{ complaint.updated_at }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="4">No complaints submitted yet.</td>
+                        </tr>
+                    {% endif %}
+                </table>
+            </div>
+
+            <div class="table-card student-history-card">
+                <h3>Month Wise Attendance</h3>
+                <p class="table-note">Real day-wise attendance is grouped month by month below.</p>
+                {% if monthly_attendance %}
+                    {% for month in monthly_attendance %}
+                    <div class="month-block">
+                        <div class="month-header">
+                            <div>
+                                <h4>{{ month.month_label }}</h4>
+                                <p>{{ month.present }} Present, {{ month.absent }} Absent, {{ month.total_classes }} Total Classes</p>
+                            </div>
+                            <span class="month-badge">{{ month.percentage }}%</span>
+                        </div>
+                        <table>
+                            <tr>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Marked Time</th>
+                            </tr>
+                            {% for day in month.days %}
+                            <tr>
+                                <td>{{ day.display_date }}</td>
+                                <td class="{{ 'success-text' if day.status == 'Present' else 'danger-text' }}">{{ day.status }}</td>
+                                <td>{{ day.timestamp }}</td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="empty-note">No attendance records available yet.</p>
+                {% endif %}
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function syncThemeButton() {
+            const currentTheme = document.documentElement.getAttribute("data-theme") || "light";
+            const button = document.querySelector(".theme-toggle");
+            if (button) {
+                button.textContent = currentTheme === "dark" ? "Light Mode" : "Dark Mode";
+            }
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute("data-theme") || "light";
+            const nextTheme = currentTheme === "dark" ? "light" : "dark";
+            document.documentElement.setAttribute("data-theme", nextTheme);
+            localStorage.setItem("theme", nextTheme);
+            syncThemeButton();
+        }
+
+        syncThemeButton();
+    </script>
+</body>
+</html>

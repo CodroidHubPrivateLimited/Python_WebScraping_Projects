@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Attendance Portal</title>
+    <script>
+        document.documentElement.setAttribute("data-theme", localStorage.getItem("theme") || "light");
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="page-shell">
+        <div class="blob"></div>
+
+        <section class="auth-layout">
+            <div class="modal-box camera-card auth-simple-card" style="max-width: 520px;">
+                <div class="auth-form-shell">
+                    <div class="auth-buttons" style="justify-content: space-between; margin-bottom: 20px;">
+                        <a href="{{ url_for('welcome') }}" class="btn btn-secondary">Back</a>
+                        <button type="button" class="btn btn-secondary theme-toggle" onclick="toggleTheme()">Dark Mode</button>
+                    </div>
+
+                    <div class="section-heading" style="text-align:center;">
+                        <h2>Login</h2>
+                        <p>Login to continue to your attendance portal.</p>
+                    </div>
+
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            <div class="flash-stack">
+                                {% for msg in messages %}
+                                    <p class="flash-error">{{ msg }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+
+                    <form method="POST">
+                        <input type="email" name="email" placeholder="Email address" required>
+
+                        <div style="position:relative;">
+                            <input type="password" name="password" id="password" placeholder="Password" required>
+                            <span class="password-toggle" onclick="togglePassword()">Show</span>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary form-btn" id="loginBtn">Login</button>
+                    </form>
+
+                    <p class="form-footer" style="text-align:center;">New here? <a href="{{ url_for('signup') }}">Create an account</a></p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const pass = document.getElementById("password");
+            pass.type = pass.type === "password" ? "text" : "password";
+        }
+
+        function syncThemeButton() {
+            const currentTheme = document.documentElement.getAttribute("data-theme") || "light";
+            const button = document.querySelector(".theme-toggle");
+            if (button) {
+                button.textContent = currentTheme === "dark" ? "Light Mode" : "Dark Mode";
+            }
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute("data-theme") || "light";
+            const nextTheme = currentTheme === "dark" ? "light" : "dark";
+            document.documentElement.setAttribute("data-theme", nextTheme);
+            localStorage.setItem("theme", nextTheme);
+            syncThemeButton();
+        }
+
+        document.querySelector("form").addEventListener("submit", function() {
+            const btn = document.getElementById("loginBtn");
+            btn.innerText = "Checking...";
+            btn.disabled = true;
+        });
+
+        syncThemeButton();
+    </script>
+</body>
+</html>

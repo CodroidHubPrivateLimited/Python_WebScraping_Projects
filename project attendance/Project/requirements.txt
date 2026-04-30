@@ -5,4 +5,5 @@ SQLAlchemy
 numpy
 Pillow
 PyMySQL
-gunicorn 
+gunicorn
+face recognition 

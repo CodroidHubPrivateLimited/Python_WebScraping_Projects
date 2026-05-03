@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teacher Admin Portal</title>
+<script>document.documentElement.setAttribute("data-theme", localStorage.getItem("theme") || "dark");</script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg:          #070910;
+    --bg2:         #0c0f18;
+    --bg3:         #111520;
+    --bg4:         #181d2c;
+    --border:      rgba(255,255,255,0.06);
+    --border2:     rgba(255,255,255,0.11);
+    --accent:      #6c63ff;
+    --accent2:     #9b95ff;
+    --accent-dim:  rgba(108,99,255,0.15);
+    --cyan:        #22d3ee;
+    --cyan-dim:    rgba(34,211,238,0.12);
+    --emerald:     #34d399;
+    --emerald-dim: rgba(52,211,153,0.12);
+    --amber:       #fbbf24;
+    --amber-dim:   rgba(251,191,36,0.12);
+    --rose:        #fb7185;
+    --rose-dim:    rgba(251,113,133,0.12);
+    --text:        #eef2ff;
+    --text2:       #8890b0;
+    --text3:       #3d4460;
+    --mono:        'DM Mono', monospace;
+    --sans:        'Syne', sans-serif;
+    --r:           14px;
+    --r-lg:        20px;
+    --r-xl:        26px;
+    --sidebar-w:   240px;
+}
+html[data-theme="light"] {
+    --bg:          #f4f5fb;
+    --bg2:         #ffffff;
+    --bg3:         #f9fafc;
+    --bg4:         #eef0f8;
+    --border:      rgba(0,0,0,0.06);
+    --border2:     rgba(0,0,0,0.1);
+    --accent:      #5b52e8;
+    --accent2:     #7b74f0;
+    --accent-dim:  rgba(91,82,232,0.1);
+    --cyan-dim:    rgba(8,145,178,0.1);
+    --emerald:     #059669;
+    --emerald-dim: rgba(5,150,105,0.1);
+    --amber:       #d97706;
+    --amber-dim:   rgba(217,119,6,0.1);
+    --rose:        #e11d48;
+    --rose-dim:    rgba(225,29,72,0.1);
+    --text:        #0f1121;
+    --text2:       #4a5070;
+    --text3:       #9ba3c0;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;display:flex;overflow-x:hidden}
+
+/* Sidebar */
+.sidebar{width:var(--sidebar-w);min-height:100vh;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:60;transition:transform .3s cubic-bezier(.4,0,.2,1)}
+.sb-top{padding:26px 20px 18px;border-bottom:1px solid var(--border)}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-mark{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#9b95ff);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;color:#fff;letter-spacing:.06em;flex-shrink:0}
+.brand-name{font-size:.95rem;font-weight:800;line-height:1.2;color:var(--text)}
+.brand-sub{font-size:.65rem;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-top:1px}
+.sb-nav{padding:14px 12px;flex:1;display:flex;flex-direction:column;gap:2px}
+.nav-grp{font-size:.62rem;font-family:var(--mono);text-transform:uppercase;letter-spacing:.12em;color:var(--text3);padding:10px 10px 5px;margin-top:6px}
+.nav-item{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:10px;color:var(--text2);font-size:.84rem;font-weight:600;cursor:pointer;transition:all .15s;text-decoration:none;border:1px solid transparent}
+.nav-item:hover{background:var(--bg3);color:var(--text)}
+.nav-item.active{background:var(--accent-dim);color:var(--accent2);border-color:rgba(108,99,255,.2)}
+.ni-icon{width:16px;height:16px;flex-shrink:0;opacity:.7}
+.nav-item.active .ni-icon{opacity:1}
+.nb{margin-left:auto;font-family:var(--mono);font-size:.63rem;background:var(--accent);color:#fff;padding:2px 7px;border-radius:99px;font-weight:700}
+.nb.warn{background:var(--amber)}
+.sb-foot{padding:14px 12px;border-top:1px solid var(--border)}
+.user-card{display:flex;align-items:center;gap:9px;padding:9px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:11px}
+.u-avatar{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--accent),#e879f9);display:flex;align-items:center;justify-content:center;font-size:.74rem;font-weight:800;color:#fff;flex-shrink:0}
+.u-name{font-size:.82rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.u-role{font-size:.65rem;font-family:var(--mono);color:var(--accent2);text-transform:uppercase;letter-spacing:.06em}
+
+/* Main */
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{height:58px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:40;gap:16px}
+.tb-left{display:flex;align-items:center;gap:12px}
+.breadcrumb{font-family:var(--mono);font-size:.75rem;color:var(--text3);display:flex;align-items:center;gap:8px}
+.bc-sep{opacity:.4}
+.bc-cur{color:var(--text2)}
+.tb-right{display:flex;align-items:center;gap:8px}
+.tb-btn{height:32px;padding:0 13px;border-radius:8px;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);font-size:.78rem;font-family:var(--sans);font-weight:600;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:6px;text-decoration:none}
+.tb-btn:hover{background:var(--bg4);color:var(--text)}
+.tb-btn.danger{color:var(--rose);border-color:rgba(251,113,133,.25)}
+.tb-btn.danger:hover{background:var(--rose-dim)}
+.pulse{width:7px;height:7px;border-radius:50%;background:var(--emerald);box-shadow:0 0 8px var(--emerald);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+/* Content */
+.content{padding:28px;flex:1}
+.page-header{margin-bottom:26px;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.ph-left{}
+.eyebrow{font-family:var(--mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.14em;color:var(--accent2);display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.eyebrow::before{content:'';display:inline-block;width:16px;height:2px;background:var(--accent);border-radius:2px}
+.page-title{font-size:2rem;font-weight:800;letter-spacing:-.04em;color:var(--text);line-height:1.05}
+.page-desc{margin-top:5px;font-size:.85rem;color:var(--text2);line-height:1.6}
+.ph-actions{display:flex;gap:10px;align-items:center}
+
+/* Stat cards */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;position:relative;overflow:hidden;transition:all .2s}
+.stat-card:hover{border-color:var(--border2);transform:translateY(-1px)}
+.stat-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.stat-card.indigo::after{background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.stat-card.teal::after{background:linear-gradient(90deg,var(--cyan),#67e8f9)}
+.stat-card.amber::after{background:linear-gradient(90deg,var(--amber),#fde68a)}
+.stat-card.rose::after{background:linear-gradient(90deg,var(--rose),#fda4af)}
+.stat-ico{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.stat-ico.indigo{background:var(--accent-dim);color:var(--accent2)}
+.stat-ico.teal{background:var(--cyan-dim);color:var(--cyan)}
+.stat-ico.amber{background:var(--amber-dim);color:var(--amber)}
+.stat-ico.rose{background:var(--rose-dim);color:var(--rose)}
+.stat-lbl{font-family:var(--mono);font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:6px}
+.stat-val{font-size:2.1rem;font-weight:800;letter-spacing:-.05em;color:var(--text);line-height:1}
+.stat-meta{margin-top:8px;font-size:.73rem;color:var(--text3)}
+
+/* Panels */
+.panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-xl);margin-bottom:18px;overflow:hidden}
+.panel-header{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.ph-info{display:flex;align-items:center;gap:12px}
+.ph-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
+.ph-icon.indigo{background:var(--accent-dim);color:var(--accent2)}
+.ph-icon.teal{background:var(--cyan-dim);color:var(--cyan)}
+.ph-icon.amber{background:var(--amber-dim);color:var(--amber)}
+.ph-icon.rose{background:var(--rose-dim);color:var(--rose)}
+.ph-icon.emerald{background:var(--emerald-dim);color:var(--emerald)}
+.ph-title{font-size:.92rem;font-weight:700;color:var(--text)}
+.ph-sub{font-family:var(--mono);font-size:.68rem;color:var(--text3);margin-top:1px}
+.ph-right{display:flex;align-items:center;gap:10px}
+.panel-badge{font-family:var(--mono);font-size:.67rem;padding:3px 9px;border-radius:99px;background:var(--bg3);border:1px solid var(--border);color:var(--text3)}
+.btn-sm{height:30px;padding:0 12px;border-radius:8px;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);font-size:.75rem;font-family:var(--sans);font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .15s;text-decoration:none}
+.btn-sm:hover{background:var(--bg4);color:var(--text)}
+.btn-sm.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn-sm.primary:hover{background:#5a52d5}
+.btn-sm.success{color:var(--emerald);border-color:rgba(52,211,153,.25)}
+.btn-sm.success:hover{background:var(--emerald-dim)}
+.btn-sm.success:disabled{opacity:.35;cursor:not-allowed}
+.btn-sm.danger{color:var(--rose);border-color:rgba(251,113,133,.25)}
+.btn-sm.danger:hover{background:var(--rose-dim)}
+.btn-sm.danger:disabled{opacity:.35;cursor:not-allowed}
+/* ── NEW: cyan download button for monthly attendance ── */
+.btn-sm.cyan{color:var(--cyan);border-color:rgba(34,211,238,.25)}
+.btn-sm.cyan:hover{background:var(--cyan-dim)}
+
+/* Table */
+.panel-body{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:520px}
+thead tr{background:var(--bg3)}
+th{padding:10px 16px;text-align:left;font-family:var(--mono);font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);font-weight:500;border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:12px 16px;font-size:.84rem;color:var(--text2);border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tbody tr{transition:background .12s}
+tbody tr:hover{background:rgba(255,255,255,.02)}
+html[data-theme="light"] tbody tr:hover{background:rgba(0,0,0,.02)}
+.td-id{font-family:var(--mono);font-size:.72rem;color:var(--text3)}
+.td-name{font-weight:700;color:var(--text)}
+.td-email{font-family:var(--mono);font-size:.75rem}
+.s-thumb{width:34px;height:34px;border-radius:8px;object-fit:cover;border:1px solid var(--border2)}
+.th-placeholder{width:34px;height:34px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;border:1px dashed var(--border2);background:var(--bg3);color:var(--text3);font-family:var(--mono);font-size:.58rem}
+.empty-state td{text-align:center;padding:36px;color:var(--text3);font-family:var(--mono);font-size:.78rem}
+
+/* Badges */
+.badge{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:.68rem;padding:3px 9px;border-radius:99px;font-weight:500;letter-spacing:.03em}
+.badge::before{content:'';width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.badge-green{background:rgba(52,211,153,.1);color:var(--emerald);border:1px solid rgba(52,211,153,.2)}
+.badge-green::before{background:var(--emerald)}
+.badge-blue{background:var(--accent-dim);color:var(--accent2);border:1px solid rgba(108,99,255,.2)}
+.badge-blue::before{background:var(--accent2)}
+.badge-amber{background:var(--amber-dim);color:var(--amber);border:1px solid rgba(251,191,36,.2)}
+.badge-amber::before{background:var(--amber)}
+.badge-rose{background:var(--rose-dim);color:var(--rose);border:1px solid rgba(251,113,133,.2)}
+.badge-rose::before{background:var(--rose)}
+.badge-gray{background:var(--bg3);color:var(--text3);border:1px solid var(--border)}
+.badge-gray::before{background:var(--text3)}
+
+/* Actions */
+.tbl-actions{display:flex;gap:8px;flex-wrap:wrap}
+
+/* Reply form */
+.reply-form{display:flex;flex-direction:column;gap:8px;min-width:220px}
+.reply-form textarea{width:100%;padding:9px 11px;border-radius:9px;border:1px solid var(--border);background:var(--bg3);color:var(--text);font-family:var(--sans);font-size:.8rem;resize:vertical;min-height:68px;outline:none;transition:border-color .15s,box-shadow .15s}
+.reply-form textarea:focus{border-color:rgba(108,99,255,.4);box-shadow:0 0 0 3px rgba(108,99,255,.1)}
+
+/* Flash */
+.flash-stack{margin-bottom:18px}
+.flash{padding:11px 15px;border-radius:var(--r);font-size:.83rem;margin-bottom:8px;display:flex;align-items:center;gap:9px;border:1px solid transparent}
+.flash.success{background:rgba(52,211,153,.07);color:var(--emerald);border-color:rgba(52,211,153,.16)}
+.flash.error{background:rgba(251,113,133,.07);color:var(--rose);border-color:rgba(251,113,133,.16)}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal-box{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r-xl);padding:28px;width:100%;max-width:440px;box-shadow:0 40px 80px rgba(0,0,0,.4)}
+.modal-title{font-size:1.1rem;font-weight:800;margin-bottom:6px;color:var(--text)}
+.modal-desc{font-size:.83rem;color:var(--text2);margin-bottom:20px;line-height:1.6}
+.modal-actions{display:flex;gap:10px;margin-top:20px;justify-content:flex-end}
+.modal-input{width:100%;padding:10px 13px;border-radius:9px;border:1px solid var(--border);background:var(--bg3);color:var(--text);font-family:var(--sans);font-size:.85rem;outline:none;transition:border-color .15s,box-shadow .15s;margin-bottom:10px}
+.modal-input:focus{border-color:rgba(108,99,255,.4);box-shadow:0 0 0 3px rgba(108,99,255,.1)}
+.modal-label{display:block;font-size:.76rem;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* Filter bar */
+.filter-bar{padding:12px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.search-input{height:30px;padding:0 11px;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--text);font-family:var(--sans);font-size:.78rem;outline:none;transition:border-color .15s;min-width:180px}
+.search-input:focus{border-color:rgba(108,99,255,.4)}
+.filter-select{height:30px;padding:0 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--text2);font-family:var(--sans);font-size:.78rem;outline:none;cursor:pointer}
+
+/* Face capture */
+.face-capture-wrap{border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:12px}
+.face-tabs{display:flex;border-bottom:1px solid var(--border);background:var(--bg3)}
+.face-tab{flex:1;padding:9px 12px;font-size:.78rem;font-family:var(--sans);font-weight:600;color:var(--text3);background:transparent;border:none;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:6px}
+.face-tab.active{background:var(--bg2);color:var(--accent2);border-bottom:2px solid var(--accent)}
+.face-panel{padding:14px}
+.cam-frame-wrap{position:relative;width:100%;height:180px;border-radius:10px;overflow:hidden;background:var(--bg4)}
+.cam-media{width:100%;height:100%;object-fit:cover;display:block}
+.cam-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.cam-reticle{width:90px;height:90px;border-radius:50%;border:2px dashed rgba(108,99,255,.6);box-shadow:0 0 0 2000px rgba(0,0,0,.35)}
+.cam-status{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-family:var(--mono);font-size:.65rem;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.08em}
+.face-actions{display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap}
+.upload-drop{display:block;width:100%;height:180px;border:1.5px dashed var(--border2);border-radius:10px;cursor:pointer;position:relative;overflow:hidden;transition:border-color .15s}
+.upload-drop:hover{border-color:var(--accent)}
+.upload-drop-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.face-ready-bar{display:flex;align-items:center;gap:8px;padding:9px 14px;background:rgba(52,211,153,.08);border-top:1px solid rgba(52,211,153,.15);color:var(--emerald);font-size:.78rem;font-weight:600}
+
+/* Responsive */
+@media(max-width:1100px){.stats-row{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:860px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.main{margin-left:0}.menu-btn{display:flex!important}}
+@media(max-width:640px){.stats-row{grid-template-columns:1fr}.content{padding:16px}.topbar{padding:0 16px}.page-title{font-size:1.5rem}}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+    <div class="sb-top">
+        <div class="brand">
+            <div class="brand-mark">AP</div>
+            <div>
+                <div class="brand-name">AttendPortal</div>
+                <div class="brand-sub">Teacher Console</div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="sb-nav">
+        <div class="nav-grp">Overview</div>
+        <a href="#students" class="nav-item active">
+            <svg class="ni-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg>
+            Students
+            <span class="nb" id="studentsBadge">{{ students|length }}</span>
+        </a>
+        <a href="#attendance" class="nav-item">
+            <svg class="ni-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+            Attendance
+            <span class="nb" id="attBadge">{{ today_attendance|length }}</span>
+        </a>
+        <a href="#leave" class="nav-item">
+            <svg class="ni-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            Leave Requests
+            <span class="nb warn" id="leaveBadge">{{ leave_requests|length }}</span>
+        </a>
+        <a href="#complaints" class="nav-item">
+            <svg class="ni-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/></svg>
+            Complaints
+            <span class="nb warn" id="compBadge">{{ complaints|length }}</span>
+        </a>
+    </nav>
+
+    <div class="sb-foot">
+        <div class="user-card">
+            <div class="u-avatar">T</div>
+            <div>
+                <div class="u-name">{{ name }}</div>
+                <div class="u-role">Teacher</div>
+            </div>
+        </div>
+    </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+        <div class="tb-left">
+            <button class="tb-btn menu-btn" id="menuBtn" style="display:none" onclick="toggleSidebar()">
+                <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+            <div class="breadcrumb">
+                <span>AttendPortal</span>
+                <span class="bc-sep">/</span>
+                <span class="bc-cur">Teacher Dashboard</span>
+            </div>
+        </div>
+        <div class="tb-right">
+            <div class="pulse"></div>
+            <button class="tb-btn" onclick="toggleTheme()" id="themeBtn">
+                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M18.364 17.657l-.707-.707M6.343 6.343l-.707-.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                <span id="themeLabel">Light</span>
+            </button>
+            <a href="/logout" class="tb-btn danger">
+                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                Logout
+            </a>
+        </div>
+    </header>
+
+    <!-- CONTENT -->
+    <main class="content">
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="ph-left">
+                <div class="eyebrow">Teacher Workspace</div>
+                <h1 class="page-title">Admin Dashboard</h1>
+                <p class="page-desc">Manage students, attendance, leave requests &amp; complaints.</p>
+            </div>
+            <div class="ph-actions">
+                <button class="btn-sm primary" onclick="document.getElementById('addStudentModal').classList.add('open')">
+                    <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                    Add Student
+                </button>
+                <button class="btn-sm" onclick="exportCSV()">
+                    <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                    Export
+                </button>
+            </div>
+        </div>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="flash-stack">
+            {% for msg in messages %}
+            <div class="flash success">
+                <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                {{ msg }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <!-- Stats -->
+        <div class="stats-row">
+            <div class="stat-card indigo">
+                <div class="stat-ico indigo">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg>
+                </div>
+                <div class="stat-lbl">Total Students</div>
+                <div class="stat-val">{{ students|length }}</div>
+                <div class="stat-meta">Enrolled</div>
+            </div>
+            <div class="stat-card teal">
+                <div class="stat-ico teal">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                </div>
+                <div class="stat-lbl">Present Today</div>
+                <div class="stat-val">{{ today_attendance|length }}</div>
+                <div class="stat-meta">Face verified</div>
+            </div>
+            <div class="stat-card amber">
+                <div class="stat-ico amber">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                </div>
+                <div class="stat-lbl">Leave Requests</div>
+                <div class="stat-val">{{ leave_requests|length }}</div>
+                <div class="stat-meta">Total</div>
+            </div>
+            <div class="stat-card rose">
+                <div class="stat-ico rose">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/></svg>
+                </div>
+                <div class="stat-lbl">Complaints</div>
+                <div class="stat-val">{{ complaints|length }}</div>
+                <div class="stat-meta">Total</div>
+            </div>
+        </div>
+
+        <!-- ── STUDENTS ── -->
+        <div class="panel" id="students">
+            <div class="panel-header">
+                <div class="ph-info">
+                    <div class="ph-icon indigo">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg>
+                    </div>
+                    <div>
+                        <div class="ph-title">All Students</div>
+                        <div class="ph-sub">Enrolled student registry</div>
+                    </div>
+                </div>
+                <div class="ph-right">
+                    <span class="panel-badge">{{ students|length }} records</span>
+                    <button class="btn-sm primary" onclick="document.getElementById('addStudentModal').classList.add('open')">
+                        <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        Add Student
+                    </button>
+                </div>
+            </div>
+            <div class="filter-bar">
+                <input class="search-input" type="search" placeholder="Search by name or email…" oninput="filterTable(this,'studentsTable')">
+                <select class="filter-select" onchange="filterByFace(this)">
+                    <option value="">All students</option>
+                    <option value="Enrolled">Face enrolled</option>
+                    <option value="None">No face</option>
+                </select>
+            </div>
+            <div class="panel-body">
+                <table id="studentsTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Photo</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Face Enrolled</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr>
+                            <td class="td-id">#{{ student.id }}</td>
+                            <td>
+                                {% if student.face_image %}
+                                    <img src="{{ url_for('dataset_file', filename=student.face_image.split('/')[-1]) }}" alt="{{ student.name }}" class="s-thumb">
+                                {% else %}
+                                    <div class="th-placeholder">N/A</div>
+                                {% endif %}
+                            </td>
+                            <td class="td-name">{{ student.name }}</td>
+                            <td class="td-email">{{ student.email }}</td>
+                            <td>
+                                {% if student.face_image %}
+                                    <span class="badge badge-green">Enrolled</span>
+                                {% else %}
+                                    <span class="badge badge-gray">None</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="tbl-actions">
+                                    <!-- View -->
+                                    <button class="btn-sm" onclick="viewStudent({{ student.id }},'{{ student.name }}','{{ student.email }}','{% if student.face_image %}{{ url_for('dataset_file', filename=student.face_image.split('/')[-1]) }}{% endif %}')">
+                                        <svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                        View
+                                    </button>
+
+                                    <!-- ── NEW: Monthly Attendance CSV download ── -->
+                                    <a href="{{ url_for('teacher_download_student_attendance', student_id=student.id) }}"
+                                       class="btn-sm cyan"
+                                       title="Download {{ student.name }}'s full attendance as CSV">
+                                        <svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                        Attendance
+                                    </a>
+
+                                    <!-- Remove -->
+                                    <form method="POST" action="{{ url_for('delete_student', student_id=student.id) }}" onsubmit="return confirm('Remove this student and all related records?');">
+                                        <button type="submit" class="btn-sm danger">
+                                            <svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                            Remove
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% if not students %}
+                        <tr class="empty-state"><td colspan="6">No students enrolled yet.</td></tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ── TODAY'S ATTENDANCE ── -->
+        <div class="panel" id="attendance">
+            <div class="panel-header">
+                <div class="ph-info">
+                    <div class="ph-icon teal">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                    </div>
+                    <div>
+                        <div class="ph-title">Today's Attendance</div>
+                        <div class="ph-sub">Face-verified daily records</div>
+                    </div>
+                </div>
+                <div class="ph-right">
+                    <span class="panel-badge">{{ today_attendance|length }} present</span>
+                    <a href="/teacher/attendance/download" class="btn-sm">
+                        <svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                        Export
+                    </a>
+                </div>
+            </div>
+            <div class="filter-bar">
+                <input class="search-input" type="search" placeholder="Search student…" oninput="filterTable(this,'attTable')">
+            </div>
+            <div class="panel-body">
+                <table id="attTable">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if today_attendance %}
+                            {% for row in today_attendance %}
+                            <tr>
+                                <td class="td-name">{{ row.name }}</td>
+                                <td class="td-email">{{ row.email }}</td>
+                                <td><span class="badge badge-green">{{ row.status }}</span></td>
+                                <td style="font-family:var(--mono);font-size:.75rem;color:var(--text3)">{{ row.timestamp }}</td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr class="empty-state"><td colspan="4">No attendance marked today.</td></tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ── LEAVE REQUESTS ── -->
+        <div class="panel" id="leave">
+            <div class="panel-header">
+                <div class="ph-info">
+                    <div class="ph-icon amber">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    </div>
+                    <div>
+                        <div class="ph-title">Leave Requests</div>
+                        <div class="ph-sub">Approve or reject student leave</div>
+                    </div>
+                </div>
+                <div class="ph-right">
+                    <span class="panel-badge">{{ leave_requests|length }} total</span>
+                    <select class="filter-select" onchange="filterByStatus(this,'leaveTable')">
+                        <option value="">All statuses</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Approved">Approved</option>
+                        <option value="Rejected">Rejected</option>
+                    </select>
+                </div>
+            </div>
+            <div class="panel-body">
+                <table id="leaveTable">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Email</th>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Reason</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if leave_requests %}
+                            {% for leave in leave_requests %}
+                            <tr>
+                                <td class="td-name">{{ leave.student_name }}</td>
+                                <td class="td-email">{{ leave.student_email }}</td>
+                                <td style="font-family:var(--mono);font-size:.75rem;white-space:nowrap">{{ leave.from_date }}</td>
+                                <td style="font-family:var(--mono);font-size:.75rem;white-space:nowrap">{{ leave.to_date }}</td>
+                                <td style="max-width:180px;font-size:.82rem">{{ leave.reason }}</td>
+                                <td>
+                                    {% if leave.status == 'Approved' %}
+                                        <span class="badge badge-green">Approved</span>
+                                    {% elif leave.status == 'Rejected' %}
+                                        <span class="badge badge-rose">Rejected</span>
+                                    {% else %}
+                                        <span class="badge badge-amber">Pending</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="tbl-actions">
+                                        <form method="POST" action="{{ url_for('update_leave_status', leave_id=leave.id, action='approve') }}">
+                                            <button type="submit" class="btn-sm success" {% if leave.status == 'Approved' %}disabled{% endif %}>
+                                                <svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                                Approve
+                                            </button>
+                                        </form>
+                                        <form method="POST" action="{{ url_for('update_leave_status', leave_id=leave.id, action='reject') }}">
+                                            <button type="submit" class="btn-sm danger" {% if leave.status == 'Rejected' %}disabled{% endif %}>
+                                                <svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                                Reject
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr class="empty-state"><td colspan="7">No leave requests available.</td></tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ── COMPLAINTS ── -->
+        <div class="panel" id="complaints">
+            <div class="panel-header">
+                <div class="ph-info">
+                    <div class="ph-icon rose">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/></svg>
+                    </div>
+                    <div>
+                        <div class="ph-title">Student Complaints</div>
+                        <div class="ph-sub">Reply and resolve student issues</div>
+                    </div>
+                </div>
+                <div class="ph-right">
+                    <span class="panel-badge">{{ complaints|length }} total</span>
+                    <select class="filter-select" onchange="filterByStatus(this,'compTable')">
+                        <option value="">All statuses</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Replied">Replied</option>
+                        <option value="Solved">Solved</option>
+                    </select>
+                </div>
+            </div>
+            <div class="panel-body">
+                <table id="compTable">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Email</th>
+                            <th>Complaint</th>
+                            <th>Status</th>
+                            <th>Reply &amp; Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if complaints %}
+                            {% for complaint in complaints %}
+                            <tr>
+                                <td class="td-name">{{ complaint.student_name }}</td>
+                                <td class="td-email">{{ complaint.student_email }}</td>
+                                <td style="max-width:200px;font-size:.82rem">{{ complaint.message }}</td>
+                                <td>
+                                    {% if complaint.status == 'Solved' %}
+                                        <span class="badge badge-green">Solved</span>
+                                    {% elif complaint.status == 'Replied' %}
+                                        <span class="badge badge-blue">Replied</span>
+                                    {% else %}
+                                        <span class="badge badge-amber">Pending</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <form method="POST" action="{{ url_for('update_complaint', complaint_id=complaint.id) }}" class="reply-form">
+                                        <textarea name="teacher_reply" rows="2" placeholder="Write reply here…">{{ complaint.teacher_reply if complaint.teacher_reply else '' }}</textarea>
+                                        <div class="tbl-actions">
+                                            <button type="submit" name="action" value="reply" class="btn-sm">
+                                                <svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+                                                Reply
+                                            </button>
+                                            <button type="submit" name="action" value="solve" class="btn-sm success">
+                                                <svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                                Solve
+                                            </button>
+                                        </div>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr class="empty-state"><td colspan="5">No complaints available.</td></tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<!-- ── ADD STUDENT MODAL ── -->
+<div class="modal-overlay" id="addStudentModal" onclick="closeModalOnBg(event,'addStudentModal')">
+    <div class="modal-box" style="max-width:520px">
+        <div class="modal-title">Add New Student</div>
+        <div class="modal-desc">Fill in student details and capture or upload their face photo for attendance recognition.</div>
+        <form method="POST" action="/signup" id="addStudentForm">
+            <div class="grid-2">
+                <div>
+                    <label class="modal-label">Full Name</label>
+                    <input class="modal-input" type="text" name="name" placeholder="e.g. Arjun Sharma" required>
+                </div>
+                <div>
+                    <label class="modal-label">Email Address</label>
+                    <input class="modal-input" type="email" name="email" placeholder="student@example.com" required>
+                </div>
+            </div>
+            <label class="modal-label">Password</label>
+            <input class="modal-input" type="password" name="password" placeholder="Set initial password" required>
+            <input type="hidden" name="role" value="student">
+            <input type="hidden" name="face_image_data" id="faceImageData">
+
+            <!-- Face capture section -->
+            <label class="modal-label" style="margin-top:4px">Face Photo <span style="color:var(--rose);font-size:.65rem">(required for attendance)</span></label>
+            <div class="face-capture-wrap">
+                <div class="face-tabs">
+                    <button type="button" class="face-tab active" onclick="switchFaceTab('camera')">
+                        <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.069A1 1 0 0121 8.87v6.26a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                        Webcam
+                    </button>
+                    <button type="button" class="face-tab" onclick="switchFaceTab('upload')">
+                        <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                        Upload
+                    </button>
+                </div>
+
+                <!-- Camera panel -->
+                <div id="cameraPanel" class="face-panel">
+                    <div class="cam-frame-wrap">
+                        <video id="camVideo" class="cam-media" autoplay playsinline muted></video>
+                        <canvas id="camCanvas" class="cam-media" style="display:none"></canvas>
+                        <div class="cam-overlay" id="camOverlay">
+                            <div class="cam-reticle"></div>
+                        </div>
+                        <div class="cam-status" id="camStatus">Camera off</div>
+                    </div>
+                    <div class="face-actions">
+                        <button type="button" class="btn-sm" id="startCamBtn" onclick="startCamera()">
+                            <svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.069A1 1 0 0121 8.87v6.26a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                            Start Camera
+                        </button>
+                        <button type="button" class="btn-sm primary" id="captureBtn" onclick="capturePhoto()" disabled>
+                            <svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/></svg>
+                            Capture
+                        </button>
+                        <button type="button" class="btn-sm" id="retakeBtn" onclick="retakePhoto()" style="display:none">
+                            <svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                            Retake
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Upload panel -->
+                <div id="uploadPanel" class="face-panel" style="display:none">
+                    <label class="upload-drop" id="uploadDrop" ondragover="event.preventDefault()" ondrop="handleDrop(event)">
+                        <input type="file" id="faceFileInput" accept="image/*" onchange="handleFileUpload(event)" style="display:none">
+                        <div class="upload-drop-inner" id="uploadDropInner">
+                            <svg width="28" height="28" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color:var(--text3)"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                            <span style="font-size:.8rem;color:var(--text2);margin-top:6px">Drop image here or <span style="color:var(--accent2);cursor:pointer" onclick="document.getElementById('faceFileInput').click()">browse</span></span>
+                            <span style="font-size:.7rem;color:var(--text3);font-family:var(--mono)">JPG, PNG, WEBP — max 5MB</span>
+                        </div>
+                        <img id="uploadPreview" class="cam-media" style="display:none;border-radius:10px;object-fit:cover" alt="Face preview">
+                    </label>
+                    <div class="face-actions" id="uploadActions" style="display:none">
+                        <button type="button" class="btn-sm" onclick="clearUpload()">
+                            <svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                            Change
+                        </button>
+                        <span class="badge badge-green" id="uploadOkBadge" style="display:none">
+                            <svg width="10" height="10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            Face ready
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Face ready indicator -->
+                <div id="faceReadyBar" class="face-ready-bar" style="display:none">
+                    <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    Face photo captured — ready to enroll
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-sm" onclick="closeAddModal()">Cancel</button>
+                <button type="submit" class="btn-sm primary" id="submitStudentBtn">
+                    <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+                    Add Student
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ── VIEW STUDENT MODAL ── -->
+<div class="modal-overlay" id="viewStudentModal" onclick="closeModalOnBg(event,'viewStudentModal')">
+    <div class="modal-box" style="max-width:400px">
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:18px">
+            <div id="vsFaceWrap" style="flex-shrink:0">
+                <img id="vsFaceImg" src="" alt="Face" style="width:72px;height:72px;border-radius:14px;object-fit:cover;border:1px solid var(--border2);display:none">
+                <div id="vsFaceInitial" style="width:72px;height:72px;border-radius:14px;background:linear-gradient(135deg,var(--accent),#e879f9);display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:800;color:#fff"></div>
+            </div>
+            <div style="flex:1;min-width:0">
+                <div class="modal-title" id="vsName" style="margin-bottom:4px">—</div>
+                <div style="font-family:var(--mono);font-size:.76rem;color:var(--text3)" id="vsEmail">—</div>
+                <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+                    <span class="badge badge-blue" id="vsId">ID: —</span>
+                    <span class="badge badge-gray" id="vsFaceBadge">No Face</span>
+                </div>
+            </div>
+        </div>
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px">
+            <div style="font-family:var(--mono);font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:10px">Student Info</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+                <div style="display:flex;justify-content:space-between;font-size:.83rem">
+                    <span style="color:var(--text3)">Role</span>
+                    <span style="color:var(--text);font-weight:600">Student</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:.83rem">
+                    <span style="color:var(--text3)">Face Enrolled</span>
+                    <span id="vsFaceStatus" style="font-weight:600">—</span>
+                </div>
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button type="button" class="btn-sm" onclick="document.getElementById('viewStudentModal').classList.remove('open')">Close</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleTheme(){
+    var cur=document.documentElement.getAttribute('data-theme')||'dark';
+    var next=cur==='dark'?'light':'dark';
+    document.documentElement.setAttribute('data-theme',next);
+    localStorage.setItem('theme',next);
+    document.getElementById('themeLabel').textContent=next==='dark'?'Light':'Dark';
+}
+(function(){
+    var t=document.documentElement.getAttribute('data-theme')||'dark';
+    document.getElementById('themeLabel').textContent=t==='dark'?'Light':'Dark';
+})();
+
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');}
+
+function checkMobile(){
+    var btn=document.getElementById('menuBtn');
+    if(window.innerWidth<=860){btn.style.display='flex';}
+    else{btn.style.display='none';document.getElementById('sidebar').classList.remove('open');}
+}
+checkMobile();
+window.addEventListener('resize',checkMobile);
+
+// Active nav highlight on scroll
+var sections=['students','attendance','leave','complaints'];
+window.addEventListener('scroll',function(){
+    var cur='students';
+    sections.forEach(function(id){
+        var el=document.getElementById(id);
+        if(el&&el.getBoundingClientRect().top<100) cur=id;
+    });
+    document.querySelectorAll('.nav-item').forEach(function(item){
+        item.classList.toggle('active',item.getAttribute('href')==='#'+cur);
+    });
+});
+
+// Smooth scroll
+document.querySelectorAll('.nav-item').forEach(function(item){
+    item.addEventListener('click',function(e){
+        var href=this.getAttribute('href');
+        if(href&&href.startsWith('#')){
+            e.preventDefault();
+            var t=document.querySelector(href);
+            if(t) t.scrollIntoView({behavior:'smooth',block:'start'});
+        }
+    });
+});
+
+// Modal
+function closeModalOnBg(e,id){if(e.target===e.currentTarget)document.getElementById(id).classList.remove('open');}
+function closeAddModal(){
+    stopCamera();
+    document.getElementById('addStudentModal').classList.remove('open');
+}
+
+// View student
+function viewStudent(id,name,email,faceSrc){
+    document.getElementById('vsName').textContent=name;
+    document.getElementById('vsEmail').textContent=email;
+    document.getElementById('vsId').textContent='ID: '+id;
+    var initial=name.split(' ').map(function(w){return w[0];}).join('').substring(0,2).toUpperCase();
+    document.getElementById('vsFaceInitial').textContent=initial;
+    if(faceSrc){
+        document.getElementById('vsFaceImg').src=faceSrc;
+        document.getElementById('vsFaceImg').style.display='block';
+        document.getElementById('vsFaceInitial').style.display='none';
+        document.getElementById('vsFaceBadge').className='badge badge-green';
+        document.getElementById('vsFaceBadge').textContent='Enrolled';
+        document.getElementById('vsFaceStatus').textContent='Yes';
+        document.getElementById('vsFaceStatus').style.color='var(--emerald)';
+    } else {
+        document.getElementById('vsFaceImg').style.display='none';
+        document.getElementById('vsFaceInitial').style.display='flex';
+        document.getElementById('vsFaceBadge').className='badge badge-gray';
+        document.getElementById('vsFaceBadge').textContent='No Face';
+        document.getElementById('vsFaceStatus').textContent='No';
+        document.getElementById('vsFaceStatus').style.color='var(--rose)';
+    }
+    document.getElementById('viewStudentModal').classList.add('open');
+}
+
+// ── Face capture ──
+var camStream=null;
+
+function switchFaceTab(tab){
+    document.querySelectorAll('.face-tab').forEach(function(t,i){
+        t.classList.toggle('active',i===(tab==='camera'?0:1));
+    });
+    document.getElementById('cameraPanel').style.display=tab==='camera'?'':'none';
+    document.getElementById('uploadPanel').style.display=tab==='upload'?'':'none';
+    if(tab==='upload') stopCamera();
+}
+
+function startCamera(){
+    navigator.mediaDevices.getUserMedia({video:{width:640,height:480,facingMode:'user'}})
+        .then(function(stream){
+            camStream=stream;
+            var v=document.getElementById('camVideo');
+            v.srcObject=stream;
+            v.style.display='block';
+            document.getElementById('camCanvas').style.display='none';
+            document.getElementById('camStatus').textContent='Position face in circle';
+            document.getElementById('captureBtn').disabled=false;
+            document.getElementById('startCamBtn').style.display='none';
+            document.getElementById('retakeBtn').style.display='none';
+        })
+        .catch(function(){
+            document.getElementById('camStatus').textContent='Camera access denied';
+        });
+}
+
+function stopCamera(){
+    if(camStream){camStream.getTracks().forEach(function(t){t.stop();});camStream=null;}
+}
+
+function capturePhoto(){
+    var v=document.getElementById('camVideo');
+    var c=document.getElementById('camCanvas');
+    c.width=v.videoWidth||640;
+    c.height=v.videoHeight||480;
+    c.getContext('2d').drawImage(v,0,0);
+    var data=c.toDataURL('image/jpeg',0.92);
+    document.getElementById('faceImageData').value=data;
+    v.style.display='none';
+    c.style.display='block';
+    document.getElementById('camStatus').textContent='Photo captured!';
+    document.getElementById('captureBtn').style.display='none';
+    document.getElementById('retakeBtn').style.display='flex';
+    document.getElementById('faceReadyBar').style.display='flex';
+    stopCamera();
+}
+
+function retakePhoto(){
+    document.getElementById('faceImageData').value='';
+    document.getElementById('faceReadyBar').style.display='none';
+    document.getElementById('captureBtn').style.display='flex';
+    document.getElementById('captureBtn').disabled=true;
+    document.getElementById('retakeBtn').style.display='none';
+    document.getElementById('startCamBtn').style.display='flex';
+    var v=document.getElementById('camVideo');
+    v.style.display='block';
+    document.getElementById('camCanvas').style.display='none';
+    document.getElementById('camStatus').textContent='Camera off';
+    startCamera();
+}
+
+function handleFileUpload(e){
+    var file=e.target.files[0];
+    if(!file)return;
+    readFaceFile(file);
+}
+function handleDrop(e){
+    e.preventDefault();
+    var file=e.dataTransfer.files[0];
+    if(file&&file.type.startsWith('image/')) readFaceFile(file);
+}
+function readFaceFile(file){
+    var reader=new FileReader();
+    reader.onload=function(ev){
+        document.getElementById('faceImageData').value=ev.target.result;
+        var prev=document.getElementById('uploadPreview');
+        prev.src=ev.target.result;
+        prev.style.display='block';
+        document.getElementById('uploadDropInner').style.display='none';
+        document.getElementById('uploadActions').style.display='flex';
+        document.getElementById('uploadOkBadge').style.display='inline-flex';
+        document.getElementById('faceReadyBar').style.display='flex';
+    };
+    reader.readAsDataURL(file);
+}
+function clearUpload(){
+    document.getElementById('faceImageData').value='';
+    document.getElementById('uploadPreview').style.display='none';
+    document.getElementById('uploadDropInner').style.display='flex';
+    document.getElementById('uploadActions').style.display='none';
+    document.getElementById('faceReadyBar').style.display='none';
+    document.getElementById('faceFileInput').value='';
+}
+
+// Table search filter
+function filterTable(input,tableId){
+    var q=input.value.toLowerCase();
+    document.querySelectorAll('#'+tableId+' tbody tr').forEach(function(row){
+        row.style.display=row.textContent.toLowerCase().includes(q)?'':'none';
+    });
+}
+
+// Filter by face badge
+function filterByFace(sel){
+    var v=sel.value;
+    document.querySelectorAll('#studentsTable tbody tr').forEach(function(row){
+        if(!v){row.style.display='';return;}
+        var badge=row.querySelector('.badge');
+        row.style.display=(!badge||badge.textContent.trim()!==v)?'none':'';
+    });
+}
+
+// Filter by status badge
+function filterByStatus(sel,tableId){
+    var v=sel.value;
+    document.querySelectorAll('#'+tableId+' tbody tr').forEach(function(row){
+        if(!v){row.style.display='';return;}
+        var badge=row.querySelector('.badge');
+        row.style.display=(!badge||badge.textContent.trim()!==v)?'none':'';
+    });
+}
+
+// Export CSV (students table)
+function exportCSV(){
+    var rows=[['ID','Name','Email','Face Enrolled']];
+    document.querySelectorAll('#studentsTable tbody tr:not(.empty-state)').forEach(function(row){
+        var cells=row.querySelectorAll('td');
+        if(cells.length>4){
+            rows.push([cells[0].textContent.trim(),cells[2].textContent.trim(),cells[3].textContent.trim(),cells[4].textContent.trim()]);
+        }
+    });
+    var csv=rows.map(function(r){return r.join(',');}).join('\n');
+    var a=document.createElement('a');
+    a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+    a.download='students.csv';
+    a.click();
+}
+</script>
+</body>
+</html>

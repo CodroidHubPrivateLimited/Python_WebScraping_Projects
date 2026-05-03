@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Attendance Portal</title>
+    <script>
+        document.documentElement.setAttribute("data-theme", localStorage.getItem("theme") || "light");
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .role-tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+        .role-tab {
+            padding: 14px 12px;
+            border-radius: var(--radius-md);
+            border: 2px solid var(--border);
+            background: var(--bg);
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--text-soft);
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+        .role-tab:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .role-tab.active-student {
+            border-color: var(--primary);
+            background: var(--primary-soft);
+            color: var(--primary);
+        }
+        .role-tab.active-teacher {
+            border-color: var(--accent);
+            background: rgba(217, 119, 6, 0.1);
+            color: var(--accent);
+        }
+        .role-tab .tab-icon {
+            font-size: 1.4rem;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .login-heading-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 800;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+        .badge-student {
+            background: var(--primary-soft);
+            color: var(--primary);
+        }
+        .badge-teacher {
+            background: rgba(217, 119, 6, 0.12);
+            color: var(--accent);
+        }
+        .btn-teacher-submit {
+            background: linear-gradient(135deg, var(--accent), #b45309) !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-shell">
+        <div class="blob"></div>
+
+        <section class="auth-layout">
+            <div class="modal-box camera-card auth-simple-card" style="max-width: 520px;">
+                <div class="auth-form-shell">
+                    <div class="auth-buttons" style="justify-content: space-between; margin-bottom: 20px;">
+                        <a href="{{ url_for('welcome') }}" class="btn btn-secondary">Back</a>
+                        <button type="button" class="btn btn-secondary theme-toggle" onclick="toggleTheme()">Dark Mode</button>
+                    </div>
+
+                    <!-- Role Selector Tabs -->
+                    <div class="role-tabs">
+                        <button type="button" class="role-tab active-student" id="tab-student" onclick="switchRole('student')">
+                            <span class="tab-icon">🎓</span>
+                            Student
+                        </button>
+                        <button type="button" class="role-tab" id="tab-teacher" onclick="switchRole('teacher')">
+                            <span class="tab-icon">📋</span>
+                            Admin
+                        </button>
+                    </div>
+
+                    <div class="section-heading" style="text-align:center;">
+                        <h2 id="loginHeading">
+                            Student Login
+                            <span class="login-heading-badge badge-student" id="roleBadge">Student</span>
+                        </h2>
+                        <p id="loginSubtext">Access your attendance, leave requests, and complaints.</p>
+                    </div>
+
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            <div class="flash-stack">
+                                {% for msg in messages %}
+                                    <p class="flash-error">{{ msg }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+
+                    <form method="POST" id="loginForm">
+                        <!-- Hidden field so server can optionally read selected role -->
+                        <input type="hidden" name="selected_role" id="selectedRoleInput" value="student">
+
+                        <input type="email" name="email" id="emailInput" placeholder="Email address" required>
+
+                        <div style="position:relative;">
+                            <input type="password" name="password" id="password" placeholder="Password" required>
+                            <span class="password-toggle" onclick="togglePassword()">Show</span>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary form-btn" id="loginBtn">
+                            Login as Student
+                        </button>
+                    </form>
+
+                    <p class="form-footer" style="text-align:center;">New here? <a href="{{ url_for('signup') }}">Create an account</a></p>
+                </div>
+            </div>
+        </section>
+        
+    </div>
+
+    <script>
+        let currentRole = "student";
+
+        function switchRole(role) {
+            currentRole = role;
+
+            const tabStudent = document.getElementById("tab-student");
+            const tabTeacher = document.getElementById("tab-teacher");
+            const heading = document.getElementById("loginHeading");
+            const badge = document.getElementById("roleBadge");
+            const subtext = document.getElementById("loginSubtext");
+            const btn = document.getElementById("loginBtn");
+            const roleInput = document.getElementById("selectedRoleInput");
+
+            tabStudent.className = "role-tab";
+            tabTeacher.className = "role-tab";
+
+            if (role === "student") {
+                tabStudent.classList.add("active-student");
+                heading.innerHTML = 'Student Login <span class="login-heading-badge badge-student">Student</span>';
+                subtext.textContent = "Access your attendance, leave requests, and complaints.";
+                btn.textContent = "Login as Student";
+                btn.classList.remove("btn-teacher-submit");
+                btn.classList.add("btn-primary");
+            } else {
+                tabTeacher.classList.add("active-teacher");
+                heading.innerHTML = 'Teacher Login <span class="login-heading-badge badge-teacher">Teacher</span>';
+                subtext.textContent = "Manage students, attendance records, and leave requests.";
+                btn.textContent = "Login as Teacher";
+                btn.classList.remove("btn-primary");
+                btn.classList.add("btn-primary", "btn-teacher-submit");
+            }
+
+            roleInput.value = role;
+        }
+
+        function togglePassword() {
+            const pass = document.getElementById("password");
+            pass.type = pass.type === "password" ? "text" : "password";
+        }
+
+        function syncThemeButton() {
+            const currentTheme = document.documentElement.getAttribute("data-theme") || "light";
+            const button = document.querySelector(".theme-toggle");
+            if (button) {
+                button.textContent = currentTheme === "dark" ? "Light Mode" : "Dark Mode";
+            }
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute("data-theme") || "light";
+            const nextTheme = currentTheme === "dark" ? "light" : "dark";
+            document.documentElement.setAttribute("data-theme", nextTheme);
+            localStorage.setItem("theme", nextTheme);
+            syncThemeButton();
+        }
+
+        document.getElementById("loginForm").addEventListener("submit", function() {
+            const btn = document.getElementById("loginBtn");
+            btn.innerText = "Checking...";
+            btn.disabled = true;
+        });
+
+        syncThemeButton();
+    </script>
+</body>
+</html>

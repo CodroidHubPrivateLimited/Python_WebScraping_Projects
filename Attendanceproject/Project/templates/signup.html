@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup | Attendance Portal</title>
+    <script>
+        document.documentElement.setAttribute("data-theme", localStorage.getItem("theme") || "light");
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="page-shell">
+        <div class="blob"></div>
+
+        <section class="auth-layout">
+            <div class="modal-box camera-card auth-simple-card" style="max-width: 620px;">
+                <div class="auth-form-shell">
+                    <div class="auth-buttons" style="justify-content: space-between; margin-bottom: 20px;">
+                        <a href="{{ url_for('welcome') }}" class="btn btn-secondary">Back</a>
+                        <button type="button" class="btn btn-secondary theme-toggle" onclick="toggleTheme()">Dark Mode</button>
+                    </div>
+
+                    <div class="section-heading" style="text-align:center;">
+                        <h2>Create Account</h2>
+                        <p>Register as a student or teacher in a simple way.</p>
+                    </div>
+
+                    {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <div class="flash-stack">
+                            {% for msg in messages %}
+                                <p class="flash-error">{{ msg }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    {% endwith %}
+
+                    <form method="POST" id="signupForm">
+                        <input type="text" name="name" id="name" placeholder="Full name" required>
+                        <input type="email" name="email" id="email" placeholder="Email address" required>
+
+                        <div style="position:relative;">
+                            <input type="password" name="password" id="password" placeholder="Password" required>
+                            <span class="password-toggle" onclick="togglePassword('password', this)">Show</span>
+                        </div>
+
+                        <select name="role" id="role" required>
+                            <option value="">Select role</option>
+                            <option value="student">Student</option>
+                            <option value="teacher">Teacher</option>
+                        </select>
+
+                        <!-- Teacher Admin Code Section -->
+                        <div id="teacherCodeSection" class="hidden" style="margin-top: 4px;">
+                            <div style="
+                                padding: 14px 16px;
+                                border-radius: 14px;
+                                background: rgba(245, 166, 35, 0.08);
+                                border: 1px solid rgba(245, 166, 35, 0.22);
+                                margin-bottom: 4px;
+                            ">
+                                <p style="font-size: 0.82rem; font-weight: 700; color: var(--accent); margin-bottom: 4px;">
+                                    🔐 Teacher Verification Required
+                                </p>
+                                <p style="font-size: 0.82rem; color: var(--text-soft); margin: 0;">
+                                    Enter the admin code provided by your institution to register as a teacher.
+                                </p>
+                            </div>
+                            <div style="position: relative;">
+                                <!-- FIX 1: name="admin_code" add kiya — server tak value jayegi ab -->
+                                <input type="password" name="admin_code" id="adminCode"
+                                       placeholder="Enter admin code" autocomplete="off">
+                                <span class="password-toggle" onclick="togglePassword('adminCode', this)">Show</span>
+                            </div>
+                        </div>
+
+                        <!-- Student Face Section -->
+                        <div id="studentFaceSection" class="camera-section hidden">
+                            <p class="camera-note">For student signup, capture one clear face photo.</p>
+                            <video id="signupVideo" class="camera-frame" autoplay playsinline></video>
+                            <canvas id="signupCanvas" class="hidden"></canvas>
+                            <img id="signupPreview" class="capture-preview hidden" alt="Captured student face">
+                            <input type="hidden" name="face_image_data" id="faceImageData">
+
+                            <div class="camera-actions">
+                                <button type="button" class="btn btn-secondary" id="startCameraBtn">Open Camera</button>
+                                <button type="button" class="btn btn-primary" id="captureFaceBtn">Capture Photo</button>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary form-btn" id="submitBtn">Create Account</button>
+                    </form>
+
+                    <p class="form-footer" style="text-align:center;">Already registered? <a href="{{ url_for('login') }}">Login here</a></p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        /* FIX 2: app.py se match karta code — "admin842792" */
+        const TEACHER_ADMIN_CODE = "admin842792";
+
+        const roleSelect         = document.getElementById("role");
+        const studentFaceSection = document.getElementById("studentFaceSection");
+        const teacherCodeSection = document.getElementById("teacherCodeSection");
+        const signupVideo        = document.getElementById("signupVideo");
+        const signupCanvas       = document.getElementById("signupCanvas");
+        const signupPreview      = document.getElementById("signupPreview");
+        const faceImageData      = document.getElementById("faceImageData");
+        let cameraStream;
+
+        function togglePassword(fieldId, btn) {
+            const field = document.getElementById(fieldId);
+            const isHidden = field.type === "password";
+            field.type = isHidden ? "text" : "password";
+            btn.textContent = isHidden ? "Hide" : "Show";
+        }
+
+        function syncThemeButton() {
+            const theme = document.documentElement.getAttribute("data-theme") || "light";
+            const btn   = document.querySelector(".theme-toggle");
+            if (btn) btn.textContent = theme === "dark" ? "Light Mode" : "Dark Mode";
+        }
+
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute("data-theme") || "light";
+            const next    = current === "dark" ? "light" : "dark";
+            document.documentElement.setAttribute("data-theme", next);
+            localStorage.setItem("theme", next);
+            syncThemeButton();
+        }
+
+        function updateRoleView() {
+            const role = roleSelect.value;
+
+            const isStudent = role === "student";
+            studentFaceSection.classList.toggle("hidden", !isStudent);
+            if (!isStudent) {
+                faceImageData.value = "";
+                signupPreview.classList.add("hidden");
+            }
+
+            const isTeacher = role === "teacher";
+            teacherCodeSection.classList.toggle("hidden", !isTeacher);
+            if (!isTeacher) {
+                document.getElementById("adminCode").value = "";
+            }
+        }
+
+        async function startCamera() {
+            if (cameraStream) return;
+            try {
+                cameraStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+                signupVideo.srcObject = cameraStream;
+            } catch {
+                alert("Unable to access camera. Please allow camera permission.");
+            }
+        }
+
+        document.getElementById("startCameraBtn").addEventListener("click", startCamera);
+
+        document.getElementById("captureFaceBtn").addEventListener("click", async function () {
+            if (!cameraStream) await startCamera();
+            if (!signupVideo.videoWidth) {
+                alert("Camera is still loading. Please try again.");
+                return;
+            }
+            signupCanvas.width  = signupVideo.videoWidth;
+            signupCanvas.height = signupVideo.videoHeight;
+            signupCanvas.getContext("2d").drawImage(signupVideo, 0, 0);
+            const imageData     = signupCanvas.toDataURL("image/jpeg");
+            faceImageData.value = imageData;
+            signupPreview.src   = imageData;
+            signupPreview.classList.remove("hidden");
+        });
+
+        roleSelect.addEventListener("change", updateRoleView);
+        updateRoleView();
+        syncThemeButton();
+
+        document.getElementById("signupForm").addEventListener("submit", function (e) {
+            const name     = document.getElementById("name").value.trim();
+            const email    = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value.trim();
+            const role     = roleSelect.value;
+
+            if (!name || !email || !password || !role) {
+                e.preventDefault();
+                alert("All fields are required.");
+                return;
+            }
+
+            if (password.length < 6) {
+                e.preventDefault();
+                alert("Password must be at least 6 characters.");
+                return;
+            }
+
+            if (role === "teacher") {
+                const enteredCode = document.getElementById("adminCode").value.trim();
+                if (!enteredCode) {
+                    e.preventDefault();
+                    alert("Please enter the admin code to register as a teacher.");
+                    return;
+                }
+                if (enteredCode !== TEACHER_ADMIN_CODE) {
+                    e.preventDefault();
+                    document.getElementById("adminCode").value = "";
+                    const inp = document.getElementById("adminCode");
+                    inp.style.borderColor = "var(--danger)";
+                    inp.style.boxShadow   = "0 0 0 4px rgba(255,107,107,0.18)";
+                    inp.placeholder       = "Incorrect code — try again";
+                    inp.focus();
+                    setTimeout(() => {
+                        inp.style.borderColor = "";
+                        inp.style.boxShadow   = "";
+                        inp.placeholder       = "Enter admin code";
+                    }, 2500);
+                    return;
+                }
+            }
+
+            if (role === "student" && !faceImageData.value) {
+                e.preventDefault();
+                alert("Please capture the student face before signup.");
+                return;
+            }
+
+            const btn     = document.getElementById("submitBtn");
+            btn.innerText = "Creating...";
+            btn.disabled  = true;
+        });
+    </script>
+</body>
+</html>

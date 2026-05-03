@@ -1,0 +1,1998 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Dashboard | Attendance Portal</title>
+<script>document.documentElement.setAttribute("data-theme", localStorage.getItem("theme") || "dark");</script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+/* ── DESIGN TOKENS ── */
+:root {
+    --bg:           #06080f;
+    --bg2:          #0b0e1a;
+    --bg3:          #101422;
+    --bg4:          #161c2e;
+    --border:       rgba(255,255,255,0.06);
+    --border2:      rgba(255,255,255,0.1);
+    --violet:       #7c6dfa;
+    --violet2:      #a79fff;
+    --violet-dim:   rgba(124,109,250,0.14);
+    --emerald:      #22d3a5;
+    --emerald-dim:  rgba(34,211,165,0.12);
+    --amber:        #f59e42;
+    --amber-dim:    rgba(245,158,66,0.12);
+    --rose:         #f4637a;
+    --rose-dim:     rgba(244,99,122,0.12);
+    --sky:          #38bdf8;
+    --sky-dim:      rgba(56,189,248,0.11);
+    --text:         #e8eaf6;
+    --text2:        #7b82a8;
+    --text3:        #353c5c;
+    --mono:         'JetBrains Mono', monospace;
+    --sans:         'Plus Jakarta Sans', sans-serif;
+    --r:            12px;
+    --r-lg:         18px;
+    --r-xl:         24px;
+    --sidebar-w:    252px;
+}
+
+html[data-theme="light"] {
+    --bg:           #f2f4fb;
+    --bg2:          #ffffff;
+    --bg3:          #f7f8fd;
+    --bg4:          #eceef9;
+    --border:       rgba(0,0,0,0.06);
+    --border2:      rgba(0,0,0,0.1);
+    --violet:       #6356e8;
+    --violet2:      #7c70f0;
+    --violet-dim:   rgba(99,86,232,0.1);
+    --emerald:      #059669;
+    --emerald-dim:  rgba(5,150,105,0.1);
+    --amber:        #d97706;
+    --amber-dim:    rgba(217,119,6,0.1);
+    --rose:         #e11d48;
+    --rose-dim:     rgba(225,29,72,0.1);
+    --sky:          #0284c7;
+    --sky-dim:      rgba(2,132,199,0.1);
+    --text:         #0f1121;
+    --text2:        #4a5270;
+    --text3:        #9ba3c0;
+}
+
+/* ── RESET ── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: var(--sidebar-w) 1fr;
+    overflow-x: hidden;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    z-index: 30;
+    transition: transform .3s;
+}
+
+.sb-brand {
+    padding: 22px 18px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+.brand-gem {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--violet), #a855f7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .72rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: .05em;
+    flex-shrink: 0;
+    box-shadow: 0 8px 20px rgba(124,109,250,.3);
+}
+
+.brand-txt { font-size: .9rem; font-weight: 800; color: var(--text); line-height: 1.2; }
+.brand-txt span {
+    display: block;
+    font-size: .66rem;
+    font-weight: 400;
+    color: var(--text3);
+    font-family: var(--mono);
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    margin-top: 1px;
+}
+
+.sb-nav { flex: 1; padding: 14px 10px; display: flex; flex-direction: column; }
+
+.nav-grp {
+    font-size: .62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .14em;
+    color: var(--text3);
+    padding: 12px 10px 5px;
+    font-family: var(--mono);
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 10px;
+    border-radius: 9px;
+    font-size: .84rem;
+    font-weight: 600;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all .14s;
+    text-decoration: none;
+    border: 1px solid transparent;
+    margin-bottom: 1px;
+}
+
+.nav-item:hover { background: var(--bg3); color: var(--text); }
+.nav-item.active { background: var(--violet-dim); color: var(--violet2); border-color: rgba(124,109,250,.2); }
+.nav-icon { width: 16px; height: 16px; flex-shrink: 0; opacity: .7; }
+.nav-item.active .nav-icon { opacity: 1; }
+
+.nav-pill {
+    margin-left: auto;
+    font-family: var(--mono);
+    font-size: .6rem;
+    background: var(--violet);
+    color: #fff;
+    padding: 2px 7px;
+    border-radius: 99px;
+    font-weight: 700;
+}
+
+.sb-foot {
+    padding: 12px 10px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.user-chip {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 9px 10px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+}
+
+.u-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    object-fit: cover;
+    border: 1px solid var(--border2);
+    flex-shrink: 0;
+    background: linear-gradient(135deg, var(--violet), #a855f7);
+}
+
+.u-name { font-size: .82rem; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.u-role { font-size: .66rem; font-family: var(--mono); color: var(--violet2); text-transform: uppercase; letter-spacing: .06em; }
+
+.sb-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 7px 10px;
+    border-radius: 9px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text2);
+    font-size: .78rem;
+    font-family: var(--sans);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .14s;
+    text-decoration: none;
+    width: 100%;
+}
+
+.sb-btn:hover { background: var(--bg3); color: var(--text); }
+.sb-btn.danger { color: var(--rose); border-color: rgba(244,99,122,.22); }
+.sb-btn.danger:hover { background: var(--rose-dim); }
+
+/* ── MAIN ── */
+.main { min-width: 0; display: flex; flex-direction: column; }
+
+.topbar {
+    height: 58px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    gap: 14px;
+}
+
+.tb-left { display: flex; align-items: center; gap: 12px; }
+
+.menu-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    border: 1px solid var(--border);
+    background: var(--bg3);
+    color: var(--text2);
+    cursor: pointer;
+}
+
+.tb-greeting { font-size: .98rem; font-weight: 700; color: var(--text); line-height: 1.2; }
+.tb-sub { font-size: .76rem; color: var(--text2); margin-top: 1px; }
+.tb-right { display: flex; align-items: center; gap: 8px; }
+
+/* ── BUTTONS ── */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: .5rem 1rem;
+    border-radius: 99px;
+    border: 1px solid transparent;
+    font-family: var(--sans);
+    font-size: .82rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .15s;
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+.btn:hover { transform: translateY(-1px); }
+.btn-primary { background: var(--violet); color: #fff; box-shadow: 0 4px 18px rgba(124,109,250,.28); }
+.btn-primary:hover { background: #6a5de0; }
+.btn-ghost { background: var(--bg3); color: var(--text2); border-color: var(--border2); }
+.btn-ghost:hover { background: var(--bg4); color: var(--text); }
+.btn-sm { padding: .38rem .85rem; font-size: .76rem; }
+.btn-danger { color: var(--rose); border-color: rgba(244,99,122,.25); background: transparent; }
+.btn-danger:hover { background: var(--rose-dim); }
+.btn-emerald { background: var(--emerald-dim); color: var(--emerald); border-color: rgba(34,211,165,.22); }
+.btn-emerald:hover { background: rgba(34,211,165,.2); }
+
+/* ── CONTENT ── */
+.content { padding: 26px 28px; display: flex; flex-direction: column; gap: 22px; }
+
+/* ── FLASH ── */
+.flash-list { display: flex; flex-direction: column; gap: 8px; }
+.flash {
+    padding: 12px 16px;
+    border-radius: var(--r);
+    font-size: .83rem;
+    border: 1px solid;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+.flash-success { background: rgba(34,211,165,.07); color: var(--emerald); border-color: rgba(34,211,165,.18); }
+.flash-error { background: var(--rose-dim); color: var(--rose); border-color: rgba(244,99,122,.2); }
+
+/* ── SECTION HEADER ── */
+.sec-head { display: flex; align-items: center; gap: 12px; margin-bottom: -6px; }
+.sec-label { font-size: .67rem; font-weight: 700; text-transform: uppercase; letter-spacing: .14em; color: var(--text3); font-family: var(--mono); white-space: nowrap; }
+.sec-line { flex: 1; height: 1px; background: var(--border); }
+
+/* ── PROFILE HEADER CARD ── */
+.profile-header-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-xl);
+    overflow: hidden;
+    position: relative;
+}
+
+.profile-header-banner {
+    height: 90px;
+    background: linear-gradient(135deg, #3b2fa0 0%, #7c6dfa 40%, #22d3a5 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-header-banner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.profile-header-body {
+    padding: 0 28px 24px;
+    display: flex;
+    align-items: flex-end;
+    gap: 22px;
+    flex-wrap: wrap;
+}
+
+.profile-pic-wrap {
+    position: relative;
+    margin-top: -42px;
+    flex-shrink: 0;
+}
+
+.profile-pic-circle {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--bg2);
+    background: linear-gradient(135deg, var(--violet), #a855f7);
+    display: block;
+    cursor: pointer;
+    transition: opacity .18s;
+}
+
+.profile-pic-circle:hover { opacity: .88; }
+
+.profile-pic-edit {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--violet);
+    border: 2px solid var(--bg2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background .15s, transform .15s;
+    pointer-events: none;
+}
+
+.profile-pic-wrap:hover .profile-pic-edit { background: #6a5de0; transform: scale(1.1); }
+
+.profile-header-info { flex: 1; padding-top: 14px; min-width: 0; }
+.profile-header-name { font-size: 1.35rem; font-weight: 800; color: var(--text); letter-spacing: -.02em; margin-bottom: 5px; }
+.profile-header-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+.ph-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-size: .7rem;
+    font-weight: 700;
+    border: 1px solid;
+    font-family: var(--mono);
+}
+
+.ph-badge.role { background: var(--violet-dim); color: var(--violet2); border-color: rgba(124,109,250,.22); }
+.ph-badge.att-good { background: var(--emerald-dim); color: var(--emerald); border-color: rgba(34,211,165,.22); }
+.ph-badge.att-warn { background: var(--amber-dim); color: var(--amber); border-color: rgba(245,158,66,.22); }
+.ph-badge.att-bad { background: var(--rose-dim); color: var(--rose); border-color: rgba(244,99,122,.22); }
+.ph-email { font-size: .78rem; font-family: var(--mono); color: var(--text3); }
+
+.profile-header-stats {
+    display: flex;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    overflow: hidden;
+    margin-left: auto;
+    flex-shrink: 0;
+    align-self: center;
+    margin-top: 14px;
+}
+
+.phs-item {
+    padding: 12px 20px;
+    border-right: 1px solid var(--border);
+    text-align: center;
+    min-width: 72px;
+}
+
+.phs-item:last-child { border-right: none; }
+.phs-val { font-size: 1.2rem; font-weight: 800; font-family: var(--mono); color: var(--text); line-height: 1; }
+.phs-val.green { color: var(--emerald); }
+.phs-val.red { color: var(--rose); }
+.phs-val.purple { color: var(--violet2); }
+.phs-lbl { font-size: .6rem; font-family: var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--text3); margin-top: 4px; }
+
+/* ── PHOTO MODAL ── */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.72);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(6px);
+}
+
+.modal-overlay.open { display: flex; }
+
+.modal-box {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: var(--r-xl);
+    padding: 28px;
+    width: min(460px, 95vw);
+    box-shadow: 0 32px 80px rgba(0,0,0,.5);
+    animation: modalIn .22s ease;
+}
+
+@keyframes modalIn {
+    from { opacity: 0; transform: scale(.94) translateY(10px); }
+    to { opacity: 1; transform: none; }
+}
+
+.modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.modal-title { font-size: 1rem; font-weight: 800; color: var(--text); }
+
+.modal-close {
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    border: 1px solid var(--border);
+    background: var(--bg3);
+    color: var(--text2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all .14s;
+}
+
+.modal-close:hover { background: var(--bg4); color: var(--text); }
+
+.modal-preview-wrap { position: relative; text-align: center; margin-bottom: 20px; }
+
+.modal-preview-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--border2);
+    background: linear-gradient(135deg, var(--violet), #a855f7);
+}
+
+.modal-drop-zone {
+    border: 2px dashed var(--border2);
+    border-radius: var(--r-lg);
+    padding: 22px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color .15s, background .15s;
+    margin-bottom: 16px;
+}
+
+.modal-drop-zone:hover,
+.modal-drop-zone.drag-over { border-color: var(--violet); background: var(--violet-dim); }
+.modal-drop-zone input { display: none; }
+
+.modal-drop-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--violet-dim);
+    color: var(--violet2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 10px;
+}
+
+.modal-drop-title { font-size: .85rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.modal-drop-sub { font-size: .73rem; color: var(--text3); font-family: var(--mono); }
+.modal-actions { display: flex; gap: 10px; }
+
+/* ── STAT CARDS ── */
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+
+.stat-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 18px 20px;
+    position: relative;
+    overflow: hidden;
+    transition: all .18s;
+}
+
+.stat-card:hover { border-color: var(--border2); transform: translateY(-1px); }
+.stat-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; border-radius: var(--r-lg) var(--r-lg) 0 0; }
+.stat-card.v::after { background: linear-gradient(90deg, var(--violet), var(--violet2)); }
+.stat-card.e::after { background: linear-gradient(90deg, var(--emerald), #6ee7c7); }
+.stat-card.r::after { background: linear-gradient(90deg, var(--rose), #fda4af); }
+.stat-card.a::after { background: linear-gradient(90deg, var(--amber), #fde68a); }
+
+.stat-ico { width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+.stat-ico.v { background: var(--violet-dim); color: var(--violet2); }
+.stat-ico.e { background: var(--emerald-dim); color: var(--emerald); }
+.stat-ico.r { background: var(--rose-dim); color: var(--rose); }
+.stat-ico.a { background: var(--amber-dim); color: var(--amber); }
+
+.stat-lbl { font-size: .67rem; font-family: var(--mono); text-transform: uppercase; letter-spacing: .1em; color: var(--text3); margin-bottom: 5px; }
+.stat-val { font-size: 2rem; font-weight: 800; letter-spacing: -.05em; color: var(--text); line-height: 1; font-family: var(--mono); }
+.stat-val.e { color: var(--emerald); }
+.stat-val.r { color: var(--rose); }
+.stat-val.a { color: var(--amber); }
+.stat-meta { font-size: .72rem; color: var(--text3); margin-top: 6px; }
+
+.att-progress-wrap { margin-top: 10px; }
+.att-progress-bar { height: 5px; background: var(--bg4); border-radius: 99px; overflow: hidden; margin-top: 4px; }
+.att-progress-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--violet), var(--emerald)); transition: width .6s ease; }
+
+/* ── TWO COLUMN GRID ── */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+/* ── CARD ── */
+.card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r-xl); overflow: hidden; }
+
+.card-head {
+    padding: 18px 22px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.card-head-left { display: flex; align-items: center; gap: 11px; }
+
+.card-icon { width: 32px; height: 32px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.card-icon.v { background: var(--violet-dim); color: var(--violet2); }
+.card-icon.e { background: var(--emerald-dim); color: var(--emerald); }
+.card-icon.a { background: var(--amber-dim); color: var(--amber); }
+.card-icon.r { background: var(--rose-dim); color: var(--rose); }
+.card-icon.s { background: var(--sky-dim); color: var(--sky); }
+
+.card-title { font-size: .92rem; font-weight: 800; color: var(--text); }
+.card-sub { font-size: .72rem; color: var(--text3); margin-top: 1px; font-family: var(--mono); }
+.card-body { padding: 20px 22px; }
+
+/* ── CHART CARD ── */
+.chart-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r-xl); overflow: hidden; }
+.chart-body { padding: 22px 26px 26px; }
+
+.chart-legend { display: flex; gap: 18px; margin-bottom: 18px; flex-wrap: wrap; }
+.chart-legend-item { display: flex; align-items: center; gap: 7px; font-size: .75rem; font-weight: 600; color: var(--text2); font-family: var(--mono); }
+.legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+
+.chart-wrap { position: relative; height: 260px; }
+
+.chart-tabs { display: flex; gap: 4px; }
+.chart-tab {
+    padding: 5px 13px;
+    border-radius: 99px;
+    font-size: .72rem;
+    font-weight: 700;
+    font-family: var(--mono);
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text3);
+    transition: all .14s;
+}
+
+.chart-tab.active { background: var(--violet-dim); color: var(--violet2); border-color: rgba(124,109,250,.22); }
+
+.chart-head-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+/* ── ATTENDANCE ACTION ── */
+.streak-row { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+
+.streak-box {
+    flex: 1;
+    min-width: 100px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 12px 14px;
+    text-align: center;
+}
+
+.streak-num { font-size: 1.5rem; font-weight: 800; font-family: var(--mono); line-height: 1; }
+.streak-lbl { font-size: .66rem; font-family: var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--text3); margin-top: 4px; }
+.streak-num.fire { color: var(--amber); }
+
+.att-status-box {
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.att-status-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.att-status-dot.ok { background: var(--emerald); box-shadow: 0 0 8px var(--emerald); }
+.att-status-dot.nok { background: var(--rose); box-shadow: 0 0 8px var(--rose); }
+.att-status-text { font-size: .83rem; color: var(--text2); flex: 1; }
+.att-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* ── FIX 1: Attendance banner — replaces inline Jinja style blocks (lines 1191-1193) ── */
+.att-banner {
+    margin-top: 16px;
+    padding: 12px 14px;
+    border-radius: var(--r);
+    border: 1px solid;
+    font-size: .8rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+.att-banner-good { background: var(--emerald-dim); color: var(--emerald); border-color: rgba(34,211,165,.2); }
+.att-banner-warn { background: var(--amber-dim);   color: var(--amber);   border-color: rgba(245,158,66,.2); }
+.att-banner-bad  { background: var(--rose-dim);    color: var(--rose);    border-color: rgba(244,99,122,.2); }
+
+/* ── FIX 2: Leave summary info box — replaces inline Jinja style (line ~1546) ── */
+.leave-info-box {
+    padding: 11px 13px;
+    border: 1px solid;
+    border-radius: var(--r);
+    font-size: .8rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.leave-info-pending  { background: var(--amber-dim);   color: var(--amber);   border-color: rgba(245,158,66,.2); }
+.leave-info-approved { background: var(--emerald-dim); color: var(--emerald); border-color: rgba(34,211,165,.2); }
+.leave-info-empty    { background: var(--bg3);         color: var(--text3);   border-color: var(--border); font-family: var(--mono); }
+
+/* ── FORM ── */
+.field { margin-bottom: 14px; }
+
+.field label {
+    display: block;
+    font-size: .74rem;
+    font-weight: 700;
+    color: var(--text2);
+    font-family: var(--mono);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: 6px;
+}
+
+.field input,
+.field textarea,
+.field select {
+    width: 100%;
+    padding: 10px 13px;
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    background: var(--bg3);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: .86rem;
+    outline: none;
+    transition: border-color .15s, box-shadow .15s;
+}
+
+.field textarea { resize: vertical; min-height: 90px; }
+
+.field input:focus,
+.field textarea:focus {
+    border-color: rgba(124,109,250,.45);
+    box-shadow: 0 0 0 3px rgba(124,109,250,.1);
+    background: var(--bg2);
+}
+
+.date-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* ── TABLE ── */
+.table-wrap { overflow-x: auto; }
+
+table { width: 100%; border-collapse: collapse; min-width: 480px; }
+
+thead tr { background: var(--bg3); }
+
+th {
+    padding: 9px 14px;
+    text-align: left;
+    font-family: var(--mono);
+    font-size: .64rem;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--text3);
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+}
+
+td {
+    padding: 11px 14px;
+    font-size: .84rem;
+    color: var(--text2);
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+}
+
+tbody tr:last-child td { border-bottom: none; }
+tbody tr { transition: background .12s; }
+tbody tr:hover { background: rgba(255,255,255,.02); }
+html[data-theme="light"] tbody tr:hover { background: rgba(0,0,0,.02); }
+
+.td-name { font-weight: 700; color: var(--text); }
+.td-mono { font-family: var(--mono); font-size: .75rem; color: var(--text3); }
+.empty-row td { text-align: center; padding: 30px; color: var(--text3); font-family: var(--mono); font-size: .78rem; }
+
+/* ── BADGES ── */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 9px;
+    border-radius: 99px;
+    font-size: .7rem;
+    font-weight: 700;
+    border: 1px solid transparent;
+    font-family: var(--mono);
+}
+
+.badge-green { background: rgba(34,211,165,.1); color: var(--emerald); border-color: rgba(34,211,165,.2); }
+.badge-red { background: var(--rose-dim); color: var(--rose); border-color: rgba(244,99,122,.2); }
+.badge-amber { background: var(--amber-dim); color: var(--amber); border-color: rgba(245,158,66,.2); }
+.badge-gray { background: var(--bg3); color: var(--text3); border-color: var(--border); }
+.badge-blue { background: var(--sky-dim); color: var(--sky); border-color: rgba(56,189,248,.2); }
+
+/* ── MONTH BLOCK ── */
+.month-block + .month-block { margin-top: 28px; padding-top: 28px; border-top: 1px solid var(--border); }
+
+.month-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.month-title { font-size: .95rem; font-weight: 800; color: var(--text); }
+.month-sub { font-size: .76rem; color: var(--text2); margin-top: 3px; font-family: var(--mono); }
+
+.month-pct {
+    padding: 6px 14px;
+    border-radius: 99px;
+    font-family: var(--mono);
+    font-size: .82rem;
+    font-weight: 700;
+    background: var(--violet-dim);
+    color: var(--violet2);
+    border: 1px solid rgba(124,109,250,.2);
+    white-space: nowrap;
+}
+
+.month-mini-bar { height: 4px; background: var(--bg4); border-radius: 99px; overflow: hidden; margin-top: 8px; }
+.month-mini-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--violet), var(--emerald)); }
+
+/* ── CALENDAR GRID ── */
+.cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-top: 14px;
+}
+
+.cal-day {
+    aspect-ratio: 1;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .68rem;
+    font-family: var(--mono);
+    font-weight: 600;
+    position: relative;
+    cursor: default;
+    transition: all .12s;
+}
+
+.cal-day.present { background: rgba(34,211,165,.15); color: var(--emerald); border: 1px solid rgba(34,211,165,.25); }
+.cal-day.absent { background: rgba(244,99,122,.12); color: var(--rose); border: 1px solid rgba(244,99,122,.2); }
+.cal-day.empty { background: transparent; color: var(--text3); border: 1px solid var(--border); opacity: .4; }
+.cal-day.pad { background: transparent; border: none; }
+
+.cal-hdr {
+    font-size: .6rem;
+    font-family: var(--mono);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--text3);
+    text-align: center;
+    padding: 4px 0;
+}
+
+/* ── QUICK STATS BAR ── */
+.quick-bar {
+    display: flex;
+    gap: 0;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+
+.quick-bar-item { flex: 1; padding: 12px; text-align: center; border-right: 1px solid var(--border); }
+.quick-bar-item:last-child { border-right: none; }
+.quick-bar-val { font-size: 1.1rem; font-weight: 800; font-family: var(--mono); color: var(--text); }
+.quick-bar-lbl { font-size: .62rem; font-family: var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--text3); margin-top: 2px; }
+
+/* ── ANALYTICS PANEL ── */
+#analyticsPanel {
+    overflow: hidden;
+    transition: opacity .25s ease;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 3px; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 960px) {
+    body { grid-template-columns: 1fr; }
+    .sidebar { position: fixed; left: 0; top: 0; height: 100vh; transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .menu-btn { display: flex; }
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .two-col { grid-template-columns: 1fr; }
+    .profile-header-stats { flex-wrap: wrap; margin-left: 0; width: 100%; }
+    .profile-header-body { flex-direction: column; align-items: flex-start; }
+}
+
+@media (max-width: 540px) {
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .content { padding: 16px; }
+    .topbar { padding: 0 16px; }
+    .date-grid { grid-template-columns: 1fr; }
+    .profile-header-body { padding: 0 16px 18px; }
+    .chart-head-right { gap: 4px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── SIDEBAR ── -->
+<aside class="sidebar" id="sidebar">
+    <div class="sb-brand">
+        <div class="brand-gem">AP</div>
+        <div>
+            <div class="brand-txt">Attendance Portal <span>Student View</span></div>
+        </div>
+    </div>
+
+    <nav class="sb-nav">
+        <div class="nav-grp">Overview</div>
+        <a href="#profile-header" class="nav-item active">
+            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <rect x="3" y="3" width="7" height="7" rx="1" stroke-width="2"/>
+                <rect x="14" y="3" width="7" height="7" rx="1" stroke-width="2"/>
+                <rect x="3" y="14" width="7" height="7" rx="1" stroke-width="2"/>
+                <rect x="14" y="14" width="7" height="7" rx="1" stroke-width="2"/>
+            </svg>
+            Dashboard
+        </a>
+        <a href="#stats" class="nav-item">
+            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+            </svg>
+            Stats
+        </a>
+        <a href="#attendance-section" class="nav-item">
+            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <circle cx="12" cy="12" r="9"/><polyline points="12 6 12 12 16 14"/>
+            </svg>
+            Attendance
+        </a>
+
+        <div class="nav-grp">Leave</div>
+        <a href="#leave-section" class="nav-item">
+            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+            Apply Leave
+        </a>
+        <a href="#leave-history-section" class="nav-item">
+            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/>
+            </svg>
+            Leave History
+            {% set pending_count = leave_requests | selectattr('status','eq','Pending') | list | length %}
+            {% if pending_count > 0 %}<span class="nav-pill">{{ pending_count }}</span>{% endif %}
+        </a>
+
+        <div class="nav-grp">Support</div>
+        <a href="#complaint-section" class="nav-item">
+            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+            Complaints
+        </a>
+
+        <div class="nav-grp">Records</div>
+        <a href="#monthly-section" class="nav-item">
+            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+            </svg>
+            Monthly Records
+        </a>
+    </nav>
+
+    <div class="sb-foot">
+        <div class="user-chip">
+            <img src="{{ url_for('static', filename='profile/user_' ~ session['user_id'] ~ '.png') }}"
+                 onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex'"
+                 class="u-avatar" alt="{{ name }}">
+            <div class="u-avatar" style="display:none;font-size:.78rem;font-weight:800;color:#fff;flex-shrink:0">{{ name[:2].upper() }}</div>
+            <div style="min-width:0">
+                <div class="u-name">{{ name }}</div>
+                <div class="u-role">Student</div>
+            </div>
+        </div>
+        <button class="sb-btn" onclick="toggleTheme()">
+            <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <circle cx="12" cy="12" r="5"/>
+                <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+            </svg>
+            <span id="themeLabel">Light Mode</span>
+        </button>
+        <a href="/logout" class="sb-btn danger">
+            <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            Logout
+        </a>
+    </div>
+</aside>
+
+<!-- ── MAIN ── -->
+<div class="main">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+        <div class="tb-left">
+            <button class="menu-btn" onclick="toggleSidebar()">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+                </svg>
+            </button>
+            <div>
+                <div class="tb-greeting">Good to see you, {{ name }} 👋</div>
+                <div class="tb-sub">Track your attendance, leave &amp; complaints</div>
+            </div>
+        </div>
+        <div class="tb-right">
+            <a href="/attendance" class="btn btn-primary btn-sm">
+                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                    <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                Mark Attendance
+            </a>
+        </div>
+    </header>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="flash-list">
+            {% for msg in messages %}
+            <div class="flash flash-success">
+                <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                {{ msg }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <!-- ── PROFILE HEADER ── -->
+        <div class="profile-header-card" id="profile-header">
+            <div class="profile-header-banner"></div>
+            <div class="profile-header-body">
+
+                <div class="profile-pic-wrap" onclick="openPhotoModal()" title="Click to change photo">
+                    <img src="{{ url_for('static', filename='profile/user_' ~ session['user_id'] ~ '.png') }}"
+                         onerror="this.onerror=null;this.src=''"
+                         class="profile-pic-circle"
+                         id="headerAvatar"
+                         alt="{{ name }}">
+                    <div class="profile-pic-edit">
+                        <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="profile-header-info">
+                    <div class="profile-header-name">{{ name }}</div>
+                    <div class="profile-header-meta">
+                        <span class="ph-email">{{ session.get('email','—') }}</span>
+                        <span class="ph-badge role">Student</span>
+                        {% set pct = stats.percentage | float %}
+                        {% if pct >= 75 %}
+                        <span class="ph-badge att-good">
+                            <svg width="9" height="9" fill="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            Good Standing
+                        </span>
+                        {% elif pct >= 50 %}
+                        <span class="ph-badge att-warn">
+                            <svg width="9" height="9" fill="currentColor" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+                            Moderate
+                        </span>
+                        {% else %}
+                        <span class="ph-badge att-bad">
+                            <svg width="9" height="9" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                            At Risk
+                        </span>
+                        {% endif %}
+                        <span class="ph-badge {{ 'att-good' if has_face else 'att-bad' }}">
+                            {{ '✓ Face ID' if has_face else '✗ No Face ID' }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="profile-header-stats">
+                    <div class="phs-item">
+                        <div class="phs-val purple">{{ stats.total_classes }}</div>
+                        <div class="phs-lbl">Total</div>
+                    </div>
+                    <div class="phs-item">
+                        <div class="phs-val green">{{ stats.present }}</div>
+                        <div class="phs-lbl">Present</div>
+                    </div>
+                    <div class="phs-item">
+                        <div class="phs-val red">{{ stats.absent }}</div>
+                        <div class="phs-lbl">Absent</div>
+                    </div>
+                    <div class="phs-item">
+                        <div class="phs-val {{ 'green' if stats.percentage|float >= 75 else 'red' if stats.percentage|float < 50 else '' }}">
+                            {{ stats.percentage }}%
+                        </div>
+                        <div class="phs-lbl">Rate</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── STAT CARDS ── -->
+        <div class="stats-row" id="stats">
+            <div class="stat-card v">
+                <div class="stat-ico v">
+                    <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+                    </svg>
+                </div>
+                <div class="stat-lbl">Total Classes</div>
+                <div class="stat-val">{{ stats.total_classes }}</div>
+                <div class="stat-meta">All time</div>
+            </div>
+            <div class="stat-card e">
+                <div class="stat-ico e">
+                    <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                </div>
+                <div class="stat-lbl">Present</div>
+                <div class="stat-val e">{{ stats.present }}</div>
+                <div class="stat-meta">Days attended</div>
+            </div>
+            <div class="stat-card r">
+                <div class="stat-ico r">
+                    <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </div>
+                <div class="stat-lbl">Absent</div>
+                <div class="stat-val r">{{ stats.absent }}</div>
+                <div class="stat-meta">Days missed</div>
+            </div>
+            <div class="stat-card a">
+                <div class="stat-ico a">
+                    <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                </div>
+                <div class="stat-lbl">Attendance %</div>
+                <div class="stat-val a">{{ stats.percentage }}%</div>
+                <div class="att-progress-wrap">
+                    <div class="att-progress-bar">
+                        <div class="att-progress-fill" style="width:{{ stats.percentage }}%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── ATTENDANCE CARD ── -->
+        <div class="card" id="attendance-section">
+            <div class="card-head">
+                <div class="card-head-left">
+                    <div class="card-icon e">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <circle cx="12" cy="12" r="9"/><polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="card-title">Attendance</div>
+                        <div class="card-sub">Face recognition required</div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+
+                <div class="streak-row">
+                    <div class="streak-box">
+                        <div class="streak-num fire">{{ stats.present }}</div>
+                        <div class="streak-lbl">Present</div>
+                    </div>
+                    <div class="streak-box">
+                        <div class="streak-num" style="color:var(--rose)">{{ stats.absent }}</div>
+                        <div class="streak-lbl">Absent</div>
+                    </div>
+                    <div class="streak-box">
+                        <div class="streak-num" style="color:var(--violet2)">{{ stats.percentage }}%</div>
+                        <div class="streak-lbl">Rate</div>
+                    </div>
+                </div>
+
+                <div class="att-status-box">
+                    <div class="att-status-dot {{ 'ok' if has_face else 'nok' }}"></div>
+                    <div>
+                        <div style="font-size:.83rem;font-weight:700;color:var(--text)">
+                            Face Profile {{ 'Active' if has_face else 'Missing' }}
+                        </div>
+                        <div class="att-status-text">
+                            {{ "Ready for face-verified attendance." if has_face else "Please enroll your face to mark attendance." }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action buttons -->
+                <div class="att-actions">
+                    <a href="/attendance" class="btn btn-primary">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                        Mark Attendance
+                    </a>
+                    <a href="{{ url_for('download_student_attendance') }}" class="btn btn-ghost">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Download CSV
+                    </a>
+                    <button class="btn btn-ghost" id="toggleChartBtn" onclick="toggleChart()">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                        </svg>
+                        Show Analytics
+                    </button>
+                </div>
+
+                <!-- FIX 1: Attendance status banner — Jinja conditionals moved to CSS classes -->
+                {% set pct = stats.percentage | float %}
+                {% if pct >= 75 %}
+                <div class="att-banner att-banner-good">
+                    <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    Great attendance! You're above 75% — keep it up.
+                </div>
+                {% elif pct >= 50 %}
+                <div class="att-banner att-banner-warn">
+                    <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+                    Attendance is moderate. Try to attend more regularly.
+                </div>
+                {% else %}
+                <div class="att-banner att-banner-bad">
+                    <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    Attendance below 50%! Urgent improvement needed.
+                </div>
+                {% endif %}
+
+                <!-- ── ANALYTICS PANEL — hidden by default ── -->
+                <div id="analyticsPanel" style="display:none;margin-top:20px;border-top:1px solid var(--border);padding-top:20px">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px">
+                        <div style="display:flex;gap:14px;flex-wrap:wrap">
+                            <div class="chart-legend-item">
+                                <div class="legend-dot" style="background:#22d3a5"></div>Present
+                            </div>
+                            <div class="chart-legend-item">
+                                <div class="legend-dot" style="background:#f4637a"></div>Absent
+                            </div>
+                            <div class="chart-legend-item">
+                                <div class="legend-dot" style="background:#7c6dfa;border-radius:50%"></div>Attendance %
+                            </div>
+                        </div>
+                        <div class="chart-tabs">
+                            <button class="chart-tab active" onclick="switchChart('bar', this)">Bar</button>
+                            <button class="chart-tab" onclick="switchChart('line', this)">Line</button>
+                        </div>
+                    </div>
+                    <div class="chart-wrap">
+                        <canvas id="attendanceChart"></canvas>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ── LEAVE SECTION ── -->
+        <div class="sec-head">
+            <div class="sec-label">Leave Management</div>
+            <div class="sec-line"></div>
+        </div>
+
+        <div class="two-col">
+            <!-- Apply Leave Form -->
+            <div class="card" id="leave-section">
+                <div class="card-head">
+                    <div class="card-head-left">
+                        <div class="card-icon a">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2"/>
+                                <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="card-title">Apply Leave</div>
+                            <div class="card-sub">Submit a new leave request</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('apply_leave') }}">
+                        <div class="date-grid">
+                            <div class="field">
+                                <label for="from_date">From Date</label>
+                                <input type="date" id="from_date" name="from_date" required>
+                            </div>
+                            <div class="field">
+                                <label for="to_date">To Date</label>
+                                <input type="date" id="to_date" name="to_date" required>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="reason">Reason</label>
+                            <textarea id="reason" name="reason" placeholder="Briefly describe your reason for leave…" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm">
+                            <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <line x1="22" y1="2" x2="11" y2="13"/>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                            </svg>
+                            Submit Request
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Leave Summary -->
+            <div class="card">
+                <div class="card-head">
+                    <div class="card-head-left">
+                        <div class="card-icon s">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="card-title">Leave Summary</div>
+                            <div class="card-sub">Request status overview</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% set approved = leave_requests | selectattr('status','eq','Approved') | list | length %}
+                    {% set rejected = leave_requests | selectattr('status','eq','Rejected') | list | length %}
+                    {% set pending  = leave_requests | selectattr('status','eq','Pending')  | list | length %}
+                    <div class="quick-bar">
+                        <div class="quick-bar-item">
+                            <div class="quick-bar-val" style="color:var(--amber)">{{ pending }}</div>
+                            <div class="quick-bar-lbl">Pending</div>
+                        </div>
+                        <div class="quick-bar-item">
+                            <div class="quick-bar-val" style="color:var(--emerald)">{{ approved }}</div>
+                            <div class="quick-bar-lbl">Approved</div>
+                        </div>
+                        <div class="quick-bar-item">
+                            <div class="quick-bar-val" style="color:var(--rose)">{{ rejected }}</div>
+                            <div class="quick-bar-lbl">Rejected</div>
+                        </div>
+                        <div class="quick-bar-item">
+                            <div class="quick-bar-val">{{ leave_requests | length }}</div>
+                            <div class="quick-bar-lbl">Total</div>
+                        </div>
+                    </div>
+
+                    <!-- FIX 2: Leave info box — Jinja conditionals moved to CSS classes -->
+                    {% if pending > 0 %}
+                    <div class="leave-info-box leave-info-pending">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        {{ pending }} request{{ 's' if pending > 1 else '' }} awaiting teacher review.
+                    </div>
+                    {% elif approved > 0 %}
+                    <div class="leave-info-box leave-info-approved">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        {{ approved }} leave{{ 's' if approved > 1 else '' }} approved by teacher.
+                    </div>
+                    {% else %}
+                    <div class="leave-info-box leave-info-empty">
+                        No leave requests yet.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Leave History Table -->
+        <div class="card" id="leave-history-section">
+            <div class="card-head">
+                <div class="card-head-left">
+                    <div class="card-icon a">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="card-title">Leave History</div>
+                        <div class="card-sub">All submitted leave requests</div>
+                    </div>
+                </div>
+                <span style="font-family:var(--mono);font-size:.67rem;padding:3px 9px;border-radius:99px;background:var(--bg3);border:1px solid var(--border);color:var(--text3)">
+                    {{ leave_requests | length }} total
+                </span>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Reason</th>
+                            <th>Status</th>
+                            <th>Applied On</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% if leave_requests %}
+                        {% for leave in leave_requests %}
+                        <tr>
+                            <td class="td-mono">{{ leave.from_date }}</td>
+                            <td class="td-mono">{{ leave.to_date }}</td>
+                            <td style="max-width:200px;font-size:.82rem">{{ leave.reason }}</td>
+                            <td>
+                                <span class="badge {{ 'badge-green' if leave.status == 'Approved' else 'badge-red' if leave.status == 'Rejected' else 'badge-amber' }}">
+                                    {{ leave.status }}
+                                </span>
+                            </td>
+                            <td class="td-mono">{{ leave.created_at }}</td>
+                            <td>
+                                {% if leave.status | lower == 'pending' %}
+                                <form method="POST" action="{{ url_for('delete_leave', leave_id=leave.id) }}"
+                                      onsubmit="return confirm('Cancel this leave request?')">
+                                    <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
+                                </form>
+                                {% else %}
+                                <span style="color:var(--text3);font-size:.78rem;font-family:var(--mono)">—</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr class="empty-row"><td colspan="6">No leave requests submitted yet.</td></tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ── COMPLAINTS ── -->
+        <div class="sec-head">
+            <div class="sec-label">Support &amp; Complaints</div>
+            <div class="sec-line"></div>
+        </div>
+
+        <div class="two-col">
+            <!-- Submit Complaint -->
+            <div class="card" id="complaint-section">
+                <div class="card-head">
+                    <div class="card-head-left">
+                        <div class="card-icon r">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="card-title">Complaint Box</div>
+                            <div class="card-sub">Send issue to your teacher</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('submit_complaint') }}">
+                        <div class="field">
+                            <label for="message">Describe your issue</label>
+                            <textarea id="message" name="message" rows="5"
+                                      placeholder="Describe your issue in detail…" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm">
+                            <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <line x1="22" y1="2" x2="11" y2="13"/>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                            </svg>
+                            Send Complaint
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Complaint History -->
+            <div class="card">
+                <div class="card-head">
+                    <div class="card-head-left">
+                        <div class="card-icon r">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <path d="M17 8h2a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2v4l-4-4H9a1.994 1.994 0 0 1-1.414-.586"/>
+                                <path d="M15 4H3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2v4l4-4h6a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="card-title">Complaint History</div>
+                            <div class="card-sub">Track teacher responses</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Complaint</th>
+                                <th>Teacher Reply</th>
+                                <th>Status</th>
+                                <th>Updated</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% if complaints %}
+                            {% for complaint in complaints %}
+                            <tr>
+                                <td style="max-width:150px;font-size:.82rem">{{ complaint.message }}</td>
+                                <td style="max-width:150px;font-size:.82rem;color:var(--text2)">
+                                    {{ complaint.teacher_reply if complaint.teacher_reply else '—' }}
+                                </td>
+                                <td>
+                                    <span class="badge {{ 'badge-green' if complaint.status == 'Solved' else 'badge-blue' if complaint.status == 'Replied' else 'badge-gray' }}">
+                                        {{ complaint.status }}
+                                    </span>
+                                </td>
+                                <td class="td-mono">{{ complaint.updated_at }}</td>
+                                <td>
+                                    {% if complaint.status == 'Pending' %}
+                                    <form method="POST"
+                                          action="{{ url_for('delete_complaint', complaint_id=complaint.id) }}"
+                                          onsubmit="return confirm('Delete this complaint?')">
+                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                    </form>
+                                    {% else %}
+                                    <span style="color:var(--text3);font-size:.78rem;font-family:var(--mono)">—</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr class="empty-row"><td colspan="5">No complaints yet.</td></tr>
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── MONTHLY ATTENDANCE ── -->
+        <div class="sec-head">
+            <div class="sec-label">Attendance Records</div>
+            <div class="sec-line"></div>
+        </div>
+
+        <div class="card" id="monthly-section">
+            <div class="card-head">
+                <div class="card-head-left">
+                    <div class="card-icon v">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="card-title">Month-wise Attendance</div>
+                        <div class="card-sub">Calendar view + day-by-day records</div>
+                    </div>
+                </div>
+                <a href="{{ url_for('download_student_attendance') }}" class="btn btn-ghost btn-sm">
+                    <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Export CSV
+                </a>
+            </div>
+            <div class="card-body">
+            {% if monthly_attendance %}
+                {% for month in monthly_attendance %}
+                <div class="month-block">
+                    <div class="month-header">
+                        <div>
+                            <div class="month-title">{{ month.month_label }}</div>
+                            <div class="month-sub">
+                                {{ month.present }} Present &nbsp;·&nbsp; {{ month.absent }} Absent &nbsp;·&nbsp; {{ month.total_classes }} Total
+                            </div>
+                            <div class="month-mini-bar">
+                                <div class="month-mini-fill" style="width:{{ month.percentage }}%"></div>
+                            </div>
+                        </div>
+                        <div class="month-pct">{{ month.percentage }}%</div>
+                    </div>
+
+                    <!-- Calendar grid -->
+                    <div class="cal-grid">
+                        {% for d in ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'] %}
+                        <div class="cal-hdr">{{ d }}</div>
+                        {% endfor %}
+                        {% if month.days %}
+                            {% set first_day = month.days[0] %}
+                            {% set offset = first_day.weekday if first_day.weekday is defined else 0 %}
+                            {% for _ in range(offset) %}
+                            <div class="cal-day pad"></div>
+                            {% endfor %}
+                        {% endif %}
+                        {% for day in month.days %}
+                        <div class="cal-day {{ 'present' if day.status == 'Present' else 'absent' }}"
+                             title="{{ day.display_date }} — {{ day.status }}">
+                            {{ day.display_date.split()[1] if day.display_date and day.display_date.split()|length >= 2 else '' }}
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Day-wise detail table -->
+                    <div class="table-wrap" style="margin-top:16px">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Day</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Marked At</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for day in month.days %}
+                            <tr>
+                                <td class="td-mono" style="color:var(--text3)">
+                                    {{ day.display_date.split()[0] if day.display_date else '—' }}
+                                </td>
+                                <td class="td-name">
+                                    {{ day.display_date.split()[1:] | join(' ') if day.display_date else '—' }}
+                                </td>
+                                <td>
+                                    <span class="badge {{ 'badge-green' if day.status == 'Present' else 'badge-red' }}">
+                                        {{ day.status }}
+                                    </span>
+                                </td>
+                                <td class="td-mono">{{ day.timestamp or '—' }}</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div style="text-align:center;padding:36px;color:var(--text3);font-family:var(--mono);font-size:.8rem">
+                    No attendance records available yet.
+                </div>
+            {% endif %}
+            </div>
+        </div>
+
+    </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- ── PHOTO UPLOAD MODAL ── -->
+<div class="modal-overlay" id="photoModal" onclick="handleModalClick(event)">
+    <div class="modal-box">
+        <div class="modal-head">
+            <div class="modal-title">Update Profile Photo</div>
+            <button class="modal-close" onclick="closePhotoModal()">
+                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="modal-preview-wrap">
+            <img id="modalPreviewImg"
+                 src="{{ url_for('static', filename='profile/user_' ~ session['user_id'] ~ '.png') }}"
+                 onerror="this.onerror=null;this.src=''"
+                 class="modal-preview-img" alt="Preview">
+        </div>
+
+        <form method="POST" action="{{ url_for('upload_profile') }}" enctype="multipart/form-data" id="modalProfileForm">
+            <label class="modal-drop-zone" for="modalFileInput" id="dropZone">
+                <input type="file" name="profile_pic" id="modalFileInput" accept="image/*"
+                       onchange="handleModalFile(event)" required>
+                <div class="modal-drop-icon">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                    </svg>
+                </div>
+                <div class="modal-drop-title" id="dropTitle">Click or drag to upload</div>
+                <div class="modal-drop-sub">JPG, PNG, WEBP — max 5MB</div>
+            </label>
+
+            <div class="modal-actions">
+                <button type="submit" class="btn btn-primary" style="flex:1">
+                    <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                    </svg>
+                    Save Photo
+                </button>
+                <button type="button" class="btn btn-ghost" onclick="closePhotoModal()">Cancel</button>
+            </div>
+        </form>
+
+        <!-- Face ID update -->
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+            <div style="font-size:.72rem;font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:10px">
+                Update Face ID
+            </div>
+            <form method="POST" action="{{ url_for('update_student_photo') }}" enctype="multipart/form-data">
+                <div style="display:flex;gap:8px;align-items:center">
+                    <input type="file" name="student_photo" accept="image/*" required
+                           style="flex:1;padding:8px 10px;border:1px dashed var(--border2);border-radius:9px;background:var(--bg3);color:var(--text2);font-size:.76rem;cursor:pointer">
+                    <button type="submit" class="btn btn-sm"
+                            style="background:var(--violet-dim);color:var(--violet2);border-color:rgba(124,109,250,.2);white-space:nowrap">
+                        Update Face ID
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- FIX 3: Chart data injected via JSON island — eliminates Jinja inside <script> (lines 1681-1686) -->
+<script id="monthly-data" type="application/json">
+[{% if monthly_attendance %}{% for month in monthly_attendance %}{"label":"{{ month.month_label }}","present":{{ month.present }},"absent":{{ month.absent }},"pct":{{ month.percentage }}}{% if not loop.last %},{% endif %}{% endfor %}{% endif %}]
+</script>
+
+<script>
+// ── CHART DATA — parsed from JSON island, no Jinja in JS ──
+const monthlyData = JSON.parse(document.getElementById('monthly-data').textContent);
+
+// ── CHART ──
+let attendanceChart = null;
+let currentChartType = 'bar';
+
+function buildChartData(type) {
+    const dark = document.documentElement.getAttribute('data-theme') !== 'light';
+    const gridColor  = dark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
+    const tickColor  = dark ? '#353c5c' : '#9ba3c0';
+    const tooltipBg  = dark ? '#0b0e1a' : '#ffffff';
+    const tooltipBdr = dark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)';
+    const tooltipTxt = dark ? '#e8eaf6' : '#0f1121';
+
+    return {
+        labels: monthlyData.map(m => m.label),
+        datasets: [
+            {
+                label: 'Present',
+                data: monthlyData.map(m => m.present),
+                backgroundColor: type === 'bar' ? 'rgba(34,211,165,0.75)' : 'rgba(34,211,165,0.15)',
+                borderColor: '#22d3a5',
+                borderWidth: type === 'bar' ? 0 : 2.5,
+                borderRadius: type === 'bar' ? 6 : 0,
+                fill: type === 'line',
+                tension: 0.42,
+                pointBackgroundColor: '#22d3a5',
+                pointRadius: type === 'line' ? 4 : 0,
+                pointHoverRadius: 6,
+                yAxisID: 'y',
+            },
+            {
+                label: 'Absent',
+                data: monthlyData.map(m => m.absent),
+                backgroundColor: type === 'bar' ? 'rgba(244,99,122,0.7)' : 'rgba(244,99,122,0.1)',
+                borderColor: '#f4637a',
+                borderWidth: type === 'bar' ? 0 : 2.5,
+                borderRadius: type === 'bar' ? 6 : 0,
+                fill: type === 'line',
+                tension: 0.42,
+                pointBackgroundColor: '#f4637a',
+                pointRadius: type === 'line' ? 4 : 0,
+                pointHoverRadius: 6,
+                yAxisID: 'y',
+            },
+            {
+                label: 'Attendance %',
+                data: monthlyData.map(m => m.pct),
+                backgroundColor: 'transparent',
+                borderColor: '#7c6dfa',
+                borderWidth: 2,
+                borderDash: [5, 4],
+                fill: false,
+                tension: 0.42,
+                pointBackgroundColor: '#7c6dfa',
+                pointRadius: 4,
+                pointHoverRadius: 7,
+                type: 'line',
+                yAxisID: 'y2',
+            }
+        ],
+        _meta: { gridColor, tickColor, tooltipBg, tooltipBdr, tooltipTxt }
+    };
+}
+
+function initChart() {
+    const canvas = document.getElementById('attendanceChart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const cfg = buildChartData(currentChartType);
+
+    if (attendanceChart) attendanceChart.destroy();
+
+    if (currentChartType === 'line') {
+        const h = canvas.offsetHeight || 260;
+        const gP = ctx.createLinearGradient(0, 0, 0, h);
+        gP.addColorStop(0, 'rgba(34,211,165,0.28)'); gP.addColorStop(1, 'rgba(34,211,165,0)');
+        const gA = ctx.createLinearGradient(0, 0, 0, h);
+        gA.addColorStop(0, 'rgba(244,99,122,0.22)'); gA.addColorStop(1, 'rgba(244,99,122,0)');
+        cfg.datasets[0].backgroundColor = gP;
+        cfg.datasets[1].backgroundColor = gA;
+    }
+
+    attendanceChart = new Chart(ctx, {
+        type: currentChartType === 'bar' ? 'bar' : 'line',
+        data: { labels: cfg.labels, datasets: cfg.datasets },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: cfg._meta.tooltipBg,
+                    borderColor: cfg._meta.tooltipBdr,
+                    borderWidth: 1,
+                    titleColor: cfg._meta.tooltipTxt,
+                    bodyColor: cfg._meta.tooltipTxt,
+                    padding: 12,
+                    cornerRadius: 10,
+                    callbacks: {
+                        label: function(ctx) {
+                            var v = ctx.parsed.y;
+                            return ' ' + ctx.dataset.label + ': ' + (ctx.dataset.label.indexOf('%') !== -1 ? v + '%' : v);
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { color: cfg._meta.gridColor, drawBorder: false },
+                    ticks: { color: cfg._meta.tickColor, font: { family: "'JetBrains Mono'", size: 10 }, maxRotation: 35 }
+                },
+                y: {
+                    type: 'linear', position: 'left',
+                    grid: { color: cfg._meta.gridColor, drawBorder: false },
+                    ticks: { color: cfg._meta.tickColor, font: { family: "'JetBrains Mono'", size: 10 }, stepSize: 1 },
+                    title: { display: true, text: 'Days', color: cfg._meta.tickColor, font: { size: 10, family: "'JetBrains Mono'" } }
+                },
+                y2: {
+                    type: 'linear', position: 'right',
+                    min: 0, max: 100,
+                    grid: { drawOnChartArea: false },
+                    ticks: { color: '#7c6dfa', font: { family: "'JetBrains Mono'", size: 10 }, callback: function(v) { return v + '%'; } },
+                    title: { display: true, text: 'Rate', color: '#7c6dfa', font: { size: 10, family: "'JetBrains Mono'" } }
+                }
+            }
+        }
+    });
+}
+
+function switchChart(type, btn) {
+    currentChartType = type;
+    document.querySelectorAll('.chart-tab').forEach(function(t) { t.classList.remove('active'); });
+    btn.classList.add('active');
+    initChart();
+}
+
+// ── TOGGLE ANALYTICS PANEL ──
+function toggleChart() {
+    var panel = document.getElementById('analyticsPanel');
+    var btn   = document.getElementById('toggleChartBtn');
+    var isHidden = panel.style.display === 'none' || panel.style.display === '';
+
+    if (isHidden) {
+        panel.style.display = 'block';
+        btn.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Hide Analytics';
+        setTimeout(initChart, 60);
+    } else {
+        panel.style.display = 'none';
+        btn.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Show Analytics';
+    }
+}
+
+// ── THEME ──
+function syncTheme() {
+    var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+    var lbl = document.getElementById('themeLabel');
+    if (lbl) lbl.textContent = dark ? 'Light Mode' : 'Dark Mode';
+}
+
+function toggleTheme() {
+    var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    syncTheme();
+    var panel = document.getElementById('analyticsPanel');
+    if (panel && panel.style.display !== 'none') {
+        setTimeout(initChart, 60);
+    }
+}
+
+syncTheme();
+
+// ── SIDEBAR (mobile) ──
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+}
+
+window.addEventListener('click', function(e) {
+    var sb = document.getElementById('sidebar');
+    if (window.innerWidth <= 960 && sb.classList.contains('open')
+        && !sb.contains(e.target) && !e.target.closest('.menu-btn')) {
+        sb.classList.remove('open');
+    }
+});
+
+// ── SCROLL-SPY NAV ──
+var sections = ['profile-header','stats','attendance-section','leave-section','leave-history-section','complaint-section','monthly-section'];
+var navLinks = document.querySelectorAll('.nav-item');
+
+var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+            navLinks.forEach(function(l) {
+                l.classList.toggle('active', l.getAttribute('href') === '#' + entry.target.id);
+            });
+        }
+    });
+}, { threshold: 0.25, rootMargin: '-60px 0px 0px 0px' });
+
+sections.forEach(function(id) { var el = document.getElementById(id); if (el) observer.observe(el); });
+
+navLinks.forEach(function(link) {
+    link.addEventListener('click', function(e) {
+        var href = link.getAttribute('href');
+        if (href && href.startsWith('#')) {
+            e.preventDefault();
+            var target = document.querySelector(href);
+            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    });
+});
+
+// ── PHOTO MODAL ──
+function openPhotoModal() {
+    document.getElementById('photoModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closePhotoModal() {
+    document.getElementById('photoModal').classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+function handleModalClick(e) {
+    if (e.target === document.getElementById('photoModal')) closePhotoModal();
+}
+
+function handleModalFile(e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(ev) {
+        document.getElementById('modalPreviewImg').src = ev.target.result;
+        document.getElementById('headerAvatar').src = ev.target.result;
+        document.querySelectorAll('.u-avatar').forEach(function(img) {
+            if (img.tagName === 'IMG') img.src = ev.target.result;
+        });
+    };
+    reader.readAsDataURL(file);
+    document.getElementById('dropTitle').textContent = file.name;
+}
+
+// Drag & drop on modal zone
+var dz = document.getElementById('dropZone');
+if (dz) {
+    ['dragenter','dragover'].forEach(function(ev) {
+        dz.addEventListener(ev, function(e) { e.preventDefault(); dz.classList.add('drag-over'); });
+    });
+    ['dragleave','drop'].forEach(function(ev) {
+        dz.addEventListener(ev, function(e) { e.preventDefault(); dz.classList.remove('drag-over'); });
+    });
+    dz.addEventListener('drop', function(e) {
+        var file = e.dataTransfer.files[0];
+        if (file) {
+            var input = document.getElementById('modalFileInput');
+            var dt = new DataTransfer();
+            dt.items.add(file);
+            input.files = dt.files;
+            handleModalFile({ target: input });
+        }
+    });
+}
+
+// ── DATE VALIDATION ──
+var fromInput = document.getElementById('from_date');
+var toInput   = document.getElementById('to_date');
+if (fromInput && toInput) {
+    var today = new Date().toISOString().split('T')[0];
+    fromInput.min = today;
+    toInput.min   = today;
+    fromInput.addEventListener('change', function() {
+        if (toInput.value && toInput.value < fromInput.value) toInput.value = fromInput.value;
+        toInput.min = fromInput.value;
+    });
+}
+</script>
+</body>
+</html>

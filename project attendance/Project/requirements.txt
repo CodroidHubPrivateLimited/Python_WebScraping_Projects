@@ -1,9 +1,0 @@
-Flask
-Flask-SQLAlchemy
-Werkzeug
-SQLAlchemy
-numpy
-Pillow
-PyMySQL
-gunicorn
-face recognition 
